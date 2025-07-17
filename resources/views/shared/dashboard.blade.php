@@ -4,60 +4,12 @@
 @section('content')
     <div class="bg-[#fafbfc] flex justify-center w-full min-h-screen">
         <div class="bg-[#fafbfc] border border-gray-300 w-[1920px] h-[1311px] overflow-hidden relative">
-            <!-- Sidebar -->
-            <aside class="absolute top-0 left-0 w-[347px] h-full bg-white">
-                <div class="relative w-full h-full p-6">
-                    <!-- Logo -->
-                    <div class="flex items-center gap-4 mb-12">
-                        <img src="{{ asset('assets/logo.png') }}" class="w-[56px] h-[56px]" alt="Logo">
-                        <h1 class="text-3xl pl-2 font-semibold text-[#151d48]">RFD</h1>
-                    </div>
-
-
-                    <!-- Menu -->
-                    <nav class="flex flex-col gap-4">
-                        <a href="#" class="flex items-center gap-4 bg-primary-900 text-white px-6 py-4 rounded-xl shadow ">
-                            <!-- location photo public > assets -->
-                            <img src="{{ asset('assets/dashboard.png') }}" class="w-8 h-8" alt="Dashboard">
-                            <span class="text-lg font-semibold">Dashboard</span>
-                        </a>
-
-                        <a href="/customer" class="flex items-center gap-4 px-6 py-4 text-[#737791] hover:bg-gray-100 rounded-xl">
-                            <img src="{{ asset('assets/customer.png') }}" class="w-6 h-6" alt="Customer">
-                            <span class="text-lg">Customer</span>
-                        </a>
-
-                        <a href="#" class="flex items-center gap-4 px-6 py-4 text-[#737791] hover:bg-gray-100 rounded-xl">
-                            <img src="{{ asset('assets/order.png') }}" class="w-6 h-6" alt="Order">
-                            <span class="text-lg">Order</span>
-                        </a>
-
-                        <a href="#" class="flex items-center gap-4 px-6 py-4 text-[#737791] hover:bg-gray-100 rounded-xl">
-                            <img src="{{ asset('assets/products.png') }}" class="w-6 h-6" alt="Product">
-                            <span class="text-lg">Product</span>
-                        </a>
-
-                        <a href="#" class="flex items-center gap-4 px-6 py-4 text-[#737791] hover:bg-gray-100 rounded-xl">
-                            <img src="{{ asset('assets/report.png') }}" class="w-6 h-6" alt="User">
-                            <span class="text-lg">User</span>
-                        </a>
-
-                        <a href="#" class="flex items-center gap-4 px-6 py-4 text-[#737791] hover:bg-gray-100 rounded-xl">
-                            <img src="{{ asset('assets/kasir.png') }}" class="w-6 h-6" alt="Kasir">
-                            <span class="text-lg">Kasir</span>
-                        </a>
-
-                        <a href="#" class="flex items-center gap-4 px-6 py-4 text-[#737791] hover:bg-gray-100 rounded-xl">
-                            <img src="{{ asset('assets/signout.png') }}" class="w-6 h-6 " alt="Sign Out">
-                            <span class="text-lg">Sign Out</span>
-                        </a>
-                    </nav>
-                </div>
-            </aside>
+            
+        <!-- Sidebar -->
+            @include('components.sidebar')
 
             <!-- Topbar -->
-            <header
-                class="absolute top-0 left-[347px] w-[1573px] h-[120px] bg-white flex justify-between items-center px-12">
+            <header class="w-full h-[120px] bg-white flex justify-between items-center px-12 shadow-sm">
                 <h2 class="text-4xl font-semibold text-[#151d48]">Sales Overview</h2>
                 <div class="flex items-center gap-4">
                     <img src="{{ asset('img/rectangle-1393.png') }}" class="w-[60px] h-[60px] rounded-full object-cover"

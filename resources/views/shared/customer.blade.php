@@ -1,58 +1,18 @@
 @extends('layout.admin.layout')
 @section('title', 'Customer')
+<style>
+    [x-cloak] {
+        display: none !important;
+    }
+</style>
 
 @section('content')
     <div class="bg-[#fafbfc] flex justify-center w-full min-h-screen">
         <div class="bg-[#fafbfc] border border-gray-300 w-[1920px] h-[1311px] overflow-hidden relative">
-            <!-- Sidebar -->
-            <aside class="absolute top-0 left-0 w-[347px] h-full bg-white shadow-lg">
-                <div class="p-6">
-                    <!-- Logo -->
-                    <div class="flex items-center gap-4 mb-12 mt-4">
-                        <img src="{{ asset('assets/logo.png') }}" class="w-[56px] h-[56px]" alt="Logo">
-                        <h1 class="text-3xl pl-2 font-semibold text-[#151d48]">RFD</h1>
-                    </div>
 
-                    <!-- Menu -->
-                    <nav class="flex flex-col gap-4">
-                        <a href="/dashboard"
-                            class="flex items-center gap-6 px-6 py-4 text-[#737791] hover:bg-gray-100 rounded-xl font-poppins">
-                            <img src="{{ asset('assets/dashboard.png') }}" class="w-8 h-8" alt="Dashboard">
-                            <span class="text-lg font-semibold">Dashboard</span>
-                        </a>
-                        <a href="/customer"
-                            class="flex items-center gap-6 bg-[#4379EE] text-white px-6 py-4 rounded-xl shadow font-poppins">
-                            <img src="{{ asset('assets/customer.svg') }}" class=" w-8 h-8 text-white" alt="Customer">
-                            <span class="text-lg font-semibold">Customer</span>
-                        </a>
-                        <a href="#"
-                            class="flex items-center gap-6 px-6 py-4 text-[#737791] hover:bg-gray-100 rounded-xl font-poppins">
-                            <img src="{{ asset('assets/order.png') }}" class="w-8 h-8" alt="Order">
-                            <span class="text-lg">Order</span>
-                        </a>
-                        <a href="#"
-                            class="flex items-center gap-6 px-6 py-4 text-[#737791] hover:bg-gray-100 rounded-xl font-poppins">
-                            <img src="{{ asset('assets/products.png') }}" class="w-8 h-8" alt="Product">
-                            <span class="text-lg">Product</span>
-                        </a>
-                        <a href="#"
-                            class="flex items-center gap-6 px-6 py-4 text-[#737791] hover:bg-gray-100 rounded-xl font-poppins">
-                            <img src="{{ asset('assets/report.png') }}" class="w-8 h-8" alt="User">
-                            <span class="text-lg">User</span>
-                        </a>
-                        <a href="#"
-                            class="flex items-center gap-6 px-6 py-4 text-[#737791] hover:bg-gray-100 rounded-xl font-poppins">
-                            <img src="{{ asset('assets/kasir.png') }}" class="w-8 h-8" alt="Kasir">
-                            <span class="text-lg">Kasir</span>
-                        </a>
-                        <a href="#"
-                            class="flex items-center gap-6 px-6 py-4 text-[#737791] hover:bg-gray-100 rounded-xl mt-8 font-poppins">
-                            <img src="{{ asset('assets/signout.png') }}" class="w-8 h-8" alt="Sign Out">
-                            <span class="text-lg">Sign Out</span>
-                        </a>
-                    </nav>
-                </div>
-            </aside>
+            <!-- Sidebar -->
+            @include('components.sidebar')
+
 
             <!-- Main Area -->
             <div class="ml-[347px]">
@@ -60,11 +20,7 @@
                 <header class="w-full h-[120px] bg-white flex justify-between items-center px-12 shadow-sm">
                     <h2 class="text-4xl font-semibold text-[#151d48]">Customer</h2>
                     <div class="flex items-center gap-8">
-                        <div class="relative">
-                            <input type="text" placeholder="Search here..."
-                                class="bg-gray-100 rounded-full py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-80">
-                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        </div>
+
                         <div class="flex items-center gap-4">
                             <img src="{{ asset('img/rectangle-1393.png') }}"
                                 class="w-[60px] h-[60px] rounded-full object-cover" alt="Profile">
@@ -77,15 +33,27 @@
                 </header>
 
                 <!-- Content Area -->
-                <main class="p-10">
+                <main class="p-10" x-data="{ openModal: false }">
                     <div class="flex justify-between items-center mb-8">
-                        <button
-                            class="bg-[#4379EE] text-white font-bold py-3 px-6 rounded-lg shadow-md hover:bg-blue-600 transition">
-                            Add New Member
-                        </button>
-                        <div class="flex items-center space-x-2 text-gray-700 font-bold text-lg">
-                            <i class="fas fa-filter"></i>
-                            <span>Filter By</span>
+                        <div >
+                            <!-- Tombol Trigger -->
+                            <button @click="openModal = true"
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow-md mb-6">
+                                Add New Customer
+                            </button>
+
+                            <!-- Include Modal -->
+                            @include('components.modal.add-customer')
+                        </div>
+
+                        <div class="flex items-center space-x-2 text-gray-700 font-bold text-lg ">
+                            <img src="{{ asset('assets/filter.svg') }}" class="fas fa-filter"></i>
+                            <span class="pl-2">Filter By</span>
+                            <div class="relative">
+                                <input type="text" placeholder="Search here..."
+                                    class="bg-gray-100 rounded-full py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-80">
+                                <img src="{{ asset('assets/search-icon.svg') }}" class=" pr-2 fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            </div>
                         </div>
                     </div>
 

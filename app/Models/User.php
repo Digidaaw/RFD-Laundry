@@ -23,6 +23,7 @@ class User extends Authenticatable
         'role',       // admin / kasir
         'username',
         'password',
+        'plain_password', 
     ];
 
     /**

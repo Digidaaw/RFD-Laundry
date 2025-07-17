@@ -1,17 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title')</title>
-    @vite('resources/css/app.css') {{-- Tailwind via Vite --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://unpkg.com/alpinejs" defer></script>
+
+    <style>
+        [x-cloak] {
+            display: none !important;
+        }
+    </style>
+
 </head>
+
 <body class="font-sans bg-gray-100">
 
     {{-- Header (optional) --}}
     <header class="bg-white shadow-md px-6 py-4">
         <h1 class="text-2xl font-semibold">Admin Panel</h1>
     </header>
+
+
 
     {{-- Main Content --}}
     <main class="min-h-screen">
@@ -24,4 +36,5 @@
     </footer>
 
 </body>
+
 </html>
