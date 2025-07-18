@@ -8,20 +8,34 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
+    {{-- Aset untuk Choices.js --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js" defer></script>
+
     <style>
         [x-cloak] { display: none !important; }
+
+        /* Kustomisasi Choices.js */
+        .choices__inner {
+            background-color: white;
+            border: 1px solid #d1d5db; /* gray-300 */
+            border-radius: 0.5rem; /* rounded-lg */
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+        }
+        .choices[data-type*="select-one"]::after {
+            right: 1.5rem;
+        }
     </style>
     
     @stack('styles')
 </head>
 {{-- 
-    PERBAIKAN:
-    State untuk modal alert sekarang diinisialisasi langsung oleh PHP.
-    Ini adalah cara yang lebih andal daripada menggunakan event listener JavaScript.
+    PERBAIKAN: Mengembalikan inisialisasi state untuk modal alert.
+    Ini akan membaca session dari Laravel dan menyiapkan data untuk ditampilkan.
 --}}
 <body x-data="{
     showAlert: {{ session('success') || session('error') ? 'true' : 'false' }},
-    
     @if(session('success'))
         alertType: 'success',
         alertTitle: 'Sukses',
@@ -37,13 +51,9 @@
     @endif
 }" class="font-sans">
 
-    {{-- Di sinilah seluruh konten halaman akan ditampilkan --}}
     @yield('content')
 
-    {{-- Panggil komponen modal notifikasi di luar konten utama --}}
     @include('components.modal.alert')
-
-    {{-- Script lama tidak diperlukan lagi --}}
 
     @stack('scripts')
 </body>
