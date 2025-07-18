@@ -81,7 +81,6 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            // Pastikan username unik, tapi abaikan untuk user yang sedang diedit
             'username' => [
                 'required',
                 'string',
@@ -96,16 +95,14 @@ class UserController extends Controller
             'password.min' => 'Password baru minimal harus 6 karakter.',
         ]);
 
-        // Siapkan data untuk diupdate
         $updateData = [
             'name' => $request->name,
             'username' => $request->username,
         ];
 
-        // Jika password diisi, maka hash dan update passwordnya
         if ($request->filled('password')) {
             $updateData['password'] = Hash::make($request->password);
-            $updateData['plain_password'] = $request->password; // Simpan juga saat update
+            $updateData['plain_password'] = $request->password; 
 
         }
 

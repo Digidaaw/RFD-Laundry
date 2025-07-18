@@ -1,19 +1,6 @@
 @extends('layout.admin.layout')
 @section('title', 'Kelola Kasir')
 
-@if(session('success'))
-    <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mx-12 mt-4 rounded" role="alert">
-        <p class="font-bold">Sukses</p>
-        <p>{{ session('success') }}</p>
-    </div>
-@endif
-@if(session('error'))
-    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mx-12 mt-4 rounded" role="alert">
-        <p class="font-bold">Gagal</p>
-        <p>{{ session('error') }}</p>
-    </div>
-@endif
-
 @section('content')
     <div class="bg-[#fafbfc] flex justify-center w-full min-h-screen">
         <div class="bg-[#fafbfc] border border-gray-300 w-full min-h-screen overflow-hidden relative">
@@ -76,19 +63,16 @@
                                         <th class="p-4 text-lg font-extrabold text-gray-700">#</th>
                                         <th class="p-4 text-lg font-extrabold text-gray-700">Nama</th>
                                         <th class="p-4 text-lg font-extrabold text-gray-700">Username</th>
-                                        {{-- PERUBAHAN: Menambahkan kolom Password --}}
                                         <th class="p-4 text-lg font-extrabold text-gray-700">Password</th>
                                         <th class="p-4 text-lg font-extrabold text-gray-700 text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($kasirs as $kasir)
-                                        {{-- Inisialisasi Alpine.js untuk setiap baris --}}
                                         <tr class="border-b hover:bg-gray-50" x-data="{ showPassword: false }">
                                             <td class="p-4 font-semibold text-gray-600">{{ $loop->iteration }}</td>
                                             <td class="p-4 font-semibold text-gray-800">{{ $kasir->name }}</td>
                                             <td class="p-4 font-semibold text-gray-600">{{ $kasir->username }}</td>
-                                            {{-- PERUBAHAN: Kolom Password dengan toggle lihat/sembunyikan --}}
                                             <td class="p-4 font-semibold text-gray-600">
                                                 <div class="flex items-center space-x-2">
                                                     {{-- Tampilkan password asli jika showPassword true, jika tidak tampilkan

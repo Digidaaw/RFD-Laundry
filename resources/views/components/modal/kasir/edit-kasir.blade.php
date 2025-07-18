@@ -21,15 +21,13 @@
         <h2 class="text-2xl font-bold mb-6 text-center">Edit Data Kasir</h2>
 
         <!-- Modal Form -->
-        <!-- Kita bind action form ke URL yang dinamis menggunakan x-bind:action -->
         <form x-bind:action="editData.url" method="POST">
             @csrf
-            @method('PUT') <!-- Method spoofing untuk request UPDATE -->
+            @method('PUT') 
 
             <!-- Name Field -->
             <div class="mb-4">
                 <label class="block text-gray-700 text-lg font-semibold mb-2">Nama</label>
-                <!-- Gunakan x-model untuk binding data ke input -->
                 <input type="text" name="name" placeholder="Masukkan nama" x-model="editData.name"
                     class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400" />
             </div>

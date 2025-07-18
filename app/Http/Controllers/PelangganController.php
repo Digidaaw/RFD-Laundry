@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Pelanggan;
-use App\Http\Controllers\Controller;
+use App\Models\Pelanggan; // Pastikan model Pelanggan di-import
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PelangganController extends Controller
 {
@@ -13,15 +13,11 @@ class PelangganController extends Controller
      */
     public function index()
     {
-        //
-    }
+        // PERBAIKAN: Ambil semua data dari model Pelanggan
+        $pelanggans = Pelanggan::latest()->get();
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        // PERBAIKAN: Kirim variabel $pelanggans ke view menggunakan compact()
+        return view('shared.pelanggan', compact('pelanggans'));
     }
 
     /**
@@ -29,23 +25,16 @@ class PelangganController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'kontak' => 'required|string|max:20|unique:pelanggans',
+        ], [
+            'kontak.unique' => 'Nomor kontak sudah terdaftar.',
+        ]);
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Pelanggan $pelanggan)
-    {
-        //
-    }
+        Pelanggan::create($request->all());
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Pelanggan $pelanggan)
-    {
-        //
+        return redirect()->route('pelanggan.index')->with('success', 'Pelanggan baru berhasil ditambahkan.');
     }
 
     /**
@@ -53,7 +42,21 @@ class PelangganController extends Controller
      */
     public function update(Request $request, Pelanggan $pelanggan)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'kontak' => [
+                'required',
+                'string',
+                'max:20',
+                Rule::unique('pelanggans')->ignore($pelanggan->id),
+            ],
+        ], [
+            'kontak.unique' => 'Nomor kontak sudah digunakan oleh pelanggan lain.',
+        ]);
+
+        $pelanggan->update($request->all());
+
+        return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil diperbarui.');
     }
 
     /**
@@ -61,6 +64,11 @@ class PelangganController extends Controller
      */
     public function destroy(Pelanggan $pelanggan)
     {
-        //
+        try {
+            $pelanggan->delete();
+            return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('pelanggan.index')->with('error', 'Gagal menghapus pelanggan.');
+        }
     }
 }

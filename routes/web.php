@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LayananController;
+use App\Http\Controllers\PelangganController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +27,13 @@ Route::resource('users', UserController::class);
 
 
 
+// Route::middleware(['auth'])->group(function () {
+Route::resource('users', UserController::class); 
+Route::resource('layanan', LayananController::class);
+Route::resource('pelanggan', PelangganController::class);
+
+// });
+
 Route::get('/', function () {
     return view('shared.dashboard');
 });
@@ -32,9 +41,7 @@ Route::get('/dashboard', function () {
     return view('shared.dashboard');
 });
 
-Route::get('/customer', function () {
-    return view('shared.customer');
-});
+
 
 
 Route::get('/kasir', [UserController::class, 'index'])->name('kasir.index');

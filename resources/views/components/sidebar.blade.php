@@ -23,11 +23,11 @@
             </a>
 
 
-            <a href="/customer"
-                class="flex items-center gap-6 px-6 py-4 rounded-xl font-poppins {{ $activePage === 'customer' ? 'bg-[#4379EE] text-white' : 'text-[#737791] hover:bg-gray-100' }}">
+            <a href="/pelanggan"
+                class="flex items-center gap-6 px-6 py-4 rounded-xl font-poppins {{ $activePage === 'pelanggan' ? 'bg-[#4379EE] text-white' : 'text-[#737791] hover:bg-gray-100' }}">
 
                 <img src="{{ asset('assets/customer.svg') }}"
-                    class="w-6 h-6 {{ $activePage === 'customer' ? 'filter brightness-0 invert' : '' }}"
+                    class="w-6 h-6 {{ $activePage === 'pelanggan' ? 'filter brightness-0 invert' : '' }}"
                     alt="Dashboard">
 
                 <span class="text-lg font-semibold">Customer</span>
@@ -48,7 +48,7 @@
                 class="flex items-center gap-6 px-6 py-4 rounded-xl font-poppins {{ $activePage === 'layanan' ? 'bg-[#4379EE] text-white' : 'text-[#737791] hover:bg-gray-100' }}">
 
                 <img src="{{ asset('assets/layanan.png') }}"
-                    class="w-6 h-6 {{ $activePage === 'product' ? 'filter brightness-0 invert' : '' }}" alt="Dashboard">
+                    class="w-6 h-6 {{ $activePage === 'layanan' ? 'filter brightness-0 invert' : '' }}" alt="Dashboard">
 
                 <span class="text-lg font-semibold">Layanan</span>
             </a>

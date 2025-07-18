@@ -10,8 +10,13 @@ class Layanan extends Model
     use HasFactory;
     protected $fillable = [
         'name',
-        'gambar',       
+        'gambar',
         'harga',
         'deskripsi',
+    ];
+
+    protected $casts = [
+        // PERUBAHAN: Memberitahu Laravel bahwa kolom 'gambar' adalah array
+        'gambar' => 'array',
     ];
 }
