@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pelanggans', function (Blueprint $table) {
-            $table->id();
-            $table->string("name");
-            $table->string('kontak')->unique();
-            $table->timestamps();
+        Schema::table('transaksis', function (Blueprint $table) {
+            $table->string('no_invoice')->unique()->nullable()->after('id');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pelanggans');
+        Schema::table('transaksis', function (Blueprint $table) {
+            $table->dropColumn('no_invoice');
+        });
     }
 };
