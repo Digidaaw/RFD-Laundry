@@ -41,9 +41,9 @@ class RegisterController extends Controller
         ]);
 
         // 3. Login-kan user yang baru dibuat
-        Auth::login($user);
+        // Auth::login($user);
 
         // 4. Arahkan ke halaman utama (dashboard)
-        return redirect('/');
+        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login dengan akun baru Anda.');
     }
 }
