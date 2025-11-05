@@ -54,9 +54,8 @@
             </div>
 
             <button type="submit"
-                <a href= "{{ route('dashboard') }}"class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">
+                <a hrefclass="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">
                 Login
-</a>
             </button>
 
             <p class="text-center text-sm text-gray-600 mt-6">

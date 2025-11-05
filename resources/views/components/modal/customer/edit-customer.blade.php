@@ -1,16 +1,9 @@
-<!-- Modal Edit Pelanggan (Komponen Mandiri) -->
-
-{{-- 
-    PERBAIKAN: 
-    1. x-data: Modal ini sekarang memiliki 'otak'-nya sendiri (open: false).
-    2. @open-edit-modal.window: Ini adalah "telinga" yang mendengarkan 'teriakan' dari tombol Update.
-    3. initModal($event): Fungsi ini akan mengambil data dari tombol dan membuka modal.
---}}
 <div x-data="{
         open: false,
         data: {} // Data default
      }"
-     @open-edit-modal.window="
+     {{-- Mendengarkan event yang dikirim oleh tombol Update --}}
+     @open-edit-customer-modal.window="
         data = $event.detail; 
         open = true;
      "
@@ -22,20 +15,17 @@
      x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
 
-    <!-- Konten Modal -->
     <div @click.away="open = false" x-transition
         class="bg-white p-8 rounded-xl w-full max-w-xl shadow-lg relative">
 
-        <!-- Tombol Tutup -->
         <button @click="open = false"
             class="absolute top-3 right-3 text-gray-500 hover:text-black text-2xl font-bold">&times;</button>
         <h2 class="text-2xl font-bold mb-6 text-center">Edit Pelanggan</h2>
 
-        <!-- Form -->
-        {{-- PERBAIKAN: action dan input di-bind ke 'data' dari x-data --}}
         <form x-bind:action="data.url" method="POST">
             @csrf
             @method('PUT') 
+
             <div class="mb-4">
                 <label class="block text-gray-700 text-lg font-semibold mb-2">Nama Pelanggan</label>
                 <input type="text" name="name" x-model="data.name"

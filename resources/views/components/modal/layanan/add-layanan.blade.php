@@ -38,7 +38,7 @@
                 <label class="block text-gray-700 text-lg font-semibold mb-2">Gambar</label>
                 <input type="file" name="gambar[]" multiple
                     class="w-full border border-gray-300 rounded-lg p-2 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 @error('gambar.*') border-red-500 @enderror">
-                <small class="text-gray-500">Anda bisa memilih lebih dari satu gambar.</small>
+                <small class="text-gray-500">Anda bisa memilih lebih dari satu gambar, Gambar Harus rasio 1x1.</small>
                 @error('gambar.*')<p class="text-red-500 text-sm mt-1">{{ $message }}</p>@enderror
             </div>
             <div class="flex justify-end gap-4 mt-6">

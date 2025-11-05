@@ -11,11 +11,14 @@ use Illuminate\Support\Facades\Auth;
 
 class TransaksiController extends Controller
 {
-    // ... (method index() dan store() Anda yang sudah ada) ...
+    /**
+     * Menampilkan daftar transaksi (dengan search)
+     */
     public function index(Request $request)
     {
         $query = Transaksi::with(['pelanggan', 'layanan', 'user'])->latest();
 
+        // Logika Pencarian
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -28,6 +31,8 @@ class TransaksiController extends Controller
         }
 
         $transaksis = $query->get();
+        
+        // Data ini diperlukan untuk modal Add dan Edit
         $pelanggans = Pelanggan::orderBy('name')->get();
         $layanans = Layanan::orderBy('name')->get();
         
@@ -39,6 +44,9 @@ class TransaksiController extends Controller
         ]);
     }
 
+    /**
+     * Menyimpan transaksi baru
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -88,51 +96,66 @@ class TransaksiController extends Controller
     }
 
     /**
-     * PERBAIKAN: Menambahkan logika redirect
+     * PERBAIKAN: Method update sekarang memvalidasi dan menyimpan field baru
      */
     public function update(Request $request, Transaksi $transaksi)
     {
+        // Validasi data baru
         $request->validate([
+            'id_pelanggan' => 'required|exists:pelanggans,id',
+            'tanggal_order' => 'required|date',
+            'deskripsi' => 'nullable|string|max:255',
             'status_order' => 'required|string',
             'jumlah_bayar' => 'required|numeric|min:0',
         ]);
         
+        // Hitung ulang sisa bayar (berdasarkan jumlah bayar baru)
         $sisaBayar = $transaksi->total_harga - $request->jumlah_bayar;
-        if ($sisaBayar < 0) $sisaBayar = 0;
+        if ($sisaBayar < 0) {
+            $sisaBayar = 0;
+        }
 
+        // Simpan data baru ke database
         $transaksi->update([
+            'id_pelanggan' => $request->id_pelanggan,
+            'tanggal_order' => $request->tanggal_order,
+            'deskripsi' => $request->deskripsi,
             'status_order' => $request->status_order,
             'jumlah_bayar' => $request->jumlah_bayar,
             'sisa_bayar' => $sisaBayar,
             'status_pembayaran' => ($sisaBayar <= 0) ? 'Lunas' : 'Belum Lunas',
         ]);
 
-        // Cek jika ada URL redirect khusus
-        if ($request->has('_redirect_url')) {
-            return redirect($request->_redirect_url)->with('success', 'Status transaksi berhasil diperbarui.');
+        // Cek jika ada URL redirect khusus (untuk laporan pelanggan)
+        if ($request->has('_redirect_url') && $request->_redirect_url != '') {
+            // PERBAIKAN: Gunakan redirect()->to()
+            return redirect()->to($request->_redirect_url)->with('success', 'Status transaksi berhasil diperbarui.');
         }
 
         return redirect()->route('transaksi.index')->with('success', 'Status transaksi berhasil diperbarui.');
     }
     
     /**
-     * PERBAIKAN: Menambahkan logika redirect
+     * Menghapus transaksi
      */
     public function destroy(Request $request, Transaksi $transaksi)
     {
         $transaksi->delete();
 
         // Cek jika ada URL redirect khusus
-        if ($request->has('_redirect_url')) {
-            return redirect($request->_redirect_url)->with('success', 'Transaksi berhasil dihapus.');
+        if ($request->has('_redirect_url') && $request->_redirect_url != '') {
+            // PERBAIKAN: Gunakan redirect()->to()
+            return redirect()->to($request->_redirect_url)->with('success', 'Transaksi berhasil dihapus.');
         }
 
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus.');
     }
 
+    /**
+     * Membayar piutang
+     */
     public function bayarPiutang(Request $request, Transaksi $transaksi)
     {
-        // ... (kode method bayarPiutang Anda)
         $request->validate([
             'bayar_sekarang' => 'required|numeric|min:0.01|lte:' . $transaksi->sisa_bayar,
         ], [

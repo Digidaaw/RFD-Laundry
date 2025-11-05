@@ -3,10 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule; // <-- PERBAIKAN: TAMBAHKAN BARIS INI
 
 class UserController extends Controller
 {
@@ -15,33 +14,21 @@ class UserController extends Controller
      */
     public function index()
     {
-        $kasirs = User::where('role', 'kasir')->get(); // Sesuaikan nama model & role
-        return view('admin.kasir', compact('kasirs')); // Sesuaikan nama view
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        // Ambil semua user dengan role 'kasir'
+        $kasirs = User::where('role', 'kasir')->latest()->get(); 
+        return view('admin.kasir', compact('kasirs'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string|min:4|max:255|unique:users',
-            'password' => 'required|string|min:6|regex:/[A-Z]/|regex:/[@$!%*#?&]/',
+            'password' => 'required|string|min:6',
             'role' => 'required|string',
-
-        ], [
-            'username.unique' => 'Username sudah digunakan.',
-            'password.regex' => 'Password harus memiliki huruf kapital dan karakter spesial.',
         ]);
 
         User::create([
@@ -49,29 +36,10 @@ class UserController extends Controller
             'username' => $request->username,
             'password' => Hash::make($request->password),
             'plain_password' => $request->password, // Simpan password asli
-            'role' => $request->role ?? 'kasir',
+            'role' => $request->role,
         ]);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan.');
-    }
-
-
-
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(User $user)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(User $user)
-    {
-        //
+        return redirect()->route('users.index')->with('success', 'User kasir berhasil ditambahkan.');
     }
 
     /**
@@ -86,29 +54,26 @@ class UserController extends Controller
                 'string',
                 'min:4',
                 'max:255',
-                Rule::unique('users')->ignore($user->id),
+                Rule::unique('users')->ignore($user->id), // Baris ini yang membutuhkan 'use Illuminate\Validation\Rule;'
             ],
-            // Password bersifat opsional saat update
-            'password' => 'nullable|string|min:6',
-        ], [
-            'username.unique' => 'Username sudah digunakan oleh user lain.',
-            'password.min' => 'Password baru minimal harus 6 karakter.',
+            'password' => 'nullable|string|min:6', // Password boleh kosong saat update
         ]);
 
+        // Siapkan data untuk diupdate
         $updateData = [
             'name' => $request->name,
             'username' => $request->username,
         ];
 
+        // Hanya update password jika diisi
         if ($request->filled('password')) {
             $updateData['password'] = Hash::make($request->password);
-            $updateData['plain_password'] = $request->password; 
-
+            $updateData['plain_password'] = $request->password;
         }
 
         $user->update($updateData);
 
-        return redirect()->route('users.index')->with('success', 'Data user kasir berhasil diperbarui.');
+        return redirect()->route('users.index')->with('success', 'Data kasir berhasil diperbarui.');
     }
 
     /**
@@ -118,10 +83,9 @@ class UserController extends Controller
     {
         try {
             $user->delete();
-            return redirect()->route('users.index')->with('success', 'User kasir berhasil dihapus.');
+            return redirect()->route('users.index')->with('success', 'Data kasir berhasil dihapus.');
         } catch (\Exception $e) {
-            // Menangani kemungkinan error jika user tidak bisa dihapus (misal karena relasi)
-            return redirect()->route('users.index')->with('error', 'Gagal menghapus user.');
+            return redirect()->route('users.index')->with('error', 'Gagal menghapus kasir.');
         }
     }
 }

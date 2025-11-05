@@ -1,5 +1,4 @@
 <!-- Modal Overlay -->
-{{-- PERBAIKAN: Pastikan x-show menggunakan "openAddModal" --}}
 <div x-show="openAddModal" x-cloak x-transition:enter="transition ease-out duration-300"
     x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
     x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
@@ -7,7 +6,6 @@
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
 
     <!-- Modal Content -->
-    {{-- PERBAIKAN: Pastikan @click.away dan @click pada tombol Batal/Close menggunakan "openAddModal" --}}
     <div @click.away="openAddModal = false" x-transition:enter="transition ease-out duration-300 transform"
         x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
         x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="opacity-100 scale-100"
