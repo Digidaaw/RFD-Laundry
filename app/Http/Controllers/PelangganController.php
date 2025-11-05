@@ -11,13 +11,27 @@ class PelangganController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // PERBAIKAN: Ambil semua data dari model Pelanggan
-        $pelanggans = Pelanggan::latest()->get();
+        // 1. Ambil kata kunci pencarian dari request
+        $search = $request->input('search');
 
-        // PERBAIKAN: Kirim variabel $pelanggans ke view menggunakan compact()
-        return view('shared.pelanggan', compact('pelanggans'));
+        // 2. Mulai query ke model Pelanggan
+        $query = Pelanggan::query();
+
+        // 3. Jika ada kata kunci pencarian, filter data
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('kontak', 'like', "%{$search}%");
+            });
+        }
+
+        // 4. Ambil hasil akhir, urutkan dari yang terbaru
+        $pelanggans = $query->latest()->get();
+
+        // 5. Kirim data pelanggan dan kata kunci pencarian ke view
+        return "view"('shared.pelanggan', compact('pelanggans', 'search'));
     }
 
     /**

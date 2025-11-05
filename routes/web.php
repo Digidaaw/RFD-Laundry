@@ -51,4 +51,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report', [ReportController::class, 'index'])->name('report.index');
     Route::get('/report/periode', [ReportController::class, 'laporanPeriode'])->name('report.periode');
     Route::get('/report/piutang', [ReportController::class, 'laporanPiutang'])->name('report.piutang');
+
+    Route::get('/report/pelanggan/{pelanggan}', [ReportController::class, 'laporanPelanggan'])->name('report.pelanggan');
 });

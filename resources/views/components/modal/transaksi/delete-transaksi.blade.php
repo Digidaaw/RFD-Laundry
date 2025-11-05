@@ -6,9 +6,13 @@
         <form x-bind:action="deleteUrl" method="POST" class="inline">
             @csrf
             @method('DELETE')
+            
+            <input type="hidden" name="_redirect_url" :value="window.location.href">
+
             <div class="flex justify-center gap-4">
                 <button type="button" @click="openDeleteModal = false" class="px-6 py-2 ...">Batal</button>
-                <button type="submit" class="px-6 py-2 ...">Ya, Hapus</button>
+                <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                    Ya, Hapus</button>
             </div>
         </form>
     </div>

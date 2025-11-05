@@ -8,47 +8,56 @@
         <div class="ml-[347px]">
             <header class="w-full h-[120px] bg-white flex justify-between items-center px-12 shadow-sm">
                 <h2 class="text-4xl font-semibold text-[#151d48]">Pusat Laporan</h2>
-                <div class="flex items-center gap-8">
-                    <div class="flex items-center gap-4">
-                        <img src="{{ asset('img/rectangle-1393.png') }}"
-                            class="w-[60px] h-[60px] rounded-full object-cover" alt="Profile">
-                        <div>
-                            <p class="text-base font-medium text-gray-900">Admin</p>
-                            <p class="text-sm text-gray-500">Panel</p>
-                        </div>
-                    </div>
-                </div>
+                {{-- ... Topbar content ... --}}
             </header>
 
             <main class="p-10">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    
-                    <!-- Card Laporan Per Periode -->
-                    <a href="{{ route('report.periode') }}" class="block bg-white p-8 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                        <div class="flex items-center gap-6">
-                            <div class="bg-blue-100 p-4 rounded-full">
-                                <svg class="w-10 h-10 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0h18M-4.5 12h22.5" />
+                <h3 class="text-2xl font-semibold text-gray-800 mb-6">Pilih Jenis Laporan</h3>
+
+                {{-- PERUBAHAN: Mengubah grid menjadi 2 kolom --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    <!-- Opsi 1: Laporan Per Periode -->
+                    <a href="{{ route('report.periode') }}" class="block p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-blue-100 rounded-full">
+                                <svg class="w-6 h-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="text-2xl font-bold text-gray-800">Laporan Per Periode</h3>
-                                <p class="text-gray-500 mt-1">Lihat pendapatan dan transaksi dalam rentang waktu tertentu.</p>
+                                <h4 class="text-xl font-bold text-gray-900">Laporan Per Periode</h4>
+                                <p class="text-gray-600">Lihat total pendapatan berdasarkan rentang tanggal.</p>
                             </div>
                         </div>
                     </a>
 
-                    <!-- Card Laporan Piutang -->
-                    <a href="{{ route('report.piutang') }}" class="block bg-white p-8 rounded-xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-                        <div class="flex items-center gap-6">
-                            <div class="bg-red-100 p-4 rounded-full">
-                                <svg class="w-10 h-10 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                    <!-- Opsi 2: Laporan Piutang -->
+                    <a href="{{ route('report.piutang') }}" class="block p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-red-100 rounded-full">
+                                <svg class="w-6 h-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="text-2xl font-bold text-gray-800">Laporan Piutang</h3>
-                                <p class="text-gray-500 mt-1">Lihat daftar pelanggan yang memiliki tunggakan pembayaran.</p>
+                                <h4 class="text-xl font-bold text-gray-900">Laporan Piutang</h4>
+                                <p class="text-gray-600">Lihat semua transaksi yang belum lunas.</p>
+                            </div>
+                        </div>
+                    </a>
+                    
+                    {{-- TAMBAHAN BARU: Navigasi ke Laporan Pelanggan --}}
+                    <a href="{{ route('pelanggan.index') }}" class="block p-6 bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-200">
+                        <div class="flex items-center gap-4">
+                            <div class="p-3 bg-green-100 rounded-full">
+                                <svg class="w-6 h-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-900">Laporan per Pelanggan</h4>
+                                <p class="text-gray-600">Cari pelanggan untuk melihat riwayat transaksinya.</p>
                             </div>
                         </div>
                     </a>
@@ -59,3 +68,4 @@
     </div>
 </div>
 @endsection
+

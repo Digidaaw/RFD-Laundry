@@ -62,8 +62,8 @@
                                         <th class="p-4 text-lg font-extrabold text-gray-700">ID</th>
                                         <th class="p-4 text-lg font-extrabold text-gray-700">Gambar</th>
                                         <th class="p-4 text-lg font-extrabold text-gray-700">Nama Layanan</th>
-                                        <th class="p-4 text-lg font-extrabold text-gray-700">Deskripsi</th>
                                         <th class="p-4 text-lg font-extrabold text-gray-700">Harga</th>
+                                        <th class="p-4 text-lg font-extrabold text-gray-700">Deskripsi</th>
                                         <th class="p-4 text-lg font-extrabold text-gray-700 text-center">Aksi</th>
                                     </tr>
                                 </thead>
