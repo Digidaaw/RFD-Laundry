@@ -1,30 +1,46 @@
+<!-- Modal Edit Transaksi (Komponen Mandiri yang Lengkap) -->
 <div x-data="{
         open: false,
-        data: {},
-        choicesInstance: null,
+        data: {}, // Data transaksi akan diisi di sini
+        choicesInstance: null, // Untuk menyimpan instance Choices.js
         
+        // Fungsi init() akan dijalankan saat komponen Alpine dimuat
         init() {
             this.$watch('open', (value) => {
+                // Jika 'open' berubah menjadi 'true' (modal dibuka)
                 if (value) {
+                    // $nextTick akan menunggu DOM selesai diperbarui (modalnya terlihat)
                     this.$nextTick(() => {
                         const element = this.$refs.pelangganSelectEdit;
-                        if (!element) return;
-                        if (this.choicesInstance) this.choicesInstance.destroy();
+                        if (!element) return; // Pastikan elemennya ada
+
+                        // Hancurkan instance Choices.js lama jika ada (mencegah duplikat)
+                        if (this.choicesInstance) {
+                            this.choicesInstance.destroy();
+                        }
+
+                        // Buat instance Choices.js yang baru
                         this.choicesInstance = new Choices(element, {
                             searchEnabled: true,
                             itemSelectText: 'Pilih',
-                            searchFields: ['label'],
-                            shouldSort: true,
+                            searchFields: ['label'], // Mencari di seluruh teks
+                            shouldSort: true, // Memastikan daftar selalu terurut
+                            placeholder: true,
+                            placeholderValue: 'Ketik nama atau kontak...'
                         });
+
+                        // Set nilai pelanggan yang sedang dipilih
                         if (this.data.id_pelanggan) {
+                            // Beri sedikit waktu agar Choices.js selesai render
                             setTimeout(() => {
                                 if (this.choicesInstance) {
                                     this.choicesInstance.setChoiceByValue(String(this.data.id_pelanggan));
                                 }
-                            }, 50);
+                            }, 50); // 50ms biasanya cukup
                         }
                     });
                 } else {
+                    // Jika modal ditutup, hancurkan instance agar bersih
                     if (this.choicesInstance) {
                         this.choicesInstance.destroy();
                         this.choicesInstance = null;
@@ -33,13 +49,18 @@
             });
         },
         
+        // Fungsi ini dipanggil oleh event $dispatch dari tombol 'Update'
         openModal(event) {
             let detail = event.detail;
+            
+            // Format tanggal agar sesuai dengan input type date (YYYY-MM-DD)
             if (detail.tanggal_order) {
+                // Ambil 10 karakter pertama
                 detail.tanggal_order = detail.tanggal_order.substring(0, 10);
             }
+            
             this.data = detail;
-            this.open = true;
+            this.open = true; // Ini akan memicu $watch di atas
         }
      }"
      @open-edit-modal.window="openModal($event)"
@@ -51,15 +72,20 @@
      x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
 
+    <!-- Konten Modal -->
     <div @click.away="open = false" x-transition
         class="bg-white p-8 rounded-xl w-full max-w-lg shadow-lg relative max-h-[90vh] flex flex-col">
         <button @click="open = false" class="absolute top-3 right-3 text-gray-500 hover:text-black text-2xl font-bold z-10">&times;</button>
         <h2 class="text-2xl font-bold mb-6 text-center flex-shrink-0">Update Transaksi</h2>
 
+        <!-- Form dibuat scrollable jika kontennya panjang -->
         <div class="overflow-y-auto flex-grow pr-2">
+            
             <form x-bind:action="data.id ? '{{ url('transaksi') }}/' + data.id : ''" method="POST">
                 @csrf
                 @method('PUT')
+
+                {{-- Input tersembunyi untuk redirect --}}
                 <input type="hidden" name="_redirect_url" :value="window.location.href.includes('report') ? window.location.href : ''">
 
                 <div class="mb-4">
@@ -72,7 +98,7 @@
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Pelanggan</label>
                     @if(isset($pelanggans))
                         <select name="id_pelanggan" x-ref="pelangganSelectEdit">
-                            <option value="" disable selected>Pilih Pelanggan...</option>
+                            <option value="" disabled selected>Pilih Pelanggan...</option>
                             @foreach($pelanggans as $pelanggan)
                                 <option value="{{ $pelanggan->id }}">{{ $pelanggan->name }} - {{ $pelanggan->kontak }}</option>
                             @endforeach
@@ -107,6 +133,7 @@
                     <small x-show="data.total_harga" class="text-gray-500" x-text="'Total Tagihan: Rp ' + new Intl.NumberFormat('id-ID').format(data.total_harga)"></small>
                 </div>
 
+                <!-- Tombol Aksi -->
                 <div class="flex justify-end gap-4 mt-8 pt-4 border-t sticky bottom-0 bg-white">
                     <button type="button" @click="open = false"
                         class="px-4 py-2 border rounded-lg text-gray-600 hover:bg-gray-100">

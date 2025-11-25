@@ -68,7 +68,7 @@
             
             <div class="mt-4">
                 <label class="block text-gray-700 text-lg font-semibold mb-2">Deskripsi (Keyword)</label>
-                <input type="text" name="deskripsi" class="w-full border border-gray-300 rounded-lg px-4 py-2" placeholder="Contoh: Baju Pesta, Selimut Tebal">
+                <input type="text" x-model="deskripsi "name="deskripsi" class="w-full border border-gray-300 rounded-lg px-4 py-2" placeholder="Contoh: Baju Pesta, Selimut Tebal">
             </div>
 
             <div class="grid grid-cols-2 gap-4 mt-4">

@@ -6,8 +6,12 @@ use App\Models\Transaksi;
 use App\Models\Pelanggan;
 use App\Models\Layanan;
 use App\Models\User;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PhpOffice\PhpSpreadsheet\Writer\Xls; // untuk file .xls
+use Carbon\Carbon;
+
 
 class TransaksiController extends Controller
 {
@@ -21,21 +25,21 @@ class TransaksiController extends Controller
         // Logika Pencarian
         if ($request->has('search') && $request->search != '') {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('no_invoice', 'like', '%' . $search . '%')
-                  ->orWhere('deskripsi', 'like', '%' . $search . '%')
-                  ->orWhereHas('pelanggan', function($pelangganQuery) use ($search) {
-                      $pelangganQuery->where('name', 'like', '%' . $search . '%');
-                  });
+                    ->orWhere('deskripsi', 'like', '%' . $search . '%')
+                    ->orWhereHas('pelanggan', function ($pelangganQuery) use ($search) {
+                        $pelangganQuery->where('name', 'like', '%' . $search . '%');
+                    });
             });
         }
 
         $transaksis = $query->get();
-        
+
         // Data ini diperlukan untuk modal Add dan Edit
         $pelanggans = Pelanggan::orderBy('name')->get();
         $layanans = Layanan::orderBy('name')->get();
-        
+
         return view('shared.transaksi', [
             'transaksis' => $transaksis,
             'pelanggans' => $pelanggans,
@@ -57,16 +61,18 @@ class TransaksiController extends Controller
             'jumlah_bayar' => 'required|numeric|min:0',
             'deskripsi' => 'nullable|string|max:255',
         ]);
-        
+
         $layanan = Layanan::find($request->id_layanan);
         $subtotal = $layanan->harga * $request->berat_laundry;
         $potongan = $request->input('potongan', 0);
         $totalHarga = $subtotal - $potongan;
 
-        if ($totalHarga < 0) $totalHarga = 0;
+        if ($totalHarga < 0)
+            $totalHarga = 0;
 
         $sisaBayar = $totalHarga - $request->jumlah_bayar;
-        if ($sisaBayar < 0) $sisaBayar = 0; 
+        if ($sisaBayar < 0)
+            $sisaBayar = 0;
 
         $transaksi = Transaksi::create([
             'id_user' => Auth::id(),
@@ -88,7 +94,7 @@ class TransaksiController extends Controller
         $date = now()->format('dmY');
         $sequence = str_pad($transaksi->id, 4, '0', STR_PAD_LEFT);
         $noInvoice = $prefix . $date . $sequence;
-        
+
         $transaksi->no_invoice = $noInvoice;
         $transaksi->save();
 
@@ -108,7 +114,7 @@ class TransaksiController extends Controller
             'status_order' => 'required|string',
             'jumlah_bayar' => 'required|numeric|min:0',
         ]);
-        
+
         // Hitung ulang sisa bayar (berdasarkan jumlah bayar baru)
         $sisaBayar = $transaksi->total_harga - $request->jumlah_bayar;
         if ($sisaBayar < 0) {
@@ -134,7 +140,7 @@ class TransaksiController extends Controller
 
         return redirect()->route('transaksi.index')->with('success', 'Status transaksi berhasil diperbarui.');
     }
-    
+
     /**
      * Menghapus transaksi
      */
@@ -164,7 +170,8 @@ class TransaksiController extends Controller
 
         $jumlahBayarBaru = $transaksi->jumlah_bayar + $request->bayar_sekarang;
         $sisaBayarBaru = $transaksi->total_harga - $jumlahBayarBaru;
-        if ($sisaBayarBaru < 0) $sisaBayarBaru = 0;
+        if ($sisaBayarBaru < 0)
+            $sisaBayarBaru = 0;
 
         $transaksi->update([
             'jumlah_bayar' => $jumlahBayarBaru,
@@ -174,4 +181,60 @@ class TransaksiController extends Controller
 
         return redirect()->route('report.piutang')->with('success', 'Pembayaran untuk invoice ' . $transaksi->no_invoice . ' berhasil diterima.');
     }
+    public function exportPelangganExcel($pelangganId)
+    {
+        $data = Transaksi::where('id_pelanggan', $pelangganId)
+            ->with('layanan')
+            ->latest()
+            ->get();
+
+        $fileName = "Laporan-Pelanggan-{$pelangganId}.xls";
+
+        $headers = [
+            "Content-Type" => "application/vnd.ms-excel",
+            "Content-Disposition" => "attachment; filename=\"$fileName\""
+        ];
+
+        $columns = [
+            'No Invoice',
+            'Tanggal Order',
+            'Layanan',
+            'Deskripsi',
+            'Berat (Kg)',
+            'Total Harga',
+            'Jumlah Bayar',
+            'Sisa Bayar',
+            'Status Order',
+            'Status Pembayaran'
+        ];
+
+        $content = "<table border='1'>
+        <thead><tr>";
+
+        foreach ($columns as $col) {
+            $content .= "<th><b>$col</b></th>";
+        }
+
+        $content .= "</tr></thead><tbody>";
+
+        foreach ($data as $t) {
+            $content .= "<tr>
+            <td>{$t->no_invoice}</td>
+            <td>" . \Carbon\Carbon::parse($t->tanggal_order)->format('d-m-Y') . "</td>
+            <td>" . ($t->layanan->name ?? 'N/A') . "</td>
+            <td>" . ($t->deskripsi ?? '-') . "</td>
+            <td>{$t->berat_laundry}</td>
+            <td>{$t->total_harga}</td>
+            <td>{$t->jumlah_bayar}</td>
+            <td>{$t->sisa_bayar}</td>
+            <td>{$t->status_order}</td>
+            <td>{$t->status_pembayaran}</td>
+        </tr>";
+        }
+
+        $content .= "</tbody></table>";
+
+        return response($content, 200, $headers);
+    }
+
 }

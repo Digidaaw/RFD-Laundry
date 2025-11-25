@@ -10,7 +10,7 @@
 {{-- 
     PERBAIKAN FUNGSIONALITAS:
     - Kelas 'fixed' agar bisa melayang di mobile
-    - 'md:static' untuk kembali normal di desktop
+    - 'lg:static' untuk kembali normal di desktop
     - 'transform -translate-x-full' untuk sembunyi di mobile
     - 'x-bind:class' untuk logika buka/tutup
 --}}

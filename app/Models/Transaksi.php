@@ -11,7 +11,7 @@ class Transaksi extends Model
 
     protected $fillable = [
         'no_invoice',
-        'Deskripsi',
+        'deskripsi',
         'id_user',
         'id_pelanggan',
         'id_layanan',

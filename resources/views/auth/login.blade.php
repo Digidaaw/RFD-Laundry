@@ -58,12 +58,12 @@
                 Login
             </button>
 
-            <p class="text-center text-sm text-gray-600 mt-6">
+            <!-- <p class="text-center text-sm text-gray-600 mt-6">
                 Belum punya akun?
                 <a href="{{ route('register') }}" class="font-semibold text-blue-600 hover:underline">
                     Daftar di sini
                 </a>
-            </p>
+            </p> -->
 
         </form>
     </div>

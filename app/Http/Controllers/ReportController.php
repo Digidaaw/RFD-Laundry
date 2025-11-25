@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaksi;
-use App\Models\Pelanggan; // <-- Tambahkan ini
+use App\Models\Pelanggan;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LaporanPelangganExport; // PENTING: Ini harus ada
 
 class ReportController extends Controller
 {
-    // ... (method index, laporanPeriode, laporanPiutang Anda yang sudah ada) ...
     public function index()
     {
         return view('shared.report.index');
@@ -17,7 +19,7 @@ class ReportController extends Controller
 
     public function laporanPeriode(Request $request)
     {
-        // ... (kode Anda)
+        // ... (kode laporan periode tetap sama) ...
         $request->validate([
             'start_date' => 'nullable|date',
             'end_date' => 'nullable|date|after_or_equal:start_date',
@@ -43,7 +45,7 @@ class ReportController extends Controller
 
     public function laporanPiutang(Request $request)
     {
-        // ... (kode Anda)
+        // ... (kode laporan piutang tetap sama) ...
         $search = $request->input('search');
 
         $query = Transaksi::with(['pelanggan'])
@@ -53,7 +55,7 @@ class ReportController extends Controller
         if ($search) {
             $query->whereHas('pelanggan', function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('kontak', 'like', "%{$search}%");
+                    ->orWhere('kontak', 'like', "%{$search}%");
             });
         }
 
@@ -62,40 +64,50 @@ class ReportController extends Controller
 
         return view('shared.report.piutang', compact('piutangs', 'totalPiutang'));
     }
-    
 
-    /**
-     * FITUR BARU: Menampilkan laporan detail untuk satu pelanggan
-     */
     public function laporanPelanggan(Pelanggan $pelanggan)
     {
-        // 1. Ambil semua transaksi milik pelanggan ini
         $transaksis = Transaksi::where('id_pelanggan', $pelanggan->id)
             ->with('layanan')
             ->latest()
             ->get();
-            
-        // 2. PERBAIKAN: Ambil juga daftar semua pelanggan untuk modal edit
+
         $pelanggans = Pelanggan::orderBy('name')->get();
 
-        // 3. Hitung totalan akhir
         $totalSubtotal = $transaksis->sum('subtotal');
-        // ... (perhitungan lainnya)
         $totalPotongan = $transaksis->sum('potongan');
         $totalHarga = $transaksis->sum('total_harga');
         $totalSudahBayar = $transaksis->sum('jumlah_bayar');
         $totalSisaHutang = $transaksis->sum('sisa_bayar');
 
-        // 4. Kirim semua data ke view
         return view('shared.report.pelanggan', compact(
             'pelanggan',
             'transaksis',
-            'pelanggans', // <-- Kirimkan variabel ini
+            'pelanggans',
             'totalSubtotal',
             'totalPotongan',
             'totalHarga',
             'totalSudahBayar',
             'totalSisaHutang'
         ));
+    }
+
+    // --- FUNGSI EXPORT ---
+
+    public function exportPdfPelanggan(Pelanggan $pelanggan)
+    {
+        $transaksis = Transaksi::where('id_pelanggan', $pelanggan->id)
+            ->with('layanan')
+            ->latest()
+            ->get();
+
+        $pdf = Pdf::loadView('shared.report.pdf_pelanggan', compact('pelanggan', 'transaksis'));
+
+        return $pdf->download('Laporan-Pelanggan-' . $pelanggan->name . '.pdf');
+    }
+
+    public function exportPelangganXls($id)
+    {
+        return (new LaporanPelangganExport($id))->download();
     }
 }

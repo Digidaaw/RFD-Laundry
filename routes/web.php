@@ -53,4 +53,11 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/report/piutang', [ReportController::class, 'laporanPiutang'])->name('report.piutang');
 
     Route::get('/report/pelanggan/{pelanggan}', [ReportController::class, 'laporanPelanggan'])->name('report.pelanggan');
+
+      Route::get('/report/pelanggan/{pelanggan}/pdf', [ReportController::class, 'exportPdfPelanggan'])->name('report.pelanggan.pdf');
+      Route::get('/report/pelanggan/excel/{id}', [TransaksiController::class, 'exportPelangganExcel'])
+    ->name('report.pelanggan.excel');
+
+
+
 });
