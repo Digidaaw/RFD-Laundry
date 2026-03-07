@@ -23,7 +23,7 @@ return new class extends Migration
             $table->double("jumlah_bayar");
             $table->double("sisa_bayar");
             $table->enum("status_order", ["Proses", "Selesai", "Diambil"]);
-            $table->enum("status_pemabayaran", ["DP", "Lunas" ]);
+            $table->enum("status_pembayaran", ["DP", "Lunas" ]);
             $table->timestamps();
             
             
