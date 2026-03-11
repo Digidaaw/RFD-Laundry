@@ -45,7 +45,7 @@
                 
                 <!-- Card Total Order (Dinamis) -->
                 <div class="bg-white rounded-xl shadow-md p-6">
-                    <p class="text-gray-700 text-sm font-semibold mb-2">Total Order</Selesai</p>
+                    <p class="text-gray-700 text-sm font-semibold mb-2">Total Order</p>
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">{{ $totalOrder ?? 0 }}</h3>
                     <p class="text-sm text-gray-500 font-semibold">Transaksi sepanjang waktu</p>
                 </div>
@@ -57,11 +57,11 @@
                     <p class="text-sm text-gray-500 font-semibold">Total uang yang telah dibayar</p>
                 </div>
                 
-                <!-- Card Order Pending (Dinamis) -->
+                <!-- Card Total Piutang (Dinamis) -->
                 <div class="bg-white rounded-xl shadow-md p-6">
-                    <p class="text-gray-700 text-sm font-semibold mb-2">Order Pending</p>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">{{ $orderPending ?? 0 }}</h3>
-                    <p class="text-sm text-gray-500 font-semibold">Status 'Baru' atau 'Proses'</p>
+                    <p class="text-gray-700 text-sm font-semibold mb-2">Total Piutang</p>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Rp {{ number_format($orderPending ?? 0, 0, ',', '.') }}</h3>
+                    <p class="text-sm text-gray-500 font-semibold">Total jumlah yang belum dibayar</p>
                 </div>
             </div>
 

@@ -31,10 +31,22 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::get('/', function () {
-        return view('shared.dashboard');
+        // dashboard data
+        $totalUser = \App\Models\User::count();
+        $totalOrder = \App\Models\Transaksi::count();
+        $totalSales = \App\Models\Transaksi::sum('jumlah_bayar');
+        $orderPending = \App\Models\Transaksi::where('sisa_bayar', '>', 0)->sum('sisa_bayar');
+
+        return view('shared.dashboard', compact('totalUser', 'totalOrder', 'totalSales', 'orderPending'));
     })->name('home');
     Route::get('/dashboard', function () {
-        return view('shared.dashboard');
+        // duplicate of home; keep data for direct URL
+        $totalUser = \App\Models\User::count();
+        $totalOrder = \App\Models\Transaksi::count();
+        $totalSales = \App\Models\Transaksi::sum('jumlah_bayar');
+        $orderPending = \App\Models\Transaksi::where('sisa_bayar', '>', 0)->sum('sisa_bayar');
+
+        return view('shared.dashboard', compact('totalUser', 'totalOrder', 'totalSales', 'orderPending'));
     })->name('dashboard');
 
     Route::resource('users', UserController::class);
