@@ -64,7 +64,14 @@ class TransaksiController extends Controller
 
         $layanan = Layanan::find($request->id_layanan);
         $subtotal = $layanan->harga * $request->berat_laundry;
-        $potongan = $request->input('potongan', 0);
+        // Potongan bisa datang sebagai null atau string kosong jika pengguna tidak mengisi.
+        $potongan = $request->input('potongan');
+        if ($potongan === null || $potongan === '') {
+            $potongan = 0;
+        }
+        // pastikan numeric (cast agar tidak ada string tersisa)
+        $potongan = (float) $potongan;
+
         $totalHarga = $subtotal - $potongan;
 
         if ($totalHarga < 0)

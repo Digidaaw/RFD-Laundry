@@ -5,35 +5,32 @@
             berat: 0, 
             potongan: 0,
             bayar: 0,
-            subtotal: 0,
-            total: 0,
-            sisa: 0,
             layanans: {{ json_encode($layanans) }},
-            updateSubtotal() {
-                const layanan = this.layanans.find(l => l.id == this.selectedLayanan);
-                if (layanan && this.berat > 0) {
-                    this.subtotal = layanan.harga * this.berat;
-                } else {
-                    this.subtotal = 0;
-                }
-                this.updateTotal(); 
+            layanansObj: {},
+            get subtotal() {
+                const layanan = this.layanansObj[this.selectedLayanan];
+                return layanan && this.berat > 0 ? layanan.harga * this.berat : 0;
             },
-            updateTotal() {
-                this.total = this.subtotal - this.potongan;
-                if (this.total < 0) {
-                    this.total = 0;
-                }
-                this.updateSisa(); 
+            get total() {
+                let t = this.subtotal - this.potongan;
+                return t < 0 ? 0 : t;
             },
-            updateSisa() {
-                this.sisa = this.total - this.bayar;
-                if (this.sisa < 0) {
-                    this.sisa = 0;
-                }
+            get sisa() {
+                let s = this.total - this.bayar;
+                return s < 0 ? 0 : s;
             },
             init() {
+                // create lookup table once
+                this.layanansObj = Object.fromEntries(this.layanans.map(l => [l.id, l]));
+
                 this.$watch('openAddModal', (value) => {
                     if (value) {
+                        // reset state each time modal opens so previous inputs don't linger
+                        this.selectedLayanan = null;
+                        this.berat = 0;
+                        this.potongan = 0;
+                        this.bayar = 0;
+
                         this.$nextTick(() => {
                             const element = this.$refs.pelangganSelect;
                             if (element.choices) element.choices.destroy();
@@ -74,7 +71,7 @@
             <div class="grid grid-cols-2 gap-4 mt-4">
                 <div>
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Layanan</label>
-                    <select name="id_layanan" x-model="selectedLayanan" @change="updateSubtotal" class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white">
+                    <select name="id_layanan" x-model="selectedLayanan" class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white">
                         <option value="">Pilih Layanan</option>
                         @foreach($layanans as $layanan)
                             <option value="{{ $layanan->id }}">{{ $layanan->name }} (Rp {{ number_format($layanan->harga, 0, ',', '.') }}/kg)</option>
@@ -82,16 +79,16 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-gray-700 text-lg font-semibold mb-2">Berat (kg)</label>
-                    <input type="number" step="0.1" name="berat_laundry" x-model.debounce.500ms="berat" @input="updateSubtotal" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                    <label class="block text-gray-700 text-lg font-semibold mb-2">Berat (kg/pcs)</label>
+                    <input type="number" step="0.1" name="berat_laundry" x-model.number="berat" class="w-full border border-gray-300 rounded-lg px-4 py-2">
                 </div>
                 <div>
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Potongan (Rp)</label>
-                    <input type="number" name="potongan" x-model.debounce.500ms="potongan" @input="updateTotal" class="w-full border border-gray-300 rounded-lg px-4 py-2" placeholder="0">
+                    <input type="number" name="potongan" x-model.number="potongan" value="0" min="0" class="w-full border border-gray-300 rounded-lg px-4 py-2" placeholder="0">
                 </div>
                 <div>
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Jumlah Bayar</label>
-                    <input type="number" name="jumlah_bayar" x-model.debounce.500ms="bayar" @input="updateSisa" class="w-full border border-gray-300 rounded-lg px-4 py-2" placeholder="0">
+                    <input type="number" name="jumlah_bayar" x-model.number="bayar" value="0" min="0" class="w-full border border-gray-300 rounded-lg px-4 py-2" placeholder="0">
                 </div>
             </div>
             
