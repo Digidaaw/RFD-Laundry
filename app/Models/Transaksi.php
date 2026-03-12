@@ -25,6 +25,11 @@ class Transaksi extends Model
         'status_order',
         'status_pembayaran'
     ];
+
+    public function items()
+    {
+        return $this->hasMany(TransaksiItem::class, 'transaksi_id');
+    }
     public function pelanggan()
     {
         return $this->belongsTo(Pelanggan::class, 'id_pelanggan');

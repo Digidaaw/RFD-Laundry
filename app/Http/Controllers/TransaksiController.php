@@ -9,6 +9,7 @@ use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Writer\Xls; // untuk file .xls
 use Carbon\Carbon;
 
@@ -20,7 +21,7 @@ class TransaksiController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Transaksi::with(['pelanggan', 'layanan', 'user'])->latest();
+        $query = Transaksi::with(['pelanggan', 'layanan', 'user', 'items.layanan'])->latest();
 
         // Logika Pencarian
         if ($request->has('search') && $request->search != '') {
@@ -53,59 +54,133 @@ class TransaksiController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'id_pelanggan' => 'required|exists:pelanggans,id',
-            'id_layanan' => 'required|exists:layanans,id',
-            'berat_laundry' => 'required|numeric|min:0.1',
-            'potongan' => 'nullable|numeric|min:0',
-            'jumlah_bayar' => 'required|numeric|min:0',
-            'deskripsi' => 'nullable|string|max:255',
-        ]);
+        $isMulti = $request->has('items');
 
-        $layanan = Layanan::find($request->id_layanan);
-        $subtotal = $layanan->harga * $request->berat_laundry;
-        // Potongan bisa datang sebagai null atau string kosong jika pengguna tidak mengisi.
+        if ($isMulti) {
+            $request->validate([
+                'id_pelanggan' => 'required|exists:pelanggans,id',
+                'items' => 'required|array|min:1',
+                'items.*.id_layanan' => 'required|exists:layanans,id',
+                'items.*.berat' => 'required|numeric|min:0.1',
+                'potongan' => 'nullable|numeric|min:0',
+                'jumlah_bayar' => 'required|numeric|min:0',
+                'deskripsi' => 'nullable|string|max:255',
+            ]);
+        } else {
+            // Backward compatible (form lama)
+            $request->validate([
+                'id_pelanggan' => 'required|exists:pelanggans,id',
+                'id_layanan' => 'required|exists:layanans,id',
+                'berat_laundry' => 'required|numeric|min:0.1',
+                'potongan' => 'nullable|numeric|min:0',
+                'jumlah_bayar' => 'required|numeric|min:0',
+                'deskripsi' => 'nullable|string|max:255',
+            ]);
+        }
+
+        // Potongan bisa datang sebagai null / string kosong.
         $potongan = $request->input('potongan');
         if ($potongan === null || $potongan === '') {
             $potongan = 0;
         }
-        // pastikan numeric (cast agar tidak ada string tersisa)
         $potongan = (float) $potongan;
 
-        $totalHarga = $subtotal - $potongan;
+        return DB::transaction(function () use ($request, $isMulti, $potongan) {
+            $items = [];
 
-        if ($totalHarga < 0)
-            $totalHarga = 0;
+            if ($isMulti) {
+                foreach ($request->input('items', []) as $row) {
+                    $items[] = [
+                        'id_layanan' => (int) ($row['id_layanan'] ?? 0),
+                        'berat' => (float) ($row['berat'] ?? 0),
+                    ];
+                }
+            } else {
+                $items[] = [
+                    'id_layanan' => (int) $request->id_layanan,
+                    'berat' => (float) $request->berat_laundry,
+                ];
+            }
 
-        $sisaBayar = $totalHarga - $request->jumlah_bayar;
-        if ($sisaBayar < 0)
-            $sisaBayar = 0;
+            // Ambil harga layanan sekali (menghindari query per item)
+            $layananMap = Layanan::whereIn('id', collect($items)->pluck('id_layanan')->unique()->values())
+                ->get()
+                ->keyBy('id');
 
-        $transaksi = Transaksi::create([
-            'id_user' => Auth::id(),
-            'id_pelanggan' => $request->id_pelanggan,
-            'id_layanan' => $request->id_layanan,
-            'deskripsi' => $request->deskripsi,
-            'tanggal_order' => now(),
-            'berat_laundry' => $request->berat_laundry,
-            'subtotal' => $subtotal,
-            'potongan' => $potongan,
-            'total_harga' => $totalHarga,
-            'jumlah_bayar' => $request->jumlah_bayar,
-            'sisa_bayar' => $sisaBayar,
-            'status_order' => 'Baru',
-            'status_pembayaran' => ($sisaBayar <= 0) ? 'Lunas' : 'Belum Lunas',
-        ]);
+            $subtotalSum = 0.0;
+            $beratSum = 0.0;
+            $createItems = [];
 
-        $prefix = 'IJ';
-        $date = now()->format('dmY');
-        $sequence = str_pad($transaksi->id, 4, '0', STR_PAD_LEFT);
-        $noInvoice = $prefix . $date . $sequence;
+            foreach ($items as $row) {
+                $layanan = $layananMap->get($row['id_layanan']);
+                if (!$layanan) {
+                    continue;
+                }
 
-        $transaksi->no_invoice = $noInvoice;
-        $transaksi->save();
+                $berat = (float) $row['berat'];
+                if ($berat <= 0) {
+                    continue;
+                }
 
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan.');
+                $hargaSatuan = (float) $layanan->harga;
+                $rowSubtotal = $hargaSatuan * $berat;
+
+                $subtotalSum += $rowSubtotal;
+                $beratSum += $berat;
+
+                $createItems[] = [
+                    'layanan_id' => $layanan->id,
+                    'berat' => $berat,
+                    'harga_satuan' => $hargaSatuan,
+                    'subtotal' => $rowSubtotal,
+                ];
+            }
+
+            if (count($createItems) === 0) {
+                abort(422, 'Minimal 1 layanan harus diinput.');
+            }
+
+            $totalHarga = $subtotalSum - $potongan;
+            if ($totalHarga < 0) {
+                $totalHarga = 0;
+            }
+
+            $jumlahBayar = (float) $request->jumlah_bayar;
+            $sisaBayar = $totalHarga - $jumlahBayar;
+            if ($sisaBayar < 0) {
+                $sisaBayar = 0;
+            }
+
+            $singleLayananId = count($createItems) === 1 ? $createItems[0]['layanan_id'] : null;
+
+            $transaksi = Transaksi::create([
+                'id_user' => Auth::id(),
+                'id_pelanggan' => $request->id_pelanggan,
+                'id_layanan' => $singleLayananId,
+                'deskripsi' => $request->deskripsi,
+                'tanggal_order' => now(),
+                'berat_laundry' => $beratSum,
+                'subtotal' => $subtotalSum,
+                'potongan' => $potongan,
+                'total_harga' => $totalHarga,
+                'jumlah_bayar' => $jumlahBayar,
+                'sisa_bayar' => $sisaBayar,
+                'status_order' => 'Baru',
+                'status_pembayaran' => ($sisaBayar <= 0) ? 'Lunas' : 'Belum Lunas',
+            ]);
+
+            $transaksi->items()->createMany($createItems);
+
+            $prefix = 'IJ';
+            $date = now()->format('dmY');
+            $sequence = str_pad($transaksi->id, 4, '0', STR_PAD_LEFT);
+            $noInvoice = $prefix . $date . $sequence;
+
+            $transaksi->no_invoice = $noInvoice;
+            $transaksi->save();
+
+            return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan.');
+        });
     }
 
     /**
