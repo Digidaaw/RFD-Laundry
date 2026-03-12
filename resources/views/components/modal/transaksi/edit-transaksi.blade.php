@@ -3,6 +3,9 @@
         open: false,
         data: {}, // Data transaksi akan diisi di sini
         choicesInstance: null, // Untuk menyimpan instance Choices.js
+        bayarNumeric: 0,
+        bayarDisplay: '',
+        bayarError: '',
         
         // Fungsi init() akan dijalankan saat komponen Alpine dimuat
         init() {
@@ -58,9 +61,32 @@
                 // Ambil 10 karakter pertama
                 detail.tanggal_order = detail.tanggal_order.substring(0, 10);
             }
-            
             this.data = detail;
+            this.bayarNumeric = Number(detail.jumlah_bayar || 0);
+            this.bayarDisplay = this.bayarNumeric ? this.bayarNumeric.toLocaleString('id-ID') : '';
+            this.bayarError = '';
             this.open = true; // Ini akan memicu $watch di atas
+        },
+
+        validateBayar() {
+            const total = Number(this.data.total_harga || 0);
+            const bayar = Number(this.bayarNumeric || 0);
+            if (bayar > total) {
+                this.bayarError = 'Jumlah bayar tidak boleh melebihi total tagihan.';
+            } else {
+                this.bayarError = '';
+            }
+        },
+
+        onBayarInput(raw) {
+            const cleaned = String(raw).replace(/[^0-9]/g, '');
+            let num = cleaned === '' ? 0 : parseInt(cleaned, 10);
+            const max = Number(this.data.total_harga || 0);
+            if (num > max) num = max;
+            this.bayarNumeric = num;
+            this.data.jumlah_bayar = num;
+            this.bayarDisplay = num ? num.toLocaleString('id-ID') : '';
+            this.validateBayar();
         }
      }"
      @open-edit-modal.window="openModal($event)"
@@ -91,7 +117,8 @@
                 <div class="mb-4">
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Tanggal Order</label>
                     <input type="date" name="tanggal_order" x-model="data.tanggal_order"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                           required>
                 </div>
 
                 <div class="mb-4">
@@ -118,7 +145,8 @@
                 <div class="mb-4">
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Status Order</label>
                     <select name="status_order" x-model="data.status_order"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            required>
                         <option value="Baru">Baru</option>
                         <option value="Proses">Proses</option>
                         <option value="Selesai">Selesai</option>
@@ -128,9 +156,16 @@
 
                 <div class="mb-4">
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Jumlah Bayar</label>
-                    <input type="number" name="jumlah_bayar" x-model="data.jumlah_bayar"
+                    <input type="hidden" name="jumlah_bayar" :value="bayarNumeric">
+                    <input type="text"
+                           x-model="bayarDisplay"
+                           x-on:input="onBayarInput($event.target.value)"
+                           inputmode="numeric"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     <small x-show="data.total_harga" class="text-gray-500" x-text="'Total Tagihan: Rp ' + new Intl.NumberFormat('id-ID').format(data.total_harga)"></small>
+                    <p x-show="bayarError"
+                       x-text="bayarError"
+                       class="text-red-600 text-sm mt-1"></p>
                 </div>
 
                 <!-- Tombol Aksi -->

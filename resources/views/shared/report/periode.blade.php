@@ -65,9 +65,21 @@
                 </div>
             </div>
 
-            <!-- Tabel Hasil -->
+            <!-- Tabel Hasil + Export -->
             <div class="bg-white rounded-xl shadow-md p-4 md:p-6">
-                <h3 class="text-2xl font-bold mb-4">Detail Transaksi</h3>
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+                    <h3 class="text-2xl font-bold">Detail Transaksi</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="{{ route('report.periode', ['start_date' => $startDate->format('Y-m-d'), 'end_date' => $endDate->format('Y-m-d'), 'export' => 'pdf']) }}"
+                           class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm shadow">
+                            <span>Export PDF</span>
+                        </a>
+                        <a href="{{ route('report.periode', ['start_date' => $startDate->format('Y-m-d'), 'end_date' => $endDate->format('Y-m-d'), 'export' => 'excel']) }}"
+                           class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm shadow">
+                            <span>Export Excel</span>
+                        </a>
+                    </div>
+                </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead class="bg-gray-50 border-b">

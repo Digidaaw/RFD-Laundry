@@ -2,11 +2,14 @@
     <div @click.away="openAddModal = false" x-transition class="bg-white p-8 rounded-xl w-full max-w-lg shadow-lg relative max-h-[90vh] flex flex-col"
          x-data="{
             potongan: 0,
+            potonganDisplay: '',
             bayar: 0,
+            bayarDisplay: '',
             deskripsi: '',
             layanans: {{ json_encode($layanans) }},
             layanansObj: {},
             items: [{ id_layanan: '', berat: 0 }],
+            bayarError: '',
             addItem() {
                 this.items.push({ id_layanan: '', berat: 0 });
             },
@@ -33,28 +36,48 @@
                 let s = this.total - Number(this.bayar || 0);
                 return s < 0 ? 0 : s;
             },
+            onPotonganInput(raw) {
+                // Hanya angka
+                const cleaned = String(raw).replace(/[^0-9]/g, '');
+                const num = cleaned === '' ? 0 : parseInt(cleaned, 10);
+                this.potongan = num;
+                this.potonganDisplay = num ? num.toLocaleString('id-ID') : '';
+            },
+            onBayarInput(raw) {
+                const cleaned = String(raw).replace(/[^0-9]/g, '');
+                let num = cleaned === '' ? 0 : parseInt(cleaned, 10);
+                // Batasi maksimal ke total (tidak boleh lebih dari tagihan)
+                const max = this.total || 0;
+                if (num > max) num = max;
+                this.bayar = num;
+                this.bayarDisplay = num ? num.toLocaleString('id-ID') : '';
+                this.validateBayar();
+            },
+            validateBayar() {
+                const bayarNum = Number(this.bayar || 0);
+                if (bayarNum > this.total) {
+                    this.bayarError = 'Jumlah bayar tidak boleh melebihi total.';
+                } else {
+                    this.bayarError = '';
+                }
+            },
             init() {
                 this.layanansObj = Object.fromEntries(this.layanans.map(l => [String(l.id), l]));
 
-                this.$watch('openAddModal', (value) => {
-                    if (value) {
-                        this.potongan = 0;
-                        this.bayar = 0;
-                        this.deskripsi = '';
-                        this.items = [{ id_layanan: '', berat: 0 }];
+                // Inisialisasi Choices.js sekali saat komponen siap
+                this.$nextTick(() => {
+                    const element = this.$refs.pelangganSelect;
+                    if (!element) return;
 
-                        this.$nextTick(() => {
-                            const element = this.$refs.pelangganSelect;
-                            if (element.choices) element.choices.destroy();
+                    // Hindari inisialisasi ganda
+                    if (element._choicesInstance) return;
 
-                            new Choices(element, {
-                                searchEnabled: true,
-                                itemSelectText: 'Pilih',
-                                searchFields: ['label'],
-                                shouldSort: true,
-                            });
-                        });
-                    }
+                    element._choicesInstance = new Choices(element, {
+                        searchEnabled: true,
+                        itemSelectText: 'Pilih',
+                        searchFields: ['label'],
+                        shouldSort: true,
+                    });
                 });
             }
          }">
@@ -66,18 +89,30 @@
             @csrf
             <div class="col-span-2">
                 <label class="block text-gray-700 text-lg font-semibold mb-2">Pelanggan</label>
-                <select name="id_pelanggan" x-ref="pelangganSelect">
-                    {{-- PERBAIKAN: Menambahkan 'disabled selected' pada placeholder --}}
-                    <option value="" disabled selected>Ketik untuk mencari pelanggan...</option>
+                <select name="id_pelanggan" x-ref="pelangganSelect" class="@error('id_pelanggan') border-red-500 @enderror" required>
+                    <option value="" disabled {{ old('id_pelanggan') ? '' : 'selected' }}>Ketik untuk mencari pelanggan...</option>
                     @foreach($pelanggans as $pelanggan)
-                        <option value="{{ $pelanggan->id }}">{{ $pelanggan->name }} - {{ $pelanggan->kontak }}</option>
+                        <option value="{{ $pelanggan->id }}" {{ old('id_pelanggan') == $pelanggan->id ? 'selected' : '' }}>
+                            {{ $pelanggan->name }} - {{ $pelanggan->kontak }}
+                        </option>
                     @endforeach
                 </select>
+                @error('id_pelanggan')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
             
             <div class="mt-4">
                 <label class="block text-gray-700 text-lg font-semibold mb-2">Deskripsi (Keyword)</label>
-                <input type="text" x-model="deskripsi" name="deskripsi" class="w-full border border-gray-300 rounded-lg px-4 py-2" placeholder="Contoh: Baju Pesta, Selimut Tebal">
+                <input type="text"
+                       x-model="deskripsi"
+                       name="deskripsi"
+                       value="{{ old('deskripsi') }}"
+                       class="w-full border border-gray-300 rounded-lg px-4 py-2 @error('deskripsi') border-red-500 @enderror"
+                       placeholder="Contoh: Baju Pesta, Selimut Tebal">
+                @error('deskripsi')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="mt-4">
@@ -94,7 +129,8 @@
                         <div class="col-span-7">
                             <label class="block text-gray-700 text-sm font-semibold mb-1">Pilih Layanan</label>
                             <select :name="`items[${index}][id_layanan]`" x-model="row.id_layanan"
-                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white">
+                                    class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white"
+                                    required>
                                 <option value="">Pilih Layanan</option>
                                 @foreach($layanans as $layanan)
                                     <option value="{{ $layanan->id }}">{{ $layanan->name }} (Rp {{ number_format($layanan->harga, 0, ',', '.') }}/kg)</option>
@@ -104,7 +140,8 @@
                         <div class="col-span-3">
                             <label class="block text-gray-700 text-sm font-semibold mb-1">Berat</label>
                             <input type="number" step="0.1" min="0" :name="`items[${index}][berat]`" x-model.number="row.berat"
-                                   class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                   class="w-full border border-gray-300 rounded-lg px-3 py-2"
+                                   required>
                         </div>
                         <div class="col-span-2 flex justify-end">
                             <button type="button" @click="removeItem(index)"
@@ -126,11 +163,26 @@
             <div class="grid grid-cols-2 gap-4 mt-4">
                 <div>
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Potongan (Rp)</label>
-                    <input type="number" name="potongan" x-model.number="potongan" value="0" min="0" class="w-full border border-gray-300 rounded-lg px-4 py-2" placeholder="0">
+                    <input type="hidden" name="potongan" :value="potongan">
+                    <input type="text"
+                           x-model="potonganDisplay"
+                           x-on:input="onPotonganInput($event.target.value)"
+                           inputmode="numeric"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2"
+                           placeholder="0">
                 </div>
                 <div>
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Jumlah Bayar</label>
-                    <input type="number" name="jumlah_bayar" x-model.number="bayar" value="0" min="0" class="w-full border border-gray-300 rounded-lg px-4 py-2" placeholder="0">
+                    <input type="hidden" name="jumlah_bayar" :value="bayar">
+                    <input type="text"
+                           x-model="bayarDisplay"
+                           x-on:input="onBayarInput($event.target.value)"
+                           inputmode="numeric"
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2"
+                           placeholder="0">
+                    <p x-show="bayarError"
+                       x-text="bayarError"
+                       class="text-red-600 text-sm mt-1"></p>
                 </div>
             </div>
             

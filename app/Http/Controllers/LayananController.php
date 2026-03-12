@@ -76,8 +76,8 @@ class LayananController extends Controller
         if ($request->hasFile('gambar')) {
             foreach ($request->file('gambar') as $image) {
                 $imageName = time() . '_' . $image->getClientOriginalName();
-                $image->move(public_path('images/layanan'), $imageName);
                 $currentImages[] = $imageName;
+                $image->move(public_path('images/layanan'), $imageName);
             }
         }
 

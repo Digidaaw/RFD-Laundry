@@ -37,9 +37,10 @@
             </div>
 
 
-            <!-- Table Kasir -->
-            <div class="bg-white rounded-xl shadow-md p-6">
-                <div class="overflow-x-auto">
+            <!-- Daftar Layanan -->
+            <div class="bg-white rounded-xl shadow-md p-4 md:p-6">
+                <!-- Desktop: Tabel, Mobile: Kartu -->
+                <div class="hidden md:block overflow-x-auto">
                     <table class="w-full text-left">
                         <thead class="bg-gray-50 border-b">
                             <tr>
@@ -53,22 +54,24 @@
                         </thead>
                         <tbody>
                             @forelse($layanans as $layanan)
-                                {{-- Inisialisasi Alpine.js untuk setiap baris --}}
-                                <tr class="border-b hover:bg-gray-50" x-data="{ showPassword: false }">
+                                <tr class="border-b hover:bg-gray-50">
                                     <td class="p-4 font-semibold text-gray-600">{{ $loop->iteration }}</td>
                                     <td class="p-4">
                                         @if(isset($layanan->gambar[0]))
-                                            <img src="{{ asset('images/layanan/' . $layanan->gambar[0]) }}"
-                                                alt="{{ $layanan->name }}" class="w-20 h-20 object-cover rounded-md">
+                                            <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-100">
+                                                <img src="{{ asset('images/layanan/' . $layanan->gambar[0]) }}"
+                                                     alt="{{ $layanan->name }}"
+                                                     class="w-full h-full object-cover">
+                                            </div>
                                         @else
-                                            <div
-                                                class="w-20 h-20 bg-gray-200 rounded-md flex items-center justify-center text-sm text-gray-500">
-                                                No Image</div>
+                                            <div class="w-20 h-20 bg-gray-200 rounded-md flex items-center justify-center text-sm text-gray-500">
+                                                No Image
+                                            </div>
                                         @endif
                                     </td>
                                     <td class="p-4 font-semibold text-gray-600">{{ $layanan->name }}</td>
-                                    <td class="p-4 font-semibold text-gray-600">Rp
-                                        {{ number_format($layanan->harga, 0, ',', '.') }}
+                                    <td class="p-4 font-semibold text-gray-600">
+                                        Rp {{ number_format($layanan->harga, 0, ',', '.') }}
                                     </td>
                                     <td class="p-4 font-semibold text-gray-600">
                                         {{ Str::limit($layanan->deskripsi, 50) }}
@@ -84,21 +87,79 @@
                                             ]);
                                         @endphp
                                         <button @click="$dispatch('open-edit-modal', {{ $layananData }})"
-                                            class="bg-green-100 text-green-700 font-bold py-2 px-6 rounded-md hover:bg-green-200">Update</button>
+                                            class="bg-green-100 text-green-700 font-bold py-2 px-6 rounded-md hover:bg-green-200">
+                                            Update
+                                        </button>
                                         <button
                                             @click="openDeleteModal = true; deleteUrl = '{{ route('layanan.destroy', $layanan->id) }}';"
-                                            class="bg-red-100 text-red-700 font-bold py-2 px-6 rounded-md hover:bg-red-200">Delete</button>
+                                            class="bg-red-100 text-red-700 font-bold py-2 px-6 rounded-md hover:bg-red-200">
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center p-6 text-gray-500">
+                                    <td colspan="6" class="text-center p-6 text-gray-500">
                                         Belum ada data layanan yang bisa ditampilkan.
                                     </td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+
+                <!-- Mobile cards -->
+                <div class="md:hidden space-y-4">
+                    @forelse($layanans as $layanan)
+                        <div class="border rounded-xl p-4 flex gap-3">
+                            <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
+                                @if(isset($layanan->gambar[0]))
+                                    <img src="{{ asset('images/layanan/' . $layanan->gambar[0]) }}"
+                                         alt="{{ $layanan->name }}"
+                                         class="w-full h-full object-cover">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center text-xs text-gray-500">
+                                        No Image
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="flex-1 flex flex-col justify-between">
+                                <div>
+                                    <p class="font-semibold text-gray-800 text-sm">{{ $layanan->name }}</p>
+                                    <p class="font-bold text-blue-600 text-sm mt-1">
+                                        Rp {{ number_format($layanan->harga, 0, ',', '.') }}
+                                    </p>
+                                    <p class="text-xs text-gray-600 mt-1">
+                                        {{ Str::limit($layanan->deskripsi, 60) }}
+                                    </p>
+                                </div>
+                                <div class="flex gap-2 mt-3">
+                                    @php
+                                        $layananData = json_encode([
+                                            'name' => $layanan->name,
+                                            'harga' => $layanan->harga,
+                                            'deskripsi' => $layanan->deskripsi,
+                                            'gambar' => $layanan->gambar ?? [],
+                                            'url' => route('layanan.update', $layanan->id)
+                                        ]);
+                                    @endphp
+                                    <button @click="$dispatch('open-edit-modal', {{ $layananData }})"
+                                        class="flex-1 bg-green-100 text-green-700 font-semibold py-2 rounded-md text-xs">
+                                        Update
+                                    </button>
+                                    <button
+                                        @click="openDeleteModal = true; deleteUrl = '{{ route('layanan.destroy', $layanan->id) }}';"
+                                        class="flex-1 bg-red-100 text-red-700 font-semibold py-2 rounded-md text-xs">
+                                        Delete
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="text-center text-gray-500 py-4 text-sm">
+                            Belum ada data layanan yang bisa ditampilkan.
+                        </p>
+                    @endforelse
                 </div>
             </div>
 

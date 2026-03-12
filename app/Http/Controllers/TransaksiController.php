@@ -10,7 +10,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use PhpOffice\PhpSpreadsheet\Writer\Xls; // untuk file .xls
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Carbon\Carbon;
 
 
@@ -137,15 +138,23 @@ class TransaksiController extends Controller
             }
 
             if (count($createItems) === 0) {
-                abort(422, 'Minimal 1 layanan harus diinput.');
+                return back()
+                    ->withInput()
+                    ->withErrors(['items' => 'Minimal 1 layanan harus diinput.']);
             }
 
+            $jumlahBayar = (float) $request->jumlah_bayar;
             $totalHarga = $subtotalSum - $potongan;
             if ($totalHarga < 0) {
                 $totalHarga = 0;
             }
 
-            $jumlahBayar = (float) $request->jumlah_bayar;
+            if ($jumlahBayar > $totalHarga) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['jumlah_bayar' => 'Jumlah bayar tidak boleh melebihi total tagihan.']);
+            }
+
             $sisaBayar = $totalHarga - $jumlahBayar;
             if ($sisaBayar < 0) {
                 $sisaBayar = 0;
@@ -198,6 +207,12 @@ class TransaksiController extends Controller
         ]);
 
         // Hitung ulang sisa bayar (berdasarkan jumlah bayar baru)
+        if ($request->jumlah_bayar > $transaksi->total_harga) {
+            return back()
+                ->withInput()
+                ->withErrors(['jumlah_bayar' => 'Jumlah bayar tidak boleh melebihi total tagihan.']);
+        }
+
         $sisaBayar = $transaksi->total_harga - $request->jumlah_bayar;
         if ($sisaBayar < 0) {
             $sisaBayar = 0;
@@ -270,12 +285,7 @@ class TransaksiController extends Controller
             ->latest()
             ->get();
 
-        $fileName = "Laporan-Pelanggan-{$pelangganId}.xls";
-
-        $headers = [
-            "Content-Type" => "application/vnd.ms-excel",
-            "Content-Disposition" => "attachment; filename=\"$fileName\""
-        ];
+        $fileName = "Laporan-Pelanggan-{$pelangganId}.xlsx";
 
         $columns = [
             'No Invoice',
@@ -290,33 +300,43 @@ class TransaksiController extends Controller
             'Status Pembayaran'
         ];
 
-        $content = "<table border='1'>
-        <thead><tr>";
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Laporan');
 
-        foreach ($columns as $col) {
-            $content .= "<th><b>$col</b></th>";
-        }
+        // Header
+        $sheet->fromArray($columns, null, 'A1');
+        $sheet->getStyle('A1:J1')->getFont()->setBold(true);
 
-        $content .= "</tr></thead><tbody>";
-
+        $row = 2;
         foreach ($data as $t) {
-            $content .= "<tr>
-            <td>{$t->no_invoice}</td>
-            <td>" . \Carbon\Carbon::parse($t->tanggal_order)->format('d-m-Y') . "</td>
-            <td>" . ($t->layanan->name ?? 'N/A') . "</td>
-            <td>" . ($t->deskripsi ?? '-') . "</td>
-            <td>{$t->berat_laundry}</td>
-            <td>{$t->total_harga}</td>
-            <td>{$t->jumlah_bayar}</td>
-            <td>{$t->sisa_bayar}</td>
-            <td>{$t->status_order}</td>
-            <td>{$t->status_pembayaran}</td>
-        </tr>";
+            $sheet->fromArray([
+                $t->no_invoice,
+                \Carbon\Carbon::parse($t->tanggal_order)->format('d-m-Y'),
+                ($t->layanan->name ?? 'N/A'),
+                ($t->deskripsi ?? '-'),
+                $t->berat_laundry,
+                $t->total_harga,
+                $t->jumlah_bayar,
+                $t->sisa_bayar,
+                $t->status_order,
+                $t->status_pembayaran,
+            ], null, 'A' . $row);
+            $row++;
         }
 
-        $content .= "</tbody></table>";
+        // Auto width sederhana
+        foreach (range('A', 'J') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
 
-        return response($content, 200, $headers);
+        $writer = new Xlsx($spreadsheet);
+
+        return response()->streamDownload(function () use ($writer) {
+            $writer->save('php://output');
+        }, $fileName, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
     }
 
 }
