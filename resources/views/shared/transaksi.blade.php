@@ -48,6 +48,7 @@
                                 <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Tanggal</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Pelanggan</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Deskripsi</th>
+                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Dibuat Oleh</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Total</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Sisa Bayar</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Status</th>
@@ -63,6 +64,7 @@
                                     <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->pelanggan->name ?? 'N/A' }}
                                     </td>
                                     <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->deskripsi ?? '-' }}</td>
+                                    <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->created_by ?? 'User Dihapus' }}</td>
                                     <td class="p-3 text-sm md:p-4 md:text-base ...">Rp
                                         {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
                                     <td class="p-3 text-sm md:p-4 md:text-base ...">Rp
@@ -83,7 +85,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="text-center p-6 text-gray-500">Tidak ada data transaksi.</td>
+                                    <td colspan="9" class="text-center p-6 text-gray-500">Tidak ada data transaksi.</td>
                                 </tr>
                             @endforelse
                         </tbody>

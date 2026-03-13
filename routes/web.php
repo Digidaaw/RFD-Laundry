@@ -17,6 +17,9 @@ use App\Http\Controllers\ReportController;
 
 // public welcome page shown on first run
 Route::get('/', function () {
+    if (Auth::check()) {
+        return redirect()->route('dashboard');
+    }
     return view('welcome');
 })->name('welcome');
 
