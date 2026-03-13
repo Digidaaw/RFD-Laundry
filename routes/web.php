@@ -15,6 +15,11 @@ use App\Http\Controllers\ReportController;
 |--------------------------------------------------------------------------
 */
 
+// public welcome page shown on first run
+Route::get('/', function () {
+    return view('welcome');
+})->name('welcome');
+
 // --- ROUTE UNTUK PUBLIK / LOGIN & REGISTER ---
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'index'])->name('login');
@@ -30,15 +35,6 @@ Route::middleware('guest')->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    Route::get('/', function () {
-        // dashboard data
-        $totalUser = \App\Models\User::count();
-        $totalOrder = \App\Models\Transaksi::count();
-        $totalSales = \App\Models\Transaksi::sum('jumlah_bayar');
-        $orderPending = \App\Models\Transaksi::where('sisa_bayar', '>', 0)->sum('sisa_bayar');
-
-        return view('shared.dashboard', compact('totalUser', 'totalOrder', 'totalSales', 'orderPending'));
-    })->name('home');
     Route::get('/dashboard', function () {
         // duplicate of home; keep data for direct URL
         $totalUser = \App\Models\User::count();

@@ -1,140 +1,462 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RFD Laundry - Industrial Garment Washing</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
-        <title>Laravel</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'brand-yellow': '#FCE844',
+                        'brand-dark': '#0F1115',
+                        'brand-gray': '#F8F9FA'
+                    },
+                    fontFamily: {
+                        heading: ['Montserrat', 'sans-serif'],
+                        body: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-heading { font-family: 'Montserrat', sans-serif; }
+        .clip-diagonal { clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%); }
+    </style>
+</head>
+<body class="bg-white text-gray-800 antialiased overflow-x-hidden">
 
-        <!-- Styles -->
-        <style>
-            /* ! tailwindcss v3.2.4 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Figtree, sans-serif;font-feature-settings:normal}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-size:100%;font-weight:inherit;line-height:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}[type=button],[type=reset],[type=submit],button{-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]{display:none}*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::-webkit-backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: }.relative{position:relative}.mx-auto{margin-left:auto;margin-right:auto}.mx-6{margin-left:1.5rem;margin-right:1.5rem}.ml-4{margin-left:1rem}.mt-16{margin-top:4rem}.mt-6{margin-top:1.5rem}.mt-4{margin-top:1rem}.-mt-px{margin-top:-1px}.mr-1{margin-right:0.25rem}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.h-16{height:4rem}.h-7{height:1.75rem}.h-6{height:1.5rem}.h-5{height:1.25rem}.min-h-screen{min-height:100vh}.w-auto{width:auto}.w-16{width:4rem}.w-7{width:1.75rem}.w-6{width:1.5rem}.w-5{width:1.25rem}.max-w-7xl{max-width:80rem}.shrink-0{flex-shrink:0}.scale-100{--tw-scale-x:1;--tw-scale-y:1;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.items-center{align-items:center}.justify-center{justify-content:center}.gap-6{gap:1.5rem}.gap-4{gap:1rem}.self-center{align-self:center}.rounded-lg{border-radius:0.5rem}.rounded-full{border-radius:9999px}.bg-gray-100{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity))}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity))}.bg-red-50{--tw-bg-opacity:1;background-color:rgb(254 242 242 / var(--tw-bg-opacity))}.bg-dots-darker{background-image:url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(0,0,0,0.07)'/%3E%3C/svg%3E")}.from-gray-700\/50{--tw-gradient-from:rgb(55 65 81 / 0.5);--tw-gradient-to:rgb(55 65 81 / 0);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-transparent{--tw-gradient-to:rgb(0 0 0 / 0);--tw-gradient-stops:var(--tw-gradient-from), transparent, var(--tw-gradient-to)}.bg-center{background-position:center}.stroke-red-500{stroke:#ef4444}.stroke-gray-400{stroke:#9ca3af}.p-6{padding:1.5rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.text-center{text-align:center}.text-right{text-align:right}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.font-semibold{font-weight:600}.leading-relaxed{line-height:1.625}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity))}.text-gray-900{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.antialiased{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-gray-500\/20{--tw-shadow-color:rgb(107 114 128 / 0.2);--tw-shadow:var(--tw-shadow-colored)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.selection\:bg-red-500 *::selection{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity))}.selection\:text-white *::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.selection\:bg-red-500::selection{--tw-bg-opacity:1;background-color:rgb(239 68 68 / var(--tw-bg-opacity))}.selection\:text-white::selection{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.hover\:text-gray-900:hover{--tw-text-opacity:1;color:rgb(17 24 39 / var(--tw-text-opacity))}.hover\:text-gray-700:hover{--tw-text-opacity:1;color:rgb(55 65 81 / var(--tw-text-opacity))}.focus\:rounded-sm:focus{border-radius:0.125rem}.focus\:outline:focus{outline-style:solid}.focus\:outline-2:focus{outline-width:2px}.focus\:outline-red-500:focus{outline-color:#ef4444}.group:hover .group-hover\:stroke-gray-600{stroke:#4b5563}@media (prefers-reduced-motion: no-preference){.motion-safe\:hover\:scale-\[1\.01\]:hover{--tw-scale-x:1.01;--tw-scale-y:1.01;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}}@media (prefers-color-scheme: dark){.dark\:bg-gray-900{--tw-bg-opacity:1;background-color:rgb(17 24 39 / var(--tw-bg-opacity))}.dark\:bg-gray-800\/50{background-color:rgb(31 41 55 / 0.5)}.dark\:bg-red-800\/20{background-color:rgb(153 27 27 / 0.2)}.dark\:bg-dots-lighter{background-image:url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(255,255,255,0.07)'/%3E%3C/svg%3E")}.dark\:bg-gradient-to-bl{background-image:linear-gradient(to bottom left, var(--tw-gradient-stops))}.dark\:stroke-gray-600{stroke:#4b5563}.dark\:text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity))}.dark\:text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.dark\:shadow-none{--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.dark\:ring-1{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.dark\:ring-inset{--tw-ring-inset:inset}.dark\:ring-white\/5{--tw-ring-color:rgb(255 255 255 / 0.05)}.dark\:hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity))}.group:hover .dark\:group-hover\:stroke-gray-400{stroke:#9ca3af}}@media (min-width: 640px){.sm\:fixed{position:fixed}.sm\:top-0{top:0px}.sm\:right-0{right:0px}.sm\:ml-0{margin-left:0px}.sm\:flex{display:flex}.sm\:items-center{align-items:center}.sm\:justify-center{justify-content:center}.sm\:justify-between{justify-content:space-between}.sm\:text-left{text-align:left}.sm\:text-right{text-align:right}}@media (min-width: 768px){.md\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}}@media (min-width: 1024px){.lg\:gap-8{gap:2rem}.lg\:p-8{padding:2rem}}
-        </style>
-    </head>
-    <body class="antialiased">
-        <div class="relative sm:flex sm:justify-center sm:items-center min-h-screen bg-dots-darker bg-center bg-gray-100 dark:bg-dots-lighter dark:bg-gray-900 selection:bg-red-500 selection:text-white">
-            @if (Route::has('login'))
-                <div class="sm:fixed sm:top-0 sm:right-0 p-6 text-right">
-                    @auth
-                        <a href="{{ url('/home') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Home</a>
-                    @else
-                        <a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
+    <!-- Navigation -->
+    <nav class="bg-brand-dark text-white px-6 md:px-12 py-4 flex justify-between items-center sticky top-0 z-50">
+        <div class="flex items-center gap-8">
+            <a href="#" class="text-2xl font-black tracking-tighter uppercase font-heading flex flex-col leading-none">
+                <span>RFD</span>
+                <span class="text-xs tracking-widest text-brand-yellow">Laundry</span>
+            </a>
+            <div class="hidden md:flex items-center gap-6 text-sm font-medium ml-8">
+                <a href="#" class="hover:text-brand-yellow transition-colors">Home</a>
+                <a href="#services" class="hover:text-brand-yellow transition-colors flex items-center gap-1">Services <i class="ph ph-caret-down"></i></a>
+                <a href="#about" class="hover:text-brand-yellow transition-colors">About Us</a>
+            </div>
+        </div>
+        <div class="hidden md:flex items-center gap-4">
+            <a href="#" class="bg-white text-brand-dark px-6 py-2 rounded-full font-bold text-sm hover:bg-brand-yellow transition-colors">Contact Us</a>
+        </div>
+        <!-- Mobile Menu Button -->
+        <button class="md:hidden text-2xl"><i class="ph ph-list"></i></button>
+    </nav>
 
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" class="ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Register</a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
+    <!-- Hero Section -->
+    <header class="relative pt-12 pb-24 md:pt-20 md:pb-32 px-6 md:px-12 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="z-10">
+            <h1 class="text-5xl md:text-7xl font-black font-heading leading-[1.05] tracking-tight text-brand-dark mb-6 uppercase">
+                Elevate Your <br>
+                <span class="text-brand-yellow">Garments</span> <br>
+                Smartly
+            </h1>
+            <p class="text-gray-500 max-w-md mb-8 leading-relaxed">
+                Welcome to RFD Laundry Services, where we transform raw textiles into premium finished garments. Specializing in stone, sand, and enzyme washing.
+            </p>
+            <div class="flex flex-wrap items-center gap-4">
+                <a href="#services" class="bg-brand-yellow text-brand-dark px-8 py-3.5 rounded-full font-bold hover:bg-yellow-300 transition-colors shadow-lg shadow-yellow-200">Explore Services</a>
+                <a href="#" class="flex items-center gap-3 font-semibold text-brand-dark hover:text-gray-600 transition-colors border border-gray-200 px-6 py-3 rounded-full">
+                    <i class="ph-fill ph-play-circle text-2xl"></i>
+                    Watch Video
+                </a>
+            </div>
+        </div>
+        <div class="relative z-0 mt-8 lg:mt-0">
+            <!-- Decorative Yellow Accent -->
+            <div class="absolute -bottom-6 -left-6 w-full h-full bg-brand-yellow z-0 border-4 border-brand-dark"></div>
+            <!-- Main Hero Image -->
+            <img src="https://images.unsplash.com/photo-1542272604-787c3835535d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Denim Garment Washing" class="relative z-10 w-full h-[500px] object-cover border-4 border-brand-dark grayscale-[20%]">
+        </div>
+    </header>
 
-            <div class="max-w-7xl mx-auto p-6 lg:p-8">
-                <div class="flex justify-center">
-                    <svg viewBox="0 0 62 65" fill="none" xmlns="http://www.w3.org/2000/svg" class="h-16 w-auto bg-gray-100 dark:bg-gray-900">
-                        <path d="M61.8548 14.6253C61.8778 14.7102 61.8895 14.7978 61.8897 14.8858V28.5615C61.8898 28.737 61.8434 28.9095 61.7554 29.0614C61.6675 29.2132 61.5409 29.3392 61.3887 29.4265L49.9104 36.0351V49.1337C49.9104 49.4902 49.7209 49.8192 49.4118 49.9987L25.4519 63.7916C25.3971 63.8227 25.3372 63.8427 25.2774 63.8639C25.255 63.8714 25.2338 63.8851 25.2101 63.8913C25.0426 63.9354 24.8666 63.9354 24.6991 63.8913C24.6716 63.8838 24.6467 63.8689 24.6205 63.8589C24.5657 63.8389 24.5084 63.8215 24.456 63.7916L0.501061 49.9987C0.348882 49.9113 0.222437 49.7853 0.134469 49.6334C0.0465019 49.4816 0.000120578 49.3092 0 49.1337L0 8.10652C0 8.01678 0.0124642 7.92953 0.0348998 7.84477C0.0423783 7.8161 0.0598282 7.78993 0.0697995 7.76126C0.0884958 7.70891 0.105946 7.65531 0.133367 7.6067C0.152063 7.5743 0.179485 7.54812 0.20192 7.51821C0.230588 7.47832 0.256763 7.43719 0.290416 7.40229C0.319084 7.37362 0.356476 7.35243 0.388883 7.32751C0.425029 7.29759 0.457436 7.26518 0.498568 7.2415L12.4779 0.345059C12.6296 0.257786 12.8015 0.211853 12.9765 0.211853C13.1515 0.211853 13.3234 0.257786 13.475 0.345059L25.4531 7.2415H25.4556C25.4955 7.26643 25.5292 7.29759 25.5653 7.32626C25.5977 7.35119 25.6339 7.37362 25.6625 7.40104C25.6974 7.43719 25.7224 7.47832 25.7523 7.51821C25.7735 7.54812 25.8021 7.5743 25.8196 7.6067C25.8483 7.65656 25.8645 7.70891 25.8844 7.76126C25.8944 7.78993 25.9118 7.8161 25.9193 7.84602C25.9423 7.93096 25.954 8.01853 25.9542 8.10652V33.7317L35.9355 27.9844V14.8846C35.9355 14.7973 35.948 14.7088 35.9704 14.6253C35.9792 14.5954 35.9954 14.5692 36.0053 14.5405C36.0253 14.4882 36.0427 14.4346 36.0702 14.386C36.0888 14.3536 36.1163 14.3274 36.1375 14.2975C36.1674 14.2576 36.1923 14.2165 36.2272 14.1816C36.2559 14.1529 36.292 14.1317 36.3244 14.1068C36.3618 14.0769 36.3942 14.0445 36.4341 14.0208L48.4147 7.12434C48.5663 7.03694 48.7383 6.99094 48.9133 6.99094C49.0883 6.99094 49.2602 7.03694 49.4118 7.12434L61.3899 14.0208C61.4323 14.0457 61.4647 14.0769 61.5021 14.1055C61.5333 14.1305 61.5694 14.1529 61.5981 14.1803C61.633 14.2165 61.6579 14.2576 61.6878 14.2975C61.7103 14.3274 61.7377 14.3536 61.7551 14.386C61.7838 14.4346 61.8 14.4882 61.8199 14.5405C61.8312 14.5692 61.8474 14.5954 61.8548 14.6253ZM59.893 27.9844V16.6121L55.7013 19.0252L49.9104 22.3593V33.7317L59.8942 27.9844H59.893ZM47.9149 48.5566V37.1768L42.2187 40.4299L25.953 49.7133V61.2003L47.9149 48.5566ZM1.99677 9.83281V48.5566L23.9562 61.199V49.7145L12.4841 43.2219L12.4804 43.2194L12.4754 43.2169C12.4368 43.1945 12.4044 43.1621 12.3682 43.1347C12.3371 43.1097 12.3009 43.0898 12.2735 43.0624L12.271 43.0586C12.2386 43.0275 12.2162 42.9888 12.1887 42.9539C12.1638 42.9203 12.1339 42.8916 12.114 42.8567L12.1127 42.853C12.0903 42.8156 12.0766 42.7707 12.0604 42.7283C12.0442 42.6909 12.023 42.656 12.013 42.6161C12.0005 42.5688 11.998 42.5177 11.9931 42.4691C11.9881 42.4317 11.9781 42.3943 11.9781 42.3569V15.5801L6.18848 12.2446L1.99677 9.83281ZM12.9777 2.36177L2.99764 8.10652L12.9752 13.8513L22.9541 8.10527L12.9752 2.36177H12.9777ZM18.1678 38.2138L23.9574 34.8809V9.83281L19.7657 12.2459L13.9749 15.5801V40.6281L18.1678 38.2138ZM48.9133 9.14105L38.9344 14.8858L48.9133 20.6305L58.8909 14.8846L48.9133 9.14105ZM47.9149 22.3593L42.124 19.0252L37.9323 16.6121V27.9844L43.7219 31.3174L47.9149 33.7317V22.3593ZM24.9533 47.987L39.59 39.631L46.9065 35.4555L36.9352 29.7145L25.4544 36.3242L14.9907 42.3482L24.9533 47.987Z" fill="#FF2D20"/>
-                    </svg>
-                </div>
+    <!-- Trust / Features Section -->
+    <section class="bg-brand-gray py-20 px-6 md:px-12" id="about">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
+                <h2 class="text-3xl md:text-4xl font-black font-heading uppercase max-w-lg leading-tight text-brand-dark">
+                    Your Trusted Partner In Achieving Pristine Finishes.
+                </h2>
+                <p class="text-gray-500 max-w-sm text-sm">
+                    Established with the mission to elevate your apparel's look and feel, we bring a blend of modern technology, natural elements, and industrial expertise.
+                </p>
+            </div>
 
-                <div class="mt-16">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-                        <a href="https://laravel.com/docs" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                            <div>
-                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
-                                    </svg>
-                                </div>
-
-                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Documentation</h2>
-
-                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                    Laravel has wonderful documentation covering every aspect of the framework. Whether you are a newcomer or have prior experience with Laravel, we recommend reading our documentation from beginning to end.
-                                </p>
-                            </div>
-
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-                            </svg>
-                        </a>
-
-                        <a href="https://laracasts.com" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                            <div>
-                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                        <path stroke-linecap="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z" />
-                                    </svg>
-                                </div>
-
-                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laracasts</h2>
-
-                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                    Laracasts offers thousands of video tutorials on Laravel, PHP, and JavaScript development. Check them out, see for yourself, and massively level up your development skills in the process.
-                                </p>
-                            </div>
-
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-                            </svg>
-                        </a>
-
-                        <a href="https://laravel-news.com" class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                            <div>
-                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z" />
-                                    </svg>
-                                </div>
-
-                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Laravel News</h2>
-
-                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                    Laravel News is a community driven portal and newsletter aggregating all of the latest and most important news in the Laravel ecosystem, including new package releases and tutorials.
-                                </p>
-                            </div>
-
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="self-center shrink-0 stroke-red-500 w-6 h-6 mx-6">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75" />
-                            </svg>
-                        </a>
-
-                        <div class="scale-100 p-6 bg-white dark:bg-gray-800/50 dark:bg-gradient-to-bl from-gray-700/50 via-transparent dark:ring-1 dark:ring-inset dark:ring-white/5 rounded-lg shadow-2xl shadow-gray-500/20 dark:shadow-none flex motion-safe:hover:scale-[1.01] transition-all duration-250 focus:outline focus:outline-2 focus:outline-red-500">
-                            <div>
-                                <div class="h-16 w-16 bg-red-50 dark:bg-red-800/20 flex items-center justify-center rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="w-7 h-7 stroke-red-500">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.115 5.19l.319 1.913A6 6 0 008.11 10.36L9.75 12l-.387.775c-.217.433-.132.956.21 1.298l1.348 1.348c.21.21.329.497.329.795v1.089c0 .426.24.815.622 1.006l.153.076c.433.217.956.132 1.298-.21l.723-.723a8.7 8.7 0 002.288-4.042 1.087 1.087 0 00-.358-1.099l-1.33-1.108c-.251-.21-.582-.299-.905-.245l-1.17.195a1.125 1.125 0 01-.98-.314l-.295-.295a1.125 1.125 0 010-1.591l.13-.132a1.125 1.125 0 011.3-.21l.603.302a.809.809 0 001.086-1.086L14.25 7.5l1.256-.837a4.5 4.5 0 001.528-1.732l.146-.292M6.115 5.19A9 9 0 1017.18 4.64M6.115 5.19A8.965 8.965 0 0112 3c1.929 0 3.716.607 5.18 1.64" />
-                                    </svg>
-                                </div>
-
-                                <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Vibrant Ecosystem</h2>
-
-                                <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                    Laravel's robust library of first-party tools and libraries, such as <a href="https://forge.laravel.com" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Forge</a>, <a href="https://vapor.laravel.com" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Vapor</a>, <a href="https://nova.laravel.com" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Nova</a>, and <a href="https://envoyer.io" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Envoyer</a> help you take your projects to the next level. Pair them with powerful open source libraries like <a href="https://laravel.com/docs/billing" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Cashier</a>, <a href="https://laravel.com/docs/dusk" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Dusk</a>, <a href="https://laravel.com/docs/broadcasting" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Echo</a>, <a href="https://laravel.com/docs/horizon" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Horizon</a>, <a href="https://laravel.com/docs/sanctum" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Sanctum</a>, <a href="https://laravel.com/docs/telescope" class="underline hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Telescope</a>, and more.
-                                </p>
-                            </div>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-brand-yellow transition-colors group">
+                    <div class="w-12 h-12 bg-gray-100 group-hover:bg-brand-yellow transition-colors rounded-xl flex items-center justify-center mb-6">
+                        <i class="ph ph-truck text-2xl font-bold"></i>
                     </div>
+                    <h3 class="font-bold text-sm tracking-widest uppercase mb-3 text-brand-dark">Large Scale Capacity</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        Equipped with industrial-grade machinery to handle bulk orders seamlessly, ensuring your production timeline is met with efficiency.
+                    </p>
                 </div>
-
-                <div class="flex justify-center mt-16 px-0 sm:items-center sm:justify-between">
-                    <div class="text-center text-sm text-gray-500 dark:text-gray-400 sm:text-left">
-                        <div class="flex items-center gap-4">
-                            <a href="https://github.com/sponsors/taylorotwell" class="group inline-flex items-center hover:text-gray-700 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="-mt-px mr-1 w-5 h-5 stroke-gray-400 dark:stroke-gray-600 group-hover:stroke-gray-600 dark:group-hover:stroke-gray-400">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                                </svg>
-                                Sponsor
-                            </a>
-                        </div>
+                <!-- Feature 2 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-brand-yellow transition-colors group">
+                    <div class="w-12 h-12 bg-gray-100 group-hover:bg-brand-yellow transition-colors rounded-xl flex items-center justify-center mb-6">
+                        <i class="ph ph-leaf text-2xl font-bold"></i>
                     </div>
-
-                    <div class="ml-4 text-center text-sm text-gray-500 dark:text-gray-400 sm:text-right sm:ml-0">
-                        Laravel v{{ Illuminate\Foundation\Application::VERSION }} (PHP v{{ PHP_VERSION }})
+                    <h3 class="font-bold text-sm tracking-widest uppercase mb-3 text-brand-dark">Eco-Friendly Bio-Agents</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        We prioritize environmental health by utilizing advanced enzymes and eco-friendly bleaching agents that reduce water contamination.
+                    </p>
+                </div>
+                <!-- Feature 3 -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:border-brand-yellow transition-colors group">
+                    <div class="w-12 h-12 bg-gray-100 group-hover:bg-brand-yellow transition-colors rounded-xl flex items-center justify-center mb-6">
+                        <i class="ph ph-drop text-2xl font-bold"></i>
                     </div>
+                    <h3 class="font-bold text-sm tracking-widest uppercase mb-3 text-brand-dark">Specialized Techniques</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed">
+                        From pumice stone abrasion to delicate sand washes, our experts apply precise methodologies to achieve the exact texture and fade required.
+                    </p>
                 </div>
             </div>
         </div>
-    </body>
+    </section>
+
+    <!-- Services Section -->
+    <section class="py-24 px-6 md:px-12 bg-white" id="services">
+        <div class="max-w-7xl mx-auto text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-black font-heading uppercase text-brand-dark mb-4">Our Services</h2>
+            <p class="text-gray-500 max-w-2xl mx-auto">
+                Specialized finishing processes designed to give your garments the perfect look, feel, and character. We blend natural abrasives with cutting-edge chemistry.
+            </p>
+        </div>
+
+        <div class="max-w-6xl mx-auto">
+            <!-- Tabs -->
+            <div class="flex flex-wrap justify-center gap-3 mb-12" id="service-tabs">
+                <button onclick="switchTab('stone')" class="tab-btn active bg-brand-dark text-white px-6 py-2.5 rounded-full text-sm font-bold uppercase tracking-wide border-2 border-brand-dark hover:bg-brand-dark hover:text-white transition-all">Stone Washing</button>
+                <button onclick="switchTab('sand')" class="tab-btn bg-white text-brand-dark px-6 py-2.5 rounded-full text-sm font-bold uppercase tracking-wide border-2 border-gray-200 hover:border-brand-dark transition-all">Sand Washing</button>
+                <button onclick="switchTab('enzyme')" class="tab-btn bg-white text-brand-dark px-6 py-2.5 rounded-full text-sm font-bold uppercase tracking-wide border-2 border-gray-200 hover:border-brand-dark transition-all">Enzyme & Bio</button>
+                <button onclick="switchTab('bleach')" class="tab-btn bg-white text-brand-dark px-6 py-2.5 rounded-full text-sm font-bold uppercase tracking-wide border-2 border-gray-200 hover:border-brand-dark transition-all">Bleach Wash</button>
+                <button onclick="switchTab('garment')" class="tab-btn bg-white text-brand-dark px-6 py-2.5 rounded-full text-sm font-bold uppercase tracking-wide border-2 border-gray-200 hover:border-brand-dark transition-all">Garment Wash</button>
+            </div>
+
+            <!-- Content Area -->
+            <div class="bg-brand-gray p-8 md:p-12 rounded-3xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[500px]">
+                
+                <!-- Dynamic Content Container -->
+                <div id="service-content">
+                    <h3 class="text-3xl font-black font-heading uppercase mb-4 text-brand-dark" id="service-title">Premium Stone Washing</h3>
+                    <p class="text-gray-600 mb-8 leading-relaxed" id="service-desc">
+                        Our stone washing service utilizes high-quality pumice stones to accelerate the fading process and increase the softness of denim and heavy cottons. This classic technique provides a naturally worn, vintage appearance that consumers love, carefully monitored to maintain fabric integrity.
+                    </p>
+                    
+                    <h4 class="font-bold text-sm tracking-widest uppercase mb-4 text-brand-dark">What We Offer</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-brand-yellow w-6 h-6 rounded flex items-center justify-center text-brand-dark"><i class="ph ph-check font-bold"></i></div>
+                            <span class="text-sm font-medium text-gray-700">Authentic Vintage Fades</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-brand-yellow w-6 h-6 rounded flex items-center justify-center text-brand-dark"><i class="ph ph-check font-bold"></i></div>
+                            <span class="text-sm font-medium text-gray-700">Fabric Softening</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-brand-yellow w-6 h-6 rounded flex items-center justify-center text-brand-dark"><i class="ph ph-check font-bold"></i></div>
+                            <span class="text-sm font-medium text-gray-700">Custom Abrasion Levels</span>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <div class="bg-brand-yellow w-6 h-6 rounded flex items-center justify-center text-brand-dark"><i class="ph ph-check font-bold"></i></div>
+                            <span class="text-sm font-medium text-gray-700">Pumice Stone Sourcing</span>
+                        </div>
+                    </div>
+                    
+                    <a href="#" class="inline-block bg-brand-yellow text-brand-dark px-8 py-3.5 rounded-full font-bold hover:bg-yellow-300 transition-colors">Request Sample</a>
+                </div>
+
+                <!-- Dynamic Image -->
+                <div class="relative h-full min-h-[300px] md:min-h-[400px] rounded-2xl overflow-hidden border-4 border-white shadow-xl">
+                    <img id="service-img" src="https://images.unsplash.com/photo-1444312645910-ffa973656eba?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Pumice Stones for Washing" class="absolute inset-0 w-full h-full object-cover">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="py-16 border-y border-gray-100 bg-white">
+        <div class="max-w-6xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center md:text-left">
+            <div>
+                <h3 class="text-5xl font-black font-heading mb-2 text-brand-dark">15<span class="text-brand-yellow">+</span></h3>
+                <p class="text-gray-500 text-sm">Years of industrial washing experience.</p>
+            </div>
+            <div>
+                <h3 class="text-5xl font-black font-heading mb-2 text-brand-dark">99<span class="text-brand-yellow">%</span></h3>
+                <p class="text-gray-500 text-sm">Customer satisfaction rate from apparel brands.</p>
+            </div>
+            <div>
+                <h3 class="text-5xl font-black font-heading mb-2 text-brand-dark">100<span class="text-brand-yellow">%</span></h3>
+                <p class="text-gray-500 text-sm">Eco-friendly compliance on bio-agents.</p>
+            </div>
+            <div>
+                <h3 class="text-5xl font-black font-heading mb-2 text-brand-dark">50<span class="text-brand-yellow">k</span></h3>
+                <p class="text-gray-500 text-sm">Garments processed weekly capacity.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="py-24 px-6 md:px-12 bg-white">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            <!-- Left: Industrial Porthole Image -->
+            <div class="relative flex justify-center">
+                <!-- Outer Ring mimicking a washing machine -->
+                <div class="w-[320px] h-[320px] md:w-[450px] md:h-[450px] rounded-full border-[16px] border-brand-gray shadow-2xl relative flex items-center justify-center p-4 bg-gray-300">
+                    <div class="absolute inset-0 rounded-full border-4 border-gray-400 m-2"></div>
+                    <div class="w-full h-full rounded-full overflow-hidden relative">
+                        <!-- Inner image of industrial textures (Sand/Water/Denim) -->
+                        <img src="https://images.unsplash.com/photo-1546904646-646bc10137ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Sand Texture" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-blue-900/20 mix-blend-overlay"></div>
+                    </div>
+                    <!-- Handle Detail -->
+                    <div class="absolute -right-6 top-1/2 -translate-y-1/2 w-8 h-24 bg-gray-400 rounded-l-none rounded-r-xl border-y-4 border-r-4 border-gray-300 shadow-lg"></div>
+                </div>
+            </div>
+
+            <!-- Right: Content -->
+            <div>
+                <h2 class="text-4xl md:text-5xl font-black font-heading uppercase text-brand-dark mb-4">Why Choose Us?</h2>
+                <p class="text-gray-500 mb-10">
+                    Experience the ultimate in garment finishing quality with RFD Laundry. We combine raw natural materials with advanced machinery.
+                </p>
+
+                <div class="space-y-6">
+                    <div class="flex gap-6 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow bg-white">
+                        <div class="w-12 h-12 bg-brand-dark text-white rounded-full flex items-center justify-center shrink-0">
+                            <i class="ph ph-clock text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold uppercase tracking-wide text-brand-dark mb-1">Time-Saving Turnaround</h4>
+                            <p class="text-sm text-gray-500">Our streamlined facility ensures bulk orders are processed swiftly without sacrificing finish quality.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-6 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow bg-white">
+                        <div class="w-12 h-12 bg-brand-dark text-white rounded-full flex items-center justify-center shrink-0">
+                            <i class="ph ph-medal text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold uppercase tracking-wide text-brand-dark mb-1">High-Quality Abrasives</h4>
+                            <p class="text-sm text-gray-500">We source premium pumice stones and specific silica sands to guarantee the exact abrasion and distressing desired.</p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-6 p-6 rounded-2xl border border-gray-100 hover:shadow-md transition-shadow bg-white">
+                        <div class="w-12 h-12 bg-brand-dark text-white rounded-full flex items-center justify-center shrink-0">
+                            <i class="ph ph-flask text-xl"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold uppercase tracking-wide text-brand-dark mb-1">Advanced Enzyme Tech</h4>
+                            <p class="text-sm text-gray-500">Utilizing biowashing techniques (cellulase enzymes) to clean and soften fabrics, preventing pilling and preserving color.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-10">
+                    <a href="#" class="inline-block bg-brand-yellow text-brand-dark px-8 py-3.5 rounded-full font-bold hover:bg-yellow-300 transition-colors">Contact Our Experts</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonial -->
+    <section class="bg-brand-dark text-white py-24 px-6 md:px-12 relative overflow-hidden">
+        <!-- Decoration -->
+        <div class="absolute top-0 right-0 w-64 h-64 bg-brand-yellow/10 rounded-full blur-3xl"></div>
+        
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+            <i class="ph-fill ph-quotes text-5xl text-brand-yellow mb-8 block opacity-50 mx-auto"></i>
+            <h3 class="text-2xl md:text-3xl font-heading font-medium leading-snug mb-10 uppercase tracking-wide">
+                "We've been using RFD Laundry for our denim line's stone washing for months now, and I couldn't be happier. The texture, the fade consistency, and their respect for the fabric integrity is consistently excellent."
+            </h3>
+            <div class="flex items-center justify-center gap-4">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" alt="Client" class="w-12 h-12 rounded-full border-2 border-brand-yellow object-cover">
+                <div class="text-left">
+                    <p class="font-bold uppercase tracking-wider text-sm">Mark Thompson</p>
+                    <p class="text-xs text-gray-400">Production Manager, Urban Denim Co.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="relative py-24 px-6 md:px-12 bg-black overflow-hidden flex items-center justify-center min-h-[400px]">
+        <!-- Background Image with Overlay -->
+        <img src="https://images.unsplash.com/photo-1610384462486-05a53a251786?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80" alt="Industrial Washers" class="absolute inset-0 w-full h-full object-cover opacity-30 grayscale">
+        
+        <div class="relative z-10 text-center max-w-2xl">
+            <h2 class="text-4xl md:text-5xl font-black font-heading text-white uppercase mb-6 leading-tight">
+                Ready to Experience the <span class="text-brand-yellow">Premium Wash</span> Difference?
+            </h2>
+            <p class="text-gray-300 mb-8">
+                Send us a sample batch or discuss your next production run with our textile finishing specialists.
+            </p>
+            <a href="#" class="inline-block bg-brand-yellow text-brand-dark px-10 py-4 rounded-full font-bold hover:bg-yellow-300 transition-colors uppercase tracking-wide">
+                Get a Custom Quote
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 pt-16 pb-8 px-6 md:px-12">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+            <div class="col-span-1 md:col-span-1">
+                <a href="#" class="text-2xl font-black tracking-tighter uppercase font-heading flex flex-col leading-none mb-6">
+                    <span class="text-brand-dark">RFD</span>
+                    <span class="text-xs tracking-widest text-gray-500">Laundry</span>
+                </a>
+                <p class="text-sm text-gray-500 leading-relaxed mb-6">
+                    Specialized industrial garment washing services providing stone, sand, enzyme, and bleach finishing for the apparel industry.
+                </p>
+                <div class="flex gap-4">
+                    <a href="#" class="w-10 h-10 rounded-full bg-brand-gray flex items-center justify-center text-brand-dark hover:bg-brand-yellow transition-colors"><i class="ph-fill ph-instagram-logo text-xl"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-brand-gray flex items-center justify-center text-brand-dark hover:bg-brand-yellow transition-colors"><i class="ph-fill ph-facebook-logo text-xl"></i></a>
+                    <a href="#" class="w-10 h-10 rounded-full bg-brand-gray flex items-center justify-center text-brand-dark hover:bg-brand-yellow transition-colors"><i class="ph-fill ph-linkedin-logo text-xl"></i></a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-brand-dark uppercase tracking-widest text-sm mb-6">Services</h4>
+                <ul class="space-y-3 text-sm text-gray-500">
+                    <li><a href="#" class="hover:text-brand-yellow transition-colors">Stone Washing</a></li>
+                    <li><a href="#" class="hover:text-brand-yellow transition-colors">Sand Washing</a></li>
+                    <li><a href="#" class="hover:text-brand-yellow transition-colors">Enzyme Washing</a></li>
+                    <li><a href="#" class="hover:text-brand-yellow transition-colors">Bleach Washing</a></li>
+                    <li><a href="#" class="hover:text-brand-yellow transition-colors">Garment Washing</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-brand-dark uppercase tracking-widest text-sm mb-6">Company</h4>
+                <ul class="space-y-3 text-sm text-gray-500">
+                    <li><a href="#" class="hover:text-brand-yellow transition-colors">About Us</a></li>
+                    <li><a href="#" class="hover:text-brand-yellow transition-colors">Facility</a></li>
+                    <li><a href="#" class="hover:text-brand-yellow transition-colors">Sustainability</a></li>
+                    <li><a href="#" class="hover:text-brand-yellow transition-colors">Contact</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-brand-dark uppercase tracking-widest text-sm mb-6">Newsletter</h4>
+                <p class="text-sm text-gray-500 mb-4">Subscribe for updates on our latest finishing techniques.</p>
+                <div class="flex">
+                    <input type="email" placeholder="Email Address" class="bg-brand-gray px-4 py-3 rounded-l-lg outline-none w-full text-sm border border-gray-200">
+                    <button class="bg-brand-dark text-white px-4 py-3 rounded-r-lg hover:bg-gray-800 transition-colors">
+                        <i class="ph ph-paper-plane-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto border-t border-gray-100 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400 font-medium uppercase tracking-wider">
+            <p>&copy; 2026 RFD Laundry Services. All Rights Reserved.</p>
+            <div class="flex gap-6">
+                <a href="#" class="hover:text-brand-dark transition-colors">Terms of Service</a>
+                <a href="#" class="hover:text-brand-dark transition-colors">Privacy Policy</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Simple Script for Service Tabs Interactivity -->
+    <script>
+        const servicesData = {
+            stone: {
+                title: 'Premium Stone Washing',
+                desc: 'Our stone washing service utilizes high-quality pumice stones to accelerate the fading process and increase the softness of denim and heavy cottons. This classic technique provides a naturally worn, vintage appearance that consumers love, carefully monitored to maintain fabric integrity.',
+                img: 'https://images.unsplash.com/photo-1444312645910-ffa973656eba?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                features: ['Authentic Vintage Fades', 'Fabric Softening', 'Custom Abrasion Levels', 'Pumice Stone Sourcing']
+            },
+            sand: {
+                title: 'Specialized Sand Washing',
+                desc: 'By substituting stones with fine sand or micro-abrasives, sand washing delivers an exceptionally soft, peach-skin finish. Perfect for delicate fabrics like silks or fine cottons where stones would be too harsh, giving a subtle, dusty appearance.',
+                img: 'https://images.unsplash.com/photo-1546904646-646bc10137ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                features: ['Peach-Skin Softness', 'Safe for Delicates', 'Micro-Abrasion', 'Subtle Distressing']
+            },
+            enzyme: {
+                title: 'Biowashing & Enzyme Treatment',
+                desc: 'Using organic cellulase enzymes, we digest protruding fibers to create a smoother fabric surface, prevent pilling, and enhance color retention. An eco-friendly alternative to aggressive stone washing that preserves the strength of the garment.',
+                img: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                features: ['Prevents Pilling', 'Eco-Friendly Process', 'Maintains Fabric Strength', 'Enhances Color']
+            },
+            bleach: {
+                title: 'Industrial Bleach Washing',
+                desc: 'Controlled chemical washing using oxidative agents to dramatically lighten fabrics or create distinct high-contrast fades. Our process is strictly neutralized post-wash to ensure the garment remains safe and tear-resistant.',
+                img: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', // denim close up
+                features: ['High-Contrast Fading', 'Uniform Lightening', 'Strict Neutralization', 'Color Stripping']
+            },
+            garment: {
+                title: 'Standard Garment Washing',
+                desc: 'A fundamental wet processing step that removes sizing, dirt, and shrinkage from manufactured garments. We use specialized industrial detergents to pre-shrink and soften apparel, preparing it for retail distribution.',
+                img: 'https://images.unsplash.com/photo-1517601278517-55df7eb0ebbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', // generic wash/water
+                features: ['Sizing Removal', 'Pre-shrinking', 'Bulk Processing', 'Retail Ready']
+            }
+        };
+
+        function switchTab(type) {
+            // Update buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-dark', 'text-white', 'border-brand-dark');
+                btn.classList.add('bg-white', 'text-brand-dark', 'border-gray-200');
+            });
+            
+            const activeBtn = event.currentTarget || document.querySelector('.tab-btn');
+            activeBtn.classList.remove('bg-white', 'border-gray-200');
+            activeBtn.classList.add('bg-brand-dark', 'text-white', 'border-brand-dark');
+
+            // Update content with fade effect
+            const contentDiv = document.getElementById('service-content');
+            const imgEl = document.getElementById('service-img');
+            
+            contentDiv.style.opacity = 0;
+            imgEl.style.opacity = 0;
+
+            setTimeout(() => {
+                const data = servicesData[type];
+                document.getElementById('service-title').innerText = data.title;
+                document.getElementById('service-desc').innerText = data.desc;
+                imgEl.src = data.img;
+
+                // Update features list
+                const featuresContainer = document.querySelector('#service-content .grid');
+                featuresContainer.innerHTML = '';
+                data.features.forEach(feature => {
+                    featuresContainer.innerHTML += `
+                        <div class="flex items-center gap-3">
+                            <div class="bg-brand-yellow w-6 h-6 rounded flex items-center justify-center text-brand-dark"><i class="ph ph-check font-bold"></i></div>
+                            <span class="text-sm font-medium text-gray-700">${feature}</span>
+                        </div>
+                    `;
+                });
+
+                contentDiv.style.opacity = 1;
+                contentDiv.style.transition = 'opacity 0.3s ease';
+                imgEl.style.opacity = 1;
+                imgEl.style.transition = 'opacity 0.3s ease';
+            }, 300);
+        }
+    </script>
+</body>
 </html>
