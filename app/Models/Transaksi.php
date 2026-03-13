@@ -13,6 +13,7 @@ class Transaksi extends Model
         'no_invoice',
         'deskripsi',
         'id_user',
+        'created_by',
         'id_pelanggan',
         'id_layanan',
         'tanggal_order',

@@ -9,7 +9,7 @@
             layanans: {{ json_encode($layanans) }},
             layanansObj: {},
             items: [{ id_layanan: '', berat: 0 }],
-            bayarError: '',
+            potonganError: '',
             addItem() {
                 this.items.push({ id_layanan: '', berat: 0 });
             },
@@ -36,30 +36,25 @@
                 let s = this.total - Number(this.bayar || 0);
                 return s < 0 ? 0 : s;
             },
+            get kembalian() {
+                let k = Number(this.bayar || 0) - this.total;
+                return k > 0 ? k : 0;
+            },
             onPotonganInput(raw) {
                 // Hanya angka
                 const cleaned = String(raw).replace(/[^0-9]/g, '');
-                const num = cleaned === '' ? 0 : parseInt(cleaned, 10);
+                let num = cleaned === '' ? 0 : parseInt(cleaned, 10);
+                // Batasi maksimal ke subtotal
+                const max = this.subtotal || 0;
+                if (num > max) num = max;
                 this.potongan = num;
                 this.potonganDisplay = num ? num.toLocaleString('id-ID') : '';
             },
             onBayarInput(raw) {
                 const cleaned = String(raw).replace(/[^0-9]/g, '');
                 let num = cleaned === '' ? 0 : parseInt(cleaned, 10);
-                // Batasi maksimal ke total (tidak boleh lebih dari tagihan)
-                const max = this.total || 0;
-                if (num > max) num = max;
                 this.bayar = num;
                 this.bayarDisplay = num ? num.toLocaleString('id-ID') : '';
-                this.validateBayar();
-            },
-            validateBayar() {
-                const bayarNum = Number(this.bayar || 0);
-                if (bayarNum > this.total) {
-                    this.bayarError = 'Jumlah bayar tidak boleh melebihi total.';
-                } else {
-                    this.bayarError = '';
-                }
             },
             init() {
                 this.layanansObj = Object.fromEntries(this.layanans.map(l => [String(l.id), l]));
@@ -139,7 +134,7 @@
                         </div>
                         <div class="col-span-3">
                             <label class="block text-gray-700 text-sm font-semibold mb-1">Berat</label>
-                            <input type="number" step="0.1" min="0" :name="`items[${index}][berat]`" x-model.number="row.berat"
+                            <input type="number" step="0.1" min="0" max="999.9" :name="`items[${index}][berat]`" x-model.number="row.berat"
                                    class="w-full border border-gray-300 rounded-lg px-3 py-2"
                                    required>
                         </div>
@@ -158,6 +153,9 @@
                         </div>
                     </div>
                 </template>
+                @error('items')
+                    <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <div class="grid grid-cols-2 gap-4 mt-4">
@@ -180,9 +178,6 @@
                            inputmode="numeric"
                            class="w-full border border-gray-300 rounded-lg px-4 py-2"
                            placeholder="0">
-                    <p x-show="bayarError"
-                       x-text="bayarError"
-                       class="text-red-600 text-sm mt-1"></p>
                 </div>
             </div>
             
@@ -203,6 +198,10 @@
                 <div class="flex justify-between font-medium text-md" :class="{ 'text-red-600': sisa > 0, 'text-green-600': sisa <= 0 }">
                     <span>Sisa Bayar:</span>
                     <span x-text="formatRp(sisa)"></span>
+                </div>
+                <div class="flex justify-between font-medium text-md text-green-600" x-show="kembalian > 0">
+                    <span>Kembalian:</span>
+                    <span x-text="formatRp(kembalian)"></span>
                 </div>
             </div>
             <div class="flex justify-end gap-4 mt-6 pb-1">

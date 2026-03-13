@@ -228,7 +228,7 @@
                     <div class="absolute inset-0 rounded-full border-4 border-gray-400 m-2"></div>
                     <div class="w-full h-full rounded-full overflow-hidden relative">
                         <!-- Inner image of industrial textures (Sand/Water/Denim) -->
-                        <img src="https://images.unsplash.com/photo-1546904646-646bc10137ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Sand Texture" class="w-full h-full object-cover">
+                        <img src="https://i.pinimg.com/736x/d0/b1/37/d0b137870a56ef57ed7986dfcb638b9c.jpg" alt="Sand Texture" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-blue-900/20 mix-blend-overlay"></div>
                     </div>
                     <!-- Handle Detail -->
@@ -392,7 +392,7 @@
             sand: {
                 title: 'Specialized Sand Washing',
                 desc: 'By substituting stones with fine sand or micro-abrasives, sand washing delivers an exceptionally soft, peach-skin finish. Perfect for delicate fabrics like silks or fine cottons where stones would be too harsh, giving a subtle, dusty appearance.',
-                img: 'https://images.unsplash.com/photo-1546904646-646bc10137ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+                img: 'https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
                 features: ['Peach-Skin Softness', 'Safe for Delicates', 'Micro-Abrasion', 'Subtle Distressing']
             },
             enzyme: {
@@ -410,7 +410,7 @@
             garment: {
                 title: 'Standard Garment Washing',
                 desc: 'A fundamental wet processing step that removes sizing, dirt, and shrinkage from manufactured garments. We use specialized industrial detergents to pre-shrink and soften apparel, preparing it for retail distribution.',
-                img: 'https://images.unsplash.com/photo-1517601278517-55df7eb0ebbb?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', // generic wash/water
+                img: 'https://images.unsplash.com/photo-1444312645910-ffa973656eba?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80', // generic wash/water
                 features: ['Sizing Removal', 'Pre-shrinking', 'Bulk Processing', 'Retail Ready']
             }
         };

@@ -62,7 +62,7 @@ class TransaksiController extends Controller
                 'id_pelanggan' => 'required|exists:pelanggans,id',
                 'items' => 'required|array|min:1',
                 'items.*.id_layanan' => 'required|exists:layanans,id',
-                'items.*.berat' => 'required|numeric|min:0.1',
+                'items.*.berat' => 'required|numeric|min:0.1|max:999.9',
                 'potongan' => 'nullable|numeric|min:0',
                 'jumlah_bayar' => 'required|numeric|min:0',
                 'deskripsi' => 'nullable|string|max:255',
@@ -72,7 +72,7 @@ class TransaksiController extends Controller
             $request->validate([
                 'id_pelanggan' => 'required|exists:pelanggans,id',
                 'id_layanan' => 'required|exists:layanans,id',
-                'berat_laundry' => 'required|numeric|min:0.1',
+                'berat_laundry' => 'required|numeric|min:0.1|max:999.9',
                 'potongan' => 'nullable|numeric|min:0',
                 'jumlah_bayar' => 'required|numeric|min:0',
                 'deskripsi' => 'nullable|string|max:255',
@@ -143,27 +143,29 @@ class TransaksiController extends Controller
                     ->withErrors(['items' => 'Minimal 1 layanan harus diinput.']);
             }
 
+            // Validasi potongan tidak boleh melebihi subtotal
+            if ($potongan > $subtotalSum) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['potongan' => 'Potongan tidak boleh melebihi subtotal.']);
+            }
+
             $jumlahBayar = (float) $request->jumlah_bayar;
             $totalHarga = $subtotalSum - $potongan;
             if ($totalHarga < 0) {
                 $totalHarga = 0;
             }
 
-            if ($jumlahBayar > $totalHarga) {
-                return back()
-                    ->withInput()
-                    ->withErrors(['jumlah_bayar' => 'Jumlah bayar tidak boleh melebihi total tagihan.']);
-            }
+            $sisaBayar = max(0, $totalHarga - $jumlahBayar);
 
-            $sisaBayar = $totalHarga - $jumlahBayar;
-            if ($sisaBayar < 0) {
-                $sisaBayar = 0;
-            }
-
-            $singleLayananId = count($createItems) === 1 ? $createItems[0]['layanan_id'] : null;
+            // Use the first layanan id as a representative value for the transaction.
+            // This avoids SQL errors when the database still requires a non-null id_layanan
+            // while the transaction contains multiple layanan items.
+            $singleLayananId = $createItems[0]['layanan_id'] ?? null;
 
             $transaksi = Transaksi::create([
                 'id_user' => Auth::id(),
+                'created_by' => Auth::user()->username,
                 'id_pelanggan' => $request->id_pelanggan,
                 'id_layanan' => $singleLayananId,
                 'deskripsi' => $request->deskripsi,
