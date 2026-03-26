@@ -1,6 +1,81 @@
+/* Custom styles for Welcome page */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 body {
-  font-family: 'Inter', sans-serif;
+    font-family: "Inter", sans-serif;
 }
 .font-heading {
-  font-family: 'Montserrat', sans-serif;
+    font-family: "Montserrat", sans-serif;
+}
+
+/* Service Tab Active State */
+.tab-btn.active {
+    @apply bg-slate-800 text-white border-slate-800;
+}
+
+/* Smooth transitions for service content */
+#service-content {
+    transition: opacity 0.3s ease-in-out;
+}
+
+#service-img {
+    transition: transform 0.5s ease-in-out;
+}
+
+/* Hover effects */
+.group:hover .group-hover\:bg-brand-yellow {
+    @apply bg-yellow-400;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-600;
+}
+
+/* Animation for stats counter */
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stat-number {
+    animation: countUp 0.8s ease-out forwards;
+}
+
+/* Mobile menu animation */
+#mobileMenu {
+    transition: all 0.3s ease-in-out;
+}
+
+#mobileMenu.hidden {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+}
+
+#mobileMenu:not(.hidden) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
 }
