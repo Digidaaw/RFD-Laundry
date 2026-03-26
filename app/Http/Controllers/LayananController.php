@@ -107,4 +107,10 @@ class LayananController extends Controller
             return redirect()->route('layanan.index')->with('error', 'Gagal menghapus layanan.');
         }
     }
+
+    public function show(Layanan $layanan)
+    {
+        return view('admin.layanan_show', compact('layanan'));
+        
+    }
 }

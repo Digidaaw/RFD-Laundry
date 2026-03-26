@@ -8,6 +8,7 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ReportController;
+use App\Models\Layanan;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,11 +18,17 @@ use App\Http\Controllers\ReportController;
 
 // public welcome page shown on first run
 Route::get('/', function () {
-    if (Auth::check()) {
-        return redirect()->route('dashboard');
-    }
-    return view('welcome');
-})->name('welcome');
+    $layanans = Layanan::latest()->get();
+
+    return view('welcome', compact('layanans'));
+})->name('home');
+
+Route::get('/quote-request', function () {
+    return view('quote.request');
+})->name('quote.request');
+
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
+    ->name('newsletter.subscribe');
 
 // --- ROUTE UNTUK PUBLIK / LOGIN & REGISTER ---
 Route::middleware('guest')->group(function () {
