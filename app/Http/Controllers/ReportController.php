@@ -127,7 +127,7 @@ class ReportController extends Controller
     public function laporanPelanggan(Pelanggan $pelanggan)
     {
         $transaksis = Transaksi::where('id_pelanggan', $pelanggan->id)
-            ->with('layanan')
+            ->with(['layanan', 'items.layanan'])
             ->latest()
             ->get();
 
@@ -156,7 +156,7 @@ class ReportController extends Controller
     public function exportPdfPelanggan(Pelanggan $pelanggan)
     {
         $transaksis = Transaksi::where('id_pelanggan', $pelanggan->id)
-            ->with('layanan')
+            ->with(['layanan', 'items.layanan'])
             ->latest()
             ->get();
 

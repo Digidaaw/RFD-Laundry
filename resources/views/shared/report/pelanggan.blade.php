@@ -99,7 +99,15 @@
                                 <tr class="border-b hover:bg-gray-50">
                                     <td class="p-3 text-sm md:p-4 md:text-base font-semibold text-gray-800">{{ $transaksi->no_invoice }}</td>
                                     <td class="p-3 text-sm md:p-4 md:text-base font-semibold text-gray-600">{{ \Carbon\Carbon::parse($transaksi->tanggal_order)->format('d M Y') }}</td>
-                                    <td class="p-3 text-sm md:p-4 md:text-base font-semibold text-gray-600">{{ $transaksi->layanan->name ?? 'N/A' }}</td>
+                                    <td class="p-3 text-sm md:p-4 md:text-base font-semibold text-gray-600">
+                                        @if($transaksi->items->count() > 0)
+                                            @foreach($transaksi->items as $item)
+                                                <div class="mb-1">{{ $item->layanan->name ?? 'N/A' }} ({{ $item->qty }} {{ $item->layanan->units->first()?->unit_satuan ?? 'pcs' }})</div>
+                                            @endforeach
+                                        @else
+                                            {{ $transaksi->layanan->name ?? 'N/A' }}
+                                        @endif
+                                    </td>
                                     <td class="p-3 text-sm md:p-4 md:text-base font-semibold text-gray-600">{{ $transaksi->deskripsi ?? '-' }}</td>
                                     <td class="p-3 text-sm md:p-4 md:text-base font-semibold text-gray-900">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
                                     <td class="p-3 md:p-4">

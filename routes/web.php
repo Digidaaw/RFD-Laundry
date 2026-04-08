@@ -8,6 +8,7 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\NewsletterController;
 use App\Models\Layanan;
 
 /*
@@ -49,7 +50,7 @@ Route::middleware(['auth'])->group(function () {
         // duplicate of home; keep data for direct URL
         $totalUser = \App\Models\User::count();
         $totalOrder = \App\Models\Transaksi::count();
-        $totalSales = \App\Models\Transaksi::sum('jumlah_bayar');
+        $totalSales = \App\Models\Transaksi::sum('total_harga');
         $orderPending = \App\Models\Transaksi::where('sisa_bayar', '>', 0)->sum('sisa_bayar');
 
         return view('shared.dashboard', compact('totalUser', 'totalOrder', 'totalSales', 'orderPending'));
