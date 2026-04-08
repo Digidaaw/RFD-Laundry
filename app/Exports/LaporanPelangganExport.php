@@ -19,7 +19,7 @@ class LaporanPelangganExport
     public function collection()
     {
         return Transaksi::where('id_pelanggan', $this->pelangganId)
-            ->with('layanan')
+            ->with(['layanan', 'items.layanan'])
             ->latest()
             ->get();
     }
@@ -44,10 +44,20 @@ class LaporanPelangganExport
     // Mapping data per baris
     public function map($transaksi)
     {
+        // Jika ada items, tampilkan semua layanan dari items
+        $layananText = '';
+        if ($transaksi->items->count() > 0) {
+            $layananNames = $transaksi->items->map(fn($item) => $item->layanan->name . ' (' . $item->qty . ')')
+                ->join(', ');
+            $layananText = $layananNames;
+        } else {
+            $layananText = $transaksi->layanan->name ?? 'N/A';
+        }
+
         return [
             $transaksi->no_invoice,
             Carbon::parse($transaksi->tanggal_order)->format('d-m-Y'),
-            $transaksi->layanan->name ?? 'N/A',
+            $layananText,
             $transaksi->deskripsi ?? '-',
             $transaksi->berat_laundry,
             $transaksi->total_harga,

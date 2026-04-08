@@ -14,13 +14,13 @@ class TransaksiItem extends Model
     protected $fillable = [
         'transaksi_id',
         'layanan_id',
-        'berat',
+        'qty',
         'harga_satuan',
         'subtotal',
     ];
 
     protected $casts = [
-        'berat' => 'decimal:2',
+        'qty' => 'decimal:2',
         'harga_satuan' => 'decimal:2',
         'subtotal' => 'decimal:2',
     ];

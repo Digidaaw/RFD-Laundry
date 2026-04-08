@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('transaksis', function (Blueprint $table) {
-            $table->decimal('subtotal', 10, 2)->default(0);
-            $table->decimal('potongan', 10, 2)->default(0);
+        Schema::table('layanans', function (Blueprint $table) {
+            $table->softDeletes(); // Menambahkan kolom deleted_at untuk soft delete
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('transaksis', function (Blueprint $table) {
-            $table->dropColumn(['subtotal', 'potongan']);
+        Schema::table('layanans', function (Blueprint $table) {
+            $table->dropSoftDeletes(); // Menghapus kolom deleted_at
         });
     }
 };

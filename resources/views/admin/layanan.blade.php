@@ -20,7 +20,8 @@
 
         <main class="p-6 lg:p-10">
             <div class="flex flex-col lg:flex-row justify-between items-center mb-8 gap-4">
-                <button @click="openAddModal = true" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 md:px-6 md:py-3 rounded-lg shadow-md w-full lg:w-auto font-semibold">
+                <button @click="openAddModal = true"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 md:px-6 md:py-3 rounded-lg shadow-md w-full lg:w-auto font-semibold">
                     + Tambah Layanan
                 </button>
                 <div class="flex items-center space-x-2 text-gray-700 font-bold text-base md:text-lg w-full lg:w-auto">
@@ -29,8 +30,9 @@
                     <div class="relative w-full">
                         <form action="{{ route('layanan.index') }}" method="GET">
                             <input type="text" name="search" placeholder="Nama Layanan..." value="{{ $search ?? '' }}"
-                                   class="bg-gray-100 rounded-full py-2 pl-10 md:py-3 md:pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm md:text-base">
-                            <img src="{{ asset('assets/search-icon.svg') }}" alt="Search Icon" class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4 md:h-5 md:w-5">
+                                class="bg-gray-100 rounded-full py-2 pl-10 md:py-3 md:pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm md:text-base">
+                            <img src="{{ asset('assets/search-icon.svg') }}" alt="Search Icon"
+                                class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4 md:h-5 md:w-5">
                         </form>
                     </div>
                 </div>
@@ -47,7 +49,6 @@
                                 <th class="p-4 text-lg font-extrabold text-gray-700">ID</th>
                                 <th class="p-4 text-lg font-extrabold text-gray-700">Gambar</th>
                                 <th class="p-4 text-lg font-extrabold text-gray-700">Nama Layanan</th>
-                                <th class="p-4 text-lg font-extrabold text-gray-700">Harga</th>
                                 <th class="p-4 text-lg font-extrabold text-gray-700">Deskripsi</th>
                                 <th class="p-4 text-lg font-extrabold text-gray-700 text-center">Aksi</th>
                             </tr>
@@ -57,21 +58,24 @@
                                 <tr class="border-b hover:bg-gray-50">
                                     <td class="p-4 font-semibold text-gray-600">{{ $loop->iteration }}</td>
                                     <td class="p-4">
-                                        @if(isset($layanan->gambar[0]))
+                                        @if (isset($layanan->gambar[0]))
                                             <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-100">
                                                 <img src="{{ asset('images/layanan/' . $layanan->gambar[0]) }}"
-                                                     alt="{{ $layanan->name }}"
-                                                     class="w-full h-full object-cover">
+                                                    alt="{{ $layanan->name, $layanan->unit_satuan }}"
+                                                    class="w-full h-full object-cover">
                                             </div>
                                         @else
-                                            <div class="w-20 h-20 bg-gray-200 rounded-md flex items-center justify-center text-sm text-gray-500">
+                                            <div
+                                                class="w-20 h-20 bg-gray-200 rounded-md flex items-center justify-center text-sm text-gray-500">
                                                 No Image
                                             </div>
                                         @endif
                                     </td>
-                                    <td class="p-4 font-semibold text-gray-600">{{ $layanan->name }}</td>
                                     <td class="p-4 font-semibold text-gray-600">
-                                        Rp {{ number_format($layanan->harga, 0, ',', '.') }}
+                                        {{ $layanan->name }}
+                                        <span class="text-sm text-gray-500">
+                                            ({{ $layanan->unit_satuan ?? '-' }})
+                                        </span>
                                     </td>
                                     <td class="p-4 font-semibold text-gray-600">
                                         {{ Str::limit($layanan->deskripsi, 50) }}
@@ -80,12 +84,18 @@
                                         @php
                                             $layananData = json_encode([
                                                 'name' => $layanan->name,
-                                                'harga' => $layanan->harga,
                                                 'deskripsi' => $layanan->deskripsi,
                                                 'gambar' => $layanan->gambar ?? [],
-                                                'url' => route('layanan.update', $layanan->id)
+                                                'units' => $layanan->units->map(function ($u) {
+                                                    return [
+                                                        'unit_satuan' => $u->unit_satuan,
+                                                        'harga' => $u->harga,
+                                                    ];
+                                                }),
+                                                'url' => route('layanan.update', $layanan->id),
                                             ]);
                                         @endphp
+
                                         <button @click="$dispatch('open-edit-modal', {{ $layananData }})"
                                             class="bg-green-100 text-green-700 font-bold py-2 px-6 rounded-md hover:bg-green-200">
                                             Update
@@ -113,10 +123,9 @@
                     @forelse($layanans as $layanan)
                         <div class="border rounded-xl p-4 flex gap-3">
                             <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
-                                @if(isset($layanan->gambar[0]))
+                                @if (isset($layanan->gambar[0]))
                                     <img src="{{ asset('images/layanan/' . $layanan->gambar[0]) }}"
-                                         alt="{{ $layanan->name }}"
-                                         class="w-full h-full object-cover">
+                                        alt="{{ $layanan->name }}" class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-xs text-gray-500">
                                         No Image
@@ -125,7 +134,12 @@
                             </div>
                             <div class="flex-1 flex flex-col justify-between">
                                 <div>
-                                    <p class="font-semibold text-gray-800 text-sm">{{ $layanan->name }}</p>
+                                    <p class="font-semibold text-gray-800 text-sm">
+                                        {{ $layanan->name }}
+                                        <span class="text-xs text-gray-500">
+                                            ({{ $layanan->unit_satuan ?? '-' }})
+                                        </span>
+                                    </p>
                                     <p class="font-bold text-blue-600 text-sm mt-1">
                                         Rp {{ number_format($layanan->harga, 0, ',', '.') }}
                                     </p>
@@ -140,7 +154,7 @@
                                             'harga' => $layanan->harga,
                                             'deskripsi' => $layanan->deskripsi,
                                             'gambar' => $layanan->gambar ?? [],
-                                            'url' => route('layanan.update', $layanan->id)
+                                            'url' => route('layanan.update', $layanan->id),
                                         ]);
                                     @endphp
                                     <button @click="$dispatch('open-edit-modal', {{ $layananData }})"

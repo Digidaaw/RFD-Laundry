@@ -13,8 +13,8 @@ return new class extends Migration
             $table->unsignedBigInteger('transaksi_id');
             $table->unsignedBigInteger('layanan_id');
 
-            // mengikuti konsep yang ada: harga per kg/pcs * berat
-            $table->decimal('berat', 10, 2);
+            // mengikuti konsep yang ada: harga per kg/pcs * qty
+            $table->decimal('qty', 10, 2);
             $table->decimal('harga_satuan', 10, 2);
             $table->decimal('subtotal', 12, 2);
 

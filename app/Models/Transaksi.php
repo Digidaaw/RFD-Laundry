@@ -17,7 +17,6 @@ class Transaksi extends Model
         'id_pelanggan',
         'id_layanan',
         'tanggal_order',
-        'berat_laundry',
         'subtotal',
         'potongan',
         'total_harga',
@@ -38,7 +37,7 @@ class Transaksi extends Model
 
     public function layanan()
     {
-        return $this->belongsTo(Layanan::class, 'id_layanan');
+        return $this->belongsTo(Layanan::class, 'id_layanan')->withTrashed();
     }
 
     public function user()

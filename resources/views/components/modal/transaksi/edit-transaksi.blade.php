@@ -66,6 +66,14 @@
             this.bayarDisplay = this.bayarNumeric ? this.bayarNumeric.toLocaleString('id-ID') : '';
             this.bayarError = '';
             this.open = true; // Ini akan memicu $watch di atas
+
+            // Set form action menggunakan route yang sudah di-generate oleh backend
+            this.$nextTick(() => {
+                if (this.$refs.editForm && detail.id) {
+                    // Gunakan base URL + id untuk action
+                    this.$refs.editForm.action = window.location.origin + '/transaksi/' + detail.id;
+                }
+            });
         },
 
         validateBayar() {
@@ -107,12 +115,13 @@
         <!-- Form dibuat scrollable jika kontennya panjang -->
         <div class="overflow-y-auto flex-grow pr-2">
             
-            <form x-bind:action="data.id ? '{{ url('transaksi') }}/' + data.id : ''" method="POST">
+            <form method="POST" action="" x-ref="editForm">
                 @csrf
                 @method('PUT')
 
                 {{-- Input tersembunyi untuk redirect --}}
                 <input type="hidden" name="_redirect_url" :value="window.location.href.includes('report') ? window.location.href : ''">
+                <input type="hidden" name="transaksi_id" :value="data.id">
 
                 <div class="mb-4">
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Tanggal Order</label>

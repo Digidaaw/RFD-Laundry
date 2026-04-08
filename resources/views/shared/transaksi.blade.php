@@ -44,10 +44,8 @@
                     <table class="w-full text-left">
                         <thead class="bg-gray-50 border-b">
                             <tr>
-                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">No Invoice</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Tanggal</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Pelanggan</th>
-                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Deskripsi</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Dibuat Oleh</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Total</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Sisa Bayar</th>
@@ -58,12 +56,10 @@
                         <tbody>
                             @forelse($transaksis as $transaksi)
                                 <tr class="border-b hover:bg-gray-50">
-                                    <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->no_invoice }}</td>
                                     <td class="p-3 text-sm md:p-4 md:text-base ...">
                                         {{ \Carbon\Carbon::parse($transaksi->tanggal_order)->format('d-m-Y') }}</td>
                                     <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->pelanggan->name ?? 'N/A' }}
                                     </td>
-                                    <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->deskripsi ?? '-' }}</td>
                                     <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->created_by ?? 'User Dihapus' }}</td>
                                     <td class="p-3 text-sm md:p-4 md:text-base ...">Rp
                                         {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>

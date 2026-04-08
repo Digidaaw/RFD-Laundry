@@ -54,7 +54,7 @@
                 <div class="bg-white rounded-xl shadow-md p-6">
                     <p class="text-gray-700 text-sm font-semibold mb-2">Total Sales</p>
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">Rp {{ number_format($totalSales ?? 0, 0, ',', '.') }}</h3>
-                    <p class="text-sm text-gray-500 font-semibold">Total uang yang telah dibayar</p>
+                    <p class="text-sm text-gray-500 font-semibold">Total nilai transaksi</p>
                 </div>
                 
                 <!-- Card Total Piutang (Dinamis) -->
