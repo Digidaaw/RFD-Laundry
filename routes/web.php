@@ -56,7 +56,7 @@ Route::middleware(['auth'])->group(function () {
         return view('shared.dashboard', compact('totalUser', 'totalOrder', 'totalSales', 'orderPending'));
     })->name('dashboard');
 
-    Route::resource('users', UserController::class);
+    Route::resource('users', UserController::class)->middleware('role:admin');
 
     Route::resource('layanan', LayananController::class);
 

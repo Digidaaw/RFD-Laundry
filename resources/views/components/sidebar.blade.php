@@ -77,6 +77,7 @@
                 <span class="text-lg font-semibold">Report</span>
             </a>
 
+            @if(Auth::check() && Auth::user()->role === 'admin')
             <a href="{{ route('users.index') }}"
                class="flex items-center gap-6 px-6 py-4 rounded-xl font-poppins {{ $isKasir ? 'bg-[#4379EE] text-white' : 'text-[#737791] hover:bg-gray-100' }}">
 
@@ -84,6 +85,7 @@
                      class="w-6 h-6 {{ $isKasir ? 'filter brightness-0 invert' : '' }}" alt="Kasir">
                 <span class="text-lg font-semibold">Kasir</span>
             </a>
+            @endif
         </nav>
 
         <div class="mt-4 flex-shrink-0">

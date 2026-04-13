@@ -15,7 +15,14 @@
                 <h2 class="text-3xl lg:text-4xl font-semibold text-[#151d48]">Laporan Piutang</h2>
             </div>
             <div class="flex items-center gap-8">
-                {{-- ... (Profil Admin) ... --}}
+                <div class="flex items-center gap-4">
+                    <img src="{{ asset('img/rectangle-1393.png') }}"
+                         class="w-[60px] h-[60px] rounded-full object-cover" alt="Profile">
+                    <div class="hidden md:block">
+                        <p class="text-base font-medium text-gray-900">{{ Auth::user()->name ?? 'User' }}</p>
+                        <p class="text-sm text-gray-500">{{ Auth::user()->role ?? 'User' }}</p>
+                    </div>
+                </div>
             </div>
         </header>
 
