@@ -17,10 +17,13 @@ class TransaksiController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Transaksi::with(['pelanggan', 'layanan', 'user', 'items.layanan'])->latest();
+        $search = $request->search ?? '';
+        $sort = $request->input('sort', 'updated_latest');
+        $type = $request->input('type', 'all');
 
-        if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
+        $query = Transaksi::with(['pelanggan', 'layanan', 'user', 'items.layanan']);
+
+        if ($search !== '') {
             $query->where(function ($q) use ($search) {
                 $q->where('no_invoice', 'like', '%' . $search . '%')
                     ->orWhere('deskripsi', 'like', '%' . $search . '%')
@@ -30,11 +33,25 @@ class TransaksiController extends Controller
             });
         }
 
+        if ($type === 'lunas') {
+            $query->where('status_pembayaran', 'lunas');
+        } elseif ($type === 'dp') {
+            $query->where('status_pembayaran', 'dp');
+        }
+
+        if ($sort === 'updated_oldest') {
+            $query->orderBy('updated_at', 'asc');
+        } else {
+            $query->orderBy('updated_at', 'desc');
+        }
+
         return view('shared.transaksi', [
-            'transaksis' => $query->get(),
+            'transaksis' => $query->paginate(5)->appends(['search' => $search, 'sort' => $sort, 'type' => $type]),
             'pelanggans' => Pelanggan::orderBy('name')->get(),
             'layanans' => Layanan::orderBy('name')->get(),
-            'search' => $request->search ?? ''
+            'search' => $search,
+            'sort' => $sort,
+            'type' => $type,
         ]);
     }
 
@@ -52,6 +69,24 @@ class TransaksiController extends Controller
             'potongan' => 'nullable|numeric|min:0',
             'jumlah_bayar' => 'required|numeric|min:0',
             'deskripsi' => 'nullable|string|max:255',
+        ], [
+            'id_pelanggan.required' => 'Pelanggan harus dipilih.',
+            'id_pelanggan.exists' => 'Pelanggan yang dipilih tidak ditemukan.',
+            'items.required' => 'Minimal 1 layanan harus ditambahkan.',
+            'items.min' => 'Minimal 1 layanan harus ditambahkan.',
+            'items.*.id_layanan.required' => 'Layanan harus dipilih.',
+            'items.*.id_layanan.exists' => 'Layanan yang dipilih tidak ditemukan.',
+            'items.*.unit_satuan.required' => 'Satuan harus dipilih.',
+            'items.*.unit_satuan.in' => 'Satuan hanya boleh: kg, pcs, atau meter.',
+            'items.*.qty.required' => 'Qty harus diisi.',
+            'items.*.qty.numeric' => 'Qty harus berupa angka.',
+            'items.*.qty.min' => 'Qty minimal 0.1.',
+            'items.*.qty.max' => 'Qty maksimal 999.9.',
+            'potongan.numeric' => 'Potongan harus berupa angka.',
+            'potongan.min' => 'Potongan tidak boleh negatif.',
+            'jumlah_bayar.required' => 'Jumlah bayar harus diisi.',
+            'jumlah_bayar.numeric' => 'Jumlah bayar harus berupa angka.',
+            'jumlah_bayar.min' => 'Jumlah bayar tidak boleh negatif.',
         ]);
     } else {
         $request->validate([
@@ -61,6 +96,20 @@ class TransaksiController extends Controller
             'potongan' => 'nullable|numeric|min:0',
             'jumlah_bayar' => 'required|numeric|min:0',
             'deskripsi' => 'nullable|string|max:255',
+        ], [
+            'id_pelanggan.required' => 'Pelanggan harus dipilih.',
+            'id_pelanggan.exists' => 'Pelanggan yang dipilih tidak ditemukan.',
+            'id_layanan.required' => 'Layanan harus dipilih.',
+            'id_layanan.exists' => 'Layanan yang dipilih tidak ditemukan.',
+            'qty.required' => 'Qty harus diisi.',
+            'qty.numeric' => 'Qty harus berupa angka.',
+            'qty.min' => 'Qty minimal 0.1.',
+            'qty.max' => 'Qty maksimal 999.9.',
+            'potongan.numeric' => 'Potongan harus berupa angka.',
+            'potongan.min' => 'Potongan tidak boleh negatif.',
+            'jumlah_bayar.required' => 'Jumlah bayar harus diisi.',
+            'jumlah_bayar.numeric' => 'Jumlah bayar harus berupa angka.',
+            'jumlah_bayar.min' => 'Jumlah bayar tidak boleh negatif.',
         ]);
     }
 
@@ -202,8 +251,7 @@ class TransaksiController extends Controller
             'total_harga' => $totalHarga,
             'jumlah_bayar' => $jumlahBayar,
             'sisa_bayar' => $sisaBayar,
-            'status_order' => 'Baru',
-            'status_pembayaran' => ($sisaBayar <= 0) ? 'Lunas' : 'Belum Lunas',
+            'status_pembayaran' => ($sisaBayar <= 0) ? 'Lunas' : 'DP',
         ]);
 
         $transaksi->items()->createMany($createItems);
@@ -226,7 +274,6 @@ class TransaksiController extends Controller
             'id_pelanggan' => 'required|exists:pelanggans,id',
             'tanggal_order' => 'required|date',
             'deskripsi' => 'nullable|string|max:255',
-            'status_order' => 'required|string',
             'jumlah_bayar' => 'required|numeric|min:0',
         ]);
 
@@ -240,10 +287,9 @@ class TransaksiController extends Controller
             'id_pelanggan' => $request->id_pelanggan,
             'tanggal_order' => $request->tanggal_order,
             'deskripsi' => $request->deskripsi,
-            'status_order' => $request->status_order,
             'jumlah_bayar' => $request->jumlah_bayar,
             'sisa_bayar' => $sisaBayar,
-            'status_pembayaran' => ($sisaBayar <= 0) ? 'Lunas' : 'Belum Lunas',
+            'status_pembayaran' => ($sisaBayar <= 0) ? 'Lunas' : 'DP',
         ]);
 
         // Handle redirect based on _redirect_url
@@ -272,7 +318,7 @@ class TransaksiController extends Controller
         $transaksi->update([
             'jumlah_bayar' => $jumlahBayarBaru,
             'sisa_bayar' => $sisaBayarBaru,
-            'status_pembayaran' => ($sisaBayarBaru <= 0) ? 'Lunas' : 'Belum Lunas',
+            'status_pembayaran' => ($sisaBayarBaru <= 0) ? 'Lunas' : 'DP',
         ]);
 
         return redirect()->route('report.piutang')->with('success', 'Pembayaran berhasil.');

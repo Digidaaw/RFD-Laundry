@@ -29,27 +29,29 @@
 
                 <!-- NAMA -->
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-lg font-semibold mb-2">Nama Layanan</label>
-                    <input type="text" name="name" value="{{ old('name') }}"
+                    <label class="block text-gray-700 text-lg font-semibold mb-2">Nama Layanan <span class="text-red-500">*</span></label>
+                    <input type="text" name="name" value="{{ old('name') }}" required
                         class="w-full border rounded-lg px-4 py-2 @error('name') border-red-500 @enderror">
+                    @error('name')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- 🔥 MULTI UNIT -->
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-2">
-                        <label class="text-lg font-semibold text-gray-700">Satuan & Harga</label>
+                        <label class="text-lg font-semibold text-gray-700">Satuan & Harga <span class="text-red-500">*</span></label>
                         <button type="button" @click="addUnit()" class="text-blue-600 text-sm font-semibold">+
                             Tambah</button>
                     </div>
 
                     <template x-for="(row, index) in units" :key="index">
                         <div class="grid grid-cols-12 gap-3 mb-3 border p-3 rounded-lg">
-
                             <!-- UNIT -->
                             <div class="col-span-5">
-                                <select :name="`units[${index}][unit_satuan]`" x-model="row.unit_satuan"
-                                    class="w-full border rounded-lg px-3 py-2">
-                                    <option value="">Pilih</option>
+                                <select :name="`units[${index}][unit_satuan]`" x-model="row.unit_satuan" required
+                                    class="w-full border rounded-lg px-3 py-2 @error('units.*.unit_satuan') border-red-500 @enderror">
+                                    <option value="">Pilih Satuan</option>
                                     <option value="kg">Kg</option>
                                     <option value="pcs">Pcs</option>
                                     <option value="meter">Meter</option>
@@ -60,8 +62,8 @@
                             <div class="col-span-5">
                                 <div class="relative">
                                     <span class="absolute left-3 top-2 text-gray-500">Rp</span>
-                                    <input type="number" :name="`units[${index}][harga]`" x-model="row.harga"
-                                        class="w-full border rounded-lg pl-10 pr-2 py-2" placeholder="50000">
+                                    <input type="number" :name="`units[${index}][harga]`" x-model="row.harga" required
+                                        class="w-full border rounded-lg pl-10 pr-2 py-2 @error('units.*.harga') border-red-500 @enderror" placeholder="50000" min="0">
                                 </div>
                             </div>
 
@@ -76,21 +78,52 @@
                         </div>
                     </template>
 
-                    @error('units')
-                        <p class="text-red-500 text-sm">{{ $message }}</p>
-                    @enderror
+                    @if ($errors->has('units') || $errors->has('units.*.unit_satuan') || $errors->has('units.*.harga'))
+                        <div class="text-red-500 text-sm">
+                            @error('units')
+                                <p>{{ $message }}</p>
+                            @enderror
+                            @foreach ($errors->get('units.*.unit_satuan') as $messages)
+                                @foreach ($messages as $message)
+                                    <p>{{ $message }}</p>
+                                @endforeach
+                            @endforeach
+                            @foreach ($errors->get('units.*.harga') as $messages)
+                                @foreach ($messages as $message)
+                                    <p>{{ $message }}</p>
+                                @endforeach
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
                 <!-- DESKRIPSI -->
                 <div class="mb-4">
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Deskripsi</label>
-                    <textarea name="deskripsi" rows="3" class="w-full border rounded-lg px-4 py-2">{{ old('deskripsi') }}</textarea>
+                    <textarea name="deskripsi" rows="3" class="w-full border rounded-lg px-4 py-2" required>{{ old('deskripsi') }}</textarea>
+                    @foreach ($errors->get('deskripsi') as $message)
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @endforeach
                 </div>
 
                 <!-- GAMBAR -->
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-lg font-semibold mb-2">Gambar</label>
-                    <input type="file" name="gambar[]" multiple class="w-full border rounded-lg p-2">
+                    <label class="block text-gray-700 text-lg font-semibold mb-2">Gambar <span class="text-red-500">*</span></label>
+                    <input type="file" name="gambar[]" multiple required accept="image/*"
+                        class="w-full border rounded-lg p-2 @error('gambar') border-red-500 @enderror">
+                    <p class="text-gray-500 text-sm mt-1">Format: JPEG, PNG, JPG, GIF, SVG (Max: 2MB per file)</p>
+                    @if ($errors->has('gambar') || $errors->has('gambar.*'))
+                        <div class="text-red-500 text-sm mt-2">
+                            @error('gambar')
+                                <p>{{ $message }}</p>
+                            @enderror
+                            @foreach ($errors->get('gambar.*') as $messages)
+                                @foreach ($messages as $message)
+                                    <p>{{ $message }}</p>
+                                @endforeach
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
                 <!-- BUTTON -->

@@ -36,7 +36,6 @@ class LaporanPelangganExport
             'Total Harga',
             'Jumlah Bayar',
             'Sisa Bayar',
-            'Status Order',
             'Status Pembayaran',
         ];
     }
@@ -63,7 +62,6 @@ class LaporanPelangganExport
             $transaksi->total_harga,
             $transaksi->jumlah_bayar,
             $transaksi->sisa_bayar,
-            $transaksi->status_order,
             $transaksi->status_pembayaran,
         ];
     }

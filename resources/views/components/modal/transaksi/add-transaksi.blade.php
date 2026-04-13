@@ -305,6 +305,15 @@ border-red-500
                     @error('items')
                         <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
                     @enderror
+                    @if ($errors->has('items.*'))
+                        <div class="text-red-600 text-sm mt-1">
+                            @foreach ($errors->get('items.*') as $messages)
+                                @foreach ($messages as $message)
+                                    <p>{{ $message }}</p>
+                                @endforeach
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
                 <div class="grid grid-cols-2 gap-4 mb-4">
@@ -317,11 +326,11 @@ border-red-500
                             placeholder="0">
                     </div>
                     <div>
-                        <label class="block text-gray-700 text-lg font-semibold mb-2">Jumlah Bayar</label>
-                        <input type="hidden" name="jumlah_bayar" :value="bayar">
+                        <label class="block text-gray-700 text-lg font-semibold mb-2">Jumlah Bayar <span class="text-red-500">*</span></label>
+                        <input type="hidden" name="jumlah_bayar" :value="bayar" required>
                         <input type="text" x-model="bayarDisplay" @input="onBayarInput($event.target.value)"
-                            inputmode="numeric"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500"
+                            inputmode="numeric" required
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 @error('jumlah_bayar') border-red-500 @enderror"
                             placeholder="0">
                         <small class="text-gray-500 text-xs mt-1 block">
                             Minimal pembayaran: <span x-text="formatRp(minBayar)"></span> (50% dari total)
@@ -330,6 +339,9 @@ border-red-500
                            class="text-red-600 text-sm mt-1">
                            Pembayaran minimal harus 50% dari total harga
                         </p>
+                        @error('jumlah_bayar')
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
 

@@ -108,7 +108,7 @@ class ReportController extends Controller
         $search = $request->input('search');
 
         $query = Transaksi::with(['pelanggan'])
-            ->where('status_pembayaran', 'Belum Lunas')
+            ->where('status_pembayaran', 'DP')
             ->where('sisa_bayar', '>', 0);
 
         if ($search) {

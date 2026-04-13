@@ -43,7 +43,7 @@ Route::middleware('guest')->group(function () {
 
 
 // --- ROUTE YANG MEMERLUKAN LOGIN ---
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'role'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     Route::get('/dashboard', function () {

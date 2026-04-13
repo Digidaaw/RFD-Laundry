@@ -112,7 +112,7 @@
                                     <td class="p-3 text-sm md:p-4 md:text-base font-semibold text-gray-900">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
                                     <td class="p-3 md:p-4">
                                         <span class="px-3 py-1 text-xs md:text-sm rounded-full font-medium" 
-                                              :class="{ 'bg-red-100 text-red-800': '{{ $transaksi->status_pembayaran }}' === 'Belum Lunas', 'bg-green-100 text-green-800': '{{ $transaksi->status_pembayaran }}' === 'Lunas' }">
+                                              :class="{ 'bg-red-100 text-red-800': '{{ $transaksi->status_pembayaran }}' === 'DP', 'bg-green-100 text-green-800': '{{ $transaksi->status_pembayaran }}' === 'Lunas' }">
                                             {{ $transaksi->status_pembayaran }}
                                         </span>
                                     </td>
