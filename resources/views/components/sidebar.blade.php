@@ -11,15 +11,15 @@
 @endphp
 {{-- 
     PERBAIKAN FUNGSIONALITAS:
-    - Kelas 'fixed' agar bisa melayang di mobile
-    - 'lg:static' untuk kembali normal di desktop
+    - Kelas 'fixed' untuk posisi tetap di semua ukuran
+    - 'lg:shadow-none' untuk tanpa shadow di desktop
     - 'transform -translate-x-full' untuk sembunyi di mobile
     - 'x-bind:class' untuk logika buka/tutup
 --}}
 <aside class="fixed top-0 left-0 w-[347px] h-full bg-white shadow-lg z-40
-               lg:static lg:translate-x-0
-               transform -translate-x-full transition-transform duration-300 ease-in-out"
-       x-bind:class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+               lg:shadow-none
+               transform transition-transform duration-300 ease-in-out"
+       x-bind:class="sidebarOpen ? 'translate-x-0 lg:translate-x-0' : '-translate-x-full lg:translate-x-0'">
 
     <div class="relative w-full h-screen p-6 flex flex-col">
         <div class="flex items-center justify-between mb-12 mt-4 flex-shrink-0">
@@ -27,7 +27,7 @@
                 <img src="{{ asset('assets/logo.png') }}" class="w-[56px] h-[56px]" alt="Logo">
                 <h1 class="text-3xl pl-2 font-semibold text-[#151d48]">RFD</h1>
             </div>
-            <button @click="sidebarOpen = false" class=":hidden p-2 text-gray-500 hover:text-gray-800">
+            <button @click="sidebarOpen = false" class="lg:hidden p-2 text-gray-500 hover:text-gray-800">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>

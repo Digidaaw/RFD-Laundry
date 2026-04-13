@@ -93,7 +93,7 @@ class="font-sans bg-gray-100">
         @include('components.sidebar')
 
         <!-- Konten Utama -->
-        <div class="flex-1">
+        <div class="flex-1 lg:ml-[347px]">
             @yield('content')
         </div>
 

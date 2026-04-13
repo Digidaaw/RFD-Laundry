@@ -28,7 +28,7 @@ class PelangganController extends Controller
             $query->orderBy('updated_at', 'desc');
         }
 
-        $pelanggans = $query->paginate(5)->appends(['search' => $search, 'sort' => $sort]);
+        $pelanggans = $query->paginate(10)->appends(['search' => $search, 'sort' => $sort]);
 
         return view('shared.pelanggan', compact('pelanggans', 'search', 'sort'));
     }

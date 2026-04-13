@@ -2,14 +2,9 @@
 @section('title', 'Kelola Pelanggan')
 
 @section('content')
-    <!-- Main Area -->
     <div>
-        <!-- Topbar -->
-        <header class="w-full h-[120px] bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
+        <header class="w-full h-[120px] sticky top-0 z-50 bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
             <div class="flex items-center gap-4">
-                {{-- Tombol ini mengacu ke x-data global di
-
-                <body> --}}
                 <button @click.stop="sidebarOpen = !sidebarOpen" class="lg:hidden text-gray-600">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
@@ -25,8 +20,6 @@
             </div>
         </header>
 
-        <!-- Content Area -->
-        {{-- PERBAIKAN: x-data ini sekarang HANYA mengurus state halaman ini --}}
         <main class="p-6 lg:p-10" x-data="{
             openAddModal: {{ $errors->any() ? 'true' : 'false' }},
             openDeleteModal: false,
@@ -110,7 +103,6 @@
                                             Laporan
                                         </a>
 
-                                        {{-- Tombol Update dengan Data Langsung (Inline) --}}
                                         <button
                                             @click="$dispatch('open-edit-customer-modal', {{ json_encode([
                                                 'name' => $pelanggan->name,
@@ -121,7 +113,6 @@
                                             Update
                                         </button>
 
-                                        {{-- Tombol ini mengacu ke x-data di <main> --}}
                                         <button
                                             @click="openDeleteModal = true; deleteUrl = '{{ route('pelanggan.destroy', $pelanggan->id) }}';"
                                             class="bg-red-100 text-red-700 font-bold py-2 px-6 rounded-md hover:bg-red-200 transition">
@@ -142,7 +133,6 @@
                 </div>
             </div>
 
-            {{-- Ganti nama 'customer' menjadi 'pelanggan' agar konsisten --}}
             @include('components.modal.customer.add-customer')
             @include('components.modal.customer.edit-customer')
             @include('components.modal.customer.delete-customer')

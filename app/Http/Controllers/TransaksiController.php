@@ -46,7 +46,7 @@ class TransaksiController extends Controller
         }
 
         return view('shared.transaksi', [
-            'transaksis' => $query->paginate(5)->appends(['search' => $search, 'sort' => $sort, 'type' => $type]),
+            'transaksis' => $query->paginate(10)->appends(['search' => $search, 'sort' => $sort, 'type' => $type]),
             'pelanggans' => Pelanggan::orderBy('name')->get(),
             'layanans' => Layanan::orderBy('name')->get(),
             'search' => $search,

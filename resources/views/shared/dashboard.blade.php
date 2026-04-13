@@ -2,10 +2,9 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <!-- Main Area -->
     <div>
         <!-- Topbar -->
-        <header class="w-full h-[120px] bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
+        <header class="w-full h-[120px] sticky top-0 z-50 bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
             <div class="flex items-center gap-4">
                 {{-- Tombol Hamburger untuk Mobile --}}
                 <button @click.stop="sidebarOpen = !sidebarOpen" class="lg:hidden text-gray-600">
@@ -62,12 +61,107 @@
                 </div>
             </div>
 
-            <!-- Chart placeholder (Seperti yang Anda minta, ini dibiarkan) -->
-            <div
-                class="mt-12 w-full h-[400px] bg-white rounded-xl shadow-md flex items-center justify-center text-gray-400 text-lg">
-                [ Chart Component Placeholder ]
+            <!-- Stacked Column Chart: Total Pendapatan Harian dan Piutang Harian -->
+            <div class="mt-12 w-full bg-white rounded-xl shadow-md p-6">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
+                    <div>
+                        <h3 class="text-xl font-semibold text-gray-900">Pendapatan & Piutang Mingguan</h3>
+                        <p class="text-sm text-gray-500">Total pendapatan harian dan piutang harian dalam 7 hari terakhir.</p>
+                    </div>
+                    <div class="text-sm text-gray-500">
+                        Rentang: {{ now()->subDays(6)->format('d M') }} - {{ now()->format('d M Y') }}
+                    </div>
+                </div>
+                <div class="w-full h-[420px]">
+                    <canvas id="weeklyRevenueChart" class="w-full h-full"></canvas>
+                </div>
             </div>
 
         </main>
     </div>
 @endsection
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('weeklyRevenueChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: {!! json_encode($dailyLabels) !!},
+                    datasets: [
+                        {
+                            label: 'Pendapatan Harian',
+                            data: {!! json_encode($dailyRevenueData) !!},
+                            backgroundColor: 'rgba(59, 130, 246, 0.85)',
+                            borderColor: 'rgba(37, 99, 235, 1)',
+                            borderWidth: 1,
+                        },
+                        {
+                            label: 'Piutang Harian',
+                            data: {!! json_encode($dailyDebtData) !!},
+                            backgroundColor: 'rgba(34, 197, 94, 0.85)',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#1f2937',
+                                boxWidth: 12,
+                                padding: 16,
+                            },
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            grid: {
+                                display: false,
+                            },
+                            ticks: {
+                                color: '#475569',
+                                font: {
+                                    size: 12,
+                                },
+                            },
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#475569',
+                                font: {
+                                    size: 12,
+                                },
+                                callback: function (value) {
+                                    return new Intl.NumberFormat('id-ID', {
+                                        style: 'currency',
+                                        currency: 'IDR',
+                                        maximumFractionDigits: 0,
+                                    }).format(value);
+                                },
+                            },
+                            grid: {
+                                color: 'rgba(148, 163, 184, 0.2)',
+                            },
+                        },
+                    },
+                },
+            });
+        });
+    </script>
+@endpush

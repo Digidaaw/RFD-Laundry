@@ -28,7 +28,7 @@ class LayananController extends Controller
             $query->orderBy('updated_at', 'desc');
         }
 
-        $layanans = $query->with('units')->paginate(5)->appends(['search' => $search, 'sort' => $sort]);
+        $layanans = $query->with('units')->paginate(10)->appends(['search' => $search, 'sort' => $sort]);
         return view('admin.layanan', compact('layanans', 'search', 'sort'));
     }
 
@@ -64,7 +64,6 @@ class LayananController extends Controller
 
     return DB::transaction(function () use ($request) {
 
-        // UPLOAD GAMBAR
         $imageNames = [];
         if ($request->hasFile('gambar')) {
             foreach ($request->file('gambar') as $image) {
@@ -74,14 +73,12 @@ class LayananController extends Controller
             }
         }
 
-        // SIMPAN LAYANAN
         $layanan = Layanan::create([
             'name' => $request->name,
             'deskripsi' => $request->deskripsi,
             'gambar' => $imageNames,
         ]);
 
-        // SIMPAN UNITS
         foreach ($request->units as $unit) {
             $layanan->units()->create([
                 'unit_satuan' => $unit['unit_satuan'],
@@ -129,7 +126,6 @@ class LayananController extends Controller
         $updateData = $request->only('name', 'deskripsi');
         $currentImages = $layanan->gambar ?? [];
 
-        // HAPUS GAMBAR
         if ($request->has('images_to_delete')) {
             foreach ($request->images_to_delete as $img) {
                 $path = public_path('images/layanan/' . $img);
@@ -138,7 +134,6 @@ class LayananController extends Controller
             $currentImages = array_diff($currentImages, $request->images_to_delete);
         }
 
-        // TAMBAH GAMBAR
         if ($request->hasFile('gambar')) {
             foreach ($request->file('gambar') as $image) {
                 $imageName = time() . '_' . $image->getClientOriginalName();

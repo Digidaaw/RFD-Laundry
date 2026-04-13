@@ -3,7 +3,7 @@
 
 @section('content')
     <div>
-        <header class="w-full h-[120px] bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
+        <header class="w-full h-[120px] sticky top-0 z-50 bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
             <div class="flex items-center gap-4">
                 <button @click.stop="sidebarOpen = !sidebarOpen" class="lg:hidden text-gray-600">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"

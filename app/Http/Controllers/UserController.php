@@ -29,7 +29,7 @@ class UserController extends Controller
             $query->orderBy('updated_at', 'desc');
         }
 
-        $kasirs = $query->paginate(5)->appends(['search' => $search, 'sort' => $sort]);
+        $kasirs = $query->paginate(10)->appends(['search' => $search, 'sort' => $sort]);
         return view('admin.kasir', compact('kasirs', 'search', 'sort'));
     }
 
