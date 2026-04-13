@@ -8,41 +8,43 @@ use Illuminate\Validation\Rule;
 
 class PelangganController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
-        // 1. Ambil kata kunci pencarian dari request
         $search = $request->input('search');
+        $sort = $request->input('sort', 'updated_latest');
 
-        // 2. Mulai query ke model Pelanggan
         $query = Pelanggan::query();
 
-        // 3. Jika ada kata kunci pencarian, filter data
         if ($search) {
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('kontak', 'like', "%{$search}%");
+                    ->orWhere('kontak', 'like', "%{$search}%");
             });
         }
 
-        // 4. Ambil hasil akhir, urutkan dari yang terbaru
-        $pelanggans = $query->latest()->get();
+        if ($sort === 'updated_oldest') {
+            $query->orderBy('updated_at', 'asc');
+        } else {
+            $query->orderBy('updated_at', 'desc');
+        }
 
-        // 5. Kirim data pelanggan dan kata kunci pencarian ke view
-        return "view"('shared.pelanggan', compact('pelanggans', 'search'));
+        $pelanggans = $query->paginate(10)->appends(['search' => $search, 'sort' => $sort]);
+
+        return view('shared.pelanggan', compact('pelanggans', 'search', 'sort'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'kontak' => 'required|string|max:20|unique:pelanggans',
+            'kontak' => 'required|numeric|digits_between:10,13|unique:pelanggans',
         ], [
+            'name.required' => 'Nama pelanggan harus diisi.',
+            'name.string' => 'Nama pelanggan harus berupa teks.',
+            'name.max' => 'Nama pelanggan maksimal 255 karakter.',
+            'kontak.required' => 'Nomor kontak harus diisi.',
+            'kontak.numeric' => 'Nomor kontak harus berupa angka.',
+            'kontak.digits_between' => 'Nomor kontak harus antara 10 - 13 digit.',
             'kontak.unique' => 'Nomor kontak sudah terdaftar.',
         ]);
 
@@ -60,11 +62,17 @@ class PelangganController extends Controller
             'name' => 'required|string|max:255',
             'kontak' => [
                 'required',
-                'string',
-                'max:20',
+                'numeric',
+                'digits_between:10,13',
                 Rule::unique('pelanggans')->ignore($pelanggan->id),
             ],
         ], [
+            'name.required' => 'Nama pelanggan harus diisi.',
+            'name.string' => 'Nama pelanggan harus berupa teks.',
+            'name.max' => 'Nama pelanggan maksimal 255 karakter.',
+            'kontak.required' => 'Nomor kontak harus diisi.',
+            'kontak.numeric' => 'Nomor kontak harus berupa angka.',
+            'kontak.digits_between' => 'Nomor kontak harus antara 10 - 13 digit.',
             'kontak.unique' => 'Nomor kontak sudah digunakan oleh pelanggan lain.',
         ]);
 

@@ -27,8 +27,8 @@
 
             <!-- Fields (Nama, Username, Password with toggle) -->
             <div class="mb-4">
-                <label class="block text-gray-700 text-lg font-semibold mb-2">Nama</label>
-                <input type="text" name="name" placeholder="Masukkan nama" value="{{ old('name') }}"
+                <label class="block text-gray-700 text-lg font-semibold mb-2">Nama <span class="text-red-500">*</span></label>
+                <input type="text" name="name" placeholder="Masukkan nama" value="{{ old('name') }}" required
                     class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('name') border-red-500 @enderror" />
                 @error('name')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
@@ -36,19 +36,20 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700 text-lg font-semibold mb-2">Username</label>
-                <input type="text" name="username" placeholder="Masukkan username" value="{{ old('username') }}"
+                <label class="block text-gray-700 text-lg font-semibold mb-2">Username <span class="text-red-500">*</span></label>
+                <input type="text" name="username" placeholder="Masukkan username" value="{{ old('username') }}" required minlength="4"
                     class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('username') border-red-500 @enderror" />
+                <p class="text-gray-500 text-sm mt-1">Minimal 4 karakter</p>
                 @error('username')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
 
             <div class="mb-4" x-data="{ showPassword: false }">
-                <label for="password_add" class="block text-gray-700 text-lg font-semibold mb-2">Password</label>
+                <label for="password_add" class="block text-gray-700 text-lg font-semibold mb-2">Password <span class="text-red-500">*</span></label>
                 <div class="relative">
                     <input :type="showPassword ? 'text' : 'password'" id="password_add" name="password"
-                        placeholder="Masukkan password"
+                        placeholder="Masukkan password" required minlength="6"
                         class="w-full border border-gray-300 rounded-lg px-4 py-2 pr-10 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('password') border-red-500 @enderror" />
                     <button type="button" @click="showPassword = !showPassword"
                         class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700">
@@ -65,6 +66,7 @@
                         </svg>
                     </button>
                 </div>
+                <p class="text-gray-500 text-sm mt-1">Minimal 6 karakter</p>
                 @error('password')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror

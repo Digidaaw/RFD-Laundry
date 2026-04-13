@@ -22,7 +22,6 @@ class Transaksi extends Model
         'total_harga',
         'jumlah_bayar',
         'sisa_bayar',
-        'status_order',
         'status_pembayaran'
     ];
 

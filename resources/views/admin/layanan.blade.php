@@ -3,7 +3,7 @@
 
 @section('content')
     <div>
-        <header class="w-full h-[120px] bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
+        <header class="w-full h-[120px] sticky top-0 z-50 bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
             <div class="flex items-center gap-4">
                 <button @click.stop="sidebarOpen = !sidebarOpen" class="lg:hidden text-gray-600">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
@@ -14,7 +14,9 @@
                 <h2 class="text-3xl lg:text-4xl font-semibold text-[#151d48]">Kelola Layanan</h2>
             </div>
             <div class="flex items-center gap-8">
-                {{-- ... (Profil Admin) ... --}}
+                <div class="flex items-center gap-4">
+                    <p class="uppercase font-semibold text-sm text-gray-900">{{ Auth::user()->role ?? 'Panel' }}</p>
+                </div>
             </div>
         </header>
 
@@ -24,21 +26,46 @@
                     class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 md:px-6 md:py-3 rounded-lg shadow-md w-full lg:w-auto font-semibold">
                     + Tambah Layanan
                 </button>
-                <div class="flex items-center space-x-2 text-gray-700 font-bold text-base md:text-lg w-full lg:w-auto">
-                    <img src="{{ asset('assets/filter.svg') }}" alt="Filter Icon" class="hidden lg:block">
-                    <span class="pl-2 hidden lg:block">Cari</span>
-                    <div class="relative w-full">
-                        <form action="{{ route('layanan.index') }}" method="GET">
+                <div
+                    class="flex items-center flex-wrap gap-3 text-gray-700 font-bold text-base md:text-lg w-full lg:w-auto">
+                    <form action="{{ route('layanan.index') }}" method="GET" class="flex items-center gap-3 w-full">
+                        <div class="relative">
+                            <details class="relative group">
+                                <summary
+                                    class="list-none flex items-center justify-center bg-gray-100 rounded-full p-3 cursor-pointer hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <img src="{{ asset('assets/filter.svg') }}" alt="Sort Icon" class="h-5 w-5">
+                                </summary>
+                                <div
+                                    class="absolute right-0 top-full mt-2 w-48 rounded-xl border border-gray-200 bg-white shadow-lg z-10 overflow-hidden">
+
+                                    <button type="button"
+                                        onclick="this.closest('form').sort.value=''; this.closest('form').submit();"
+                                        class="w-full text-left px-4 py-3 hover:bg-gray-100 text-sm">
+                                        Semua
+                                    </button>
+                                    <button type="button"
+                                        onclick="this.closest('form').sort.value='updated_latest'; this.closest('form').submit();"
+                                        class="w-full text-left px-4 py-3 hover:bg-gray-100 text-sm">
+                                        Update Terbaru
+                                    </button>
+                                    <button type="button"
+                                        onclick="this.closest('form').sort.value='updated_oldest'; this.closest('form').submit();"
+                                        class="w-full text-left px-4 py-3 hover:bg-gray-100 text-sm">
+                                        Update Terlama
+                                    </button>
+                                </div>
+                            </details>
+                        </div>
+                        <div class="relative flex-1 min-w-0">
                             <input type="text" name="search" placeholder="Nama Layanan..." value="{{ $search ?? '' }}"
-                                class="bg-gray-100 rounded-full py-2 pl-10 md:py-3 md:pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm md:text-base">
+                                class="bg-gray-100 rounded-full py-2 pl-12 md:py-3 md:pl-14 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm md:text-base">
                             <img src="{{ asset('assets/search-icon.svg') }}" alt="Search Icon"
                                 class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4 md:h-5 md:w-5">
-                        </form>
-                    </div>
+                        </div>
+                        <input type="hidden" name="sort" value="{{ $sort ?? 'updated_latest' }}">
+                    </form>
                 </div>
             </div>
-
-
             <!-- Daftar Layanan -->
             <div class="bg-white rounded-xl shadow-md p-4 md:p-6">
                 <!-- Desktop: Tabel, Mobile: Kartu -->
@@ -59,7 +86,7 @@
                                     <td class="p-4 font-semibold text-gray-600">{{ $loop->iteration }}</td>
                                     <td class="p-4">
                                         @if (isset($layanan->gambar[0]))
-                                            <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-100">
+                                            <div class="w-10 h-10 rounded-md overflow-hidden bg-gray-100">
                                                 <img src="{{ asset('images/layanan/' . $layanan->gambar[0]) }}"
                                                     alt="{{ $layanan->name, $layanan->unit_satuan }}"
                                                     class="w-full h-full object-cover">
@@ -175,6 +202,10 @@
                         </p>
                     @endforelse
                 </div>
+            </div>
+
+            <div class="mt-6 flex justify-center">
+                {{ $layanans->links() }}
             </div>
 
             @include('components.modal.layanan.add-layanan')
