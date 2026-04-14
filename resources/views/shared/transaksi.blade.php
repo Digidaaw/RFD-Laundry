@@ -3,7 +3,8 @@
 
 @section('content')
     <div>
-        <header class="w-full h-[120px] sticky top-0 z-50 bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
+        <header
+            class="w-full h-[120px] sticky top-0 z-50 bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
             <div class="flex items-center gap-4">
                 <button @click.stop="sidebarOpen = !sidebarOpen" class="lg:hidden text-gray-600">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
@@ -116,8 +117,13 @@
                                     <td class="p-3 text-sm md:p-4 md:text-base ...">Rp
                                         {{ number_format($transaksi->sisa_bayar, 0, ',', '.') }}</td>
                                     <td class="p-3 md:p-4">
-                                        <span
-                                            class="block ... text-xs md:text-sm ...">{{ $transaksi->status_pembayaran }}</span>
+                                        <span @class([
+                                            'inline-flex justify-center items-center font-bold rounded-md transition text-sm md:text-base py-1 px-3 md:py-2 md:px-6 text-center w-[100px]',
+                                            'bg-green-100 text-green-700 hover:bg-green-200' => $transaksi->status_pembayaran == 'Lunas',
+                                            'bg-red-100 text-red-700 hover:bg-red-200' => $transaksi->status_pembayaran == 'DP',
+                                        ])>
+                                            {{ $transaksi->status_pembayaran }}
+                                        </span>
                                     </td>
                                     <td class="p-3 md:p-4 flex justify-center items-center space-x-1 md:space-x-2">
                                         @php $transaksiData = json_encode($transaksi); @endphp
