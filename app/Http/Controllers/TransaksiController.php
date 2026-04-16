@@ -28,15 +28,16 @@ class TransaksiController extends Controller
                 $q->where('no_invoice', 'like', '%' . $search . '%')
                     ->orWhere('deskripsi', 'like', '%' . $search . '%')
                     ->orWhereHas('pelanggan', function ($pelangganQuery) use ($search) {
-                        $pelangganQuery->where('name', 'like', '%' . $search . '%');
+                        $pelangganQuery->where('name', 'like', '%' . $search . '%')
+                            ->orWhere('kontak', 'like', '%' . $search . '%');
                     });
             });
         }
 
         if ($type === 'lunas') {
-            $query->where('status_pembayaran', 'lunas');
+            $query->where('status_pembayaran', 'Lunas');
         } elseif ($type === 'dp') {
-            $query->where('status_pembayaran', 'dp');
+            $query->where('status_pembayaran', 'DP');
         }
 
         if ($sort === 'updated_oldest') {

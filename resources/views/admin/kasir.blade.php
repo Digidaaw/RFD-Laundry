@@ -32,8 +32,9 @@
                         <div class="relative">
                             <details class="relative group">
                                 <summary
-                                    class="list-none flex items-center justify-center bg-gray-100 rounded-full p-3 cursor-pointer hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <img src="{{ asset('assets/filter.svg') }}" alt="Sort Icon" class="h-5 w-5">
+                                    class="list-none flex items-center justify-center gap-2 bg-gray-100 rounded-full px-4 py-3 cursor-pointer hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <img src="{{ asset('assets/filter.svg') }}" class="h-5 w-5">
+                                    <span class="text-sm font-semibold">Filter</span>
                                 </summary>
                                 <div
                                     class="absolute right-0 top-full mt-2 w-48 rounded-xl border border-gray-200 bg-white shadow-lg z-10 overflow-hidden">

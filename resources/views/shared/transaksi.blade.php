@@ -33,8 +33,9 @@
                         <div class="relative">
                             <details class="relative group">
                                 <summary
-                                    class="list-none flex items-center justify-center bg-gray-100 rounded-full p-3 cursor-pointer hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    class="list-none flex items-center justify-center gap-2 bg-gray-100 rounded-full px-4 py-3 cursor-pointer hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     <img src="{{ asset('assets/filter.svg') }}" class="h-5 w-5">
+                                    <span class="text-sm font-semibold">Filter</span>
                                 </summary>
 
                                 <div
@@ -76,7 +77,7 @@
                             </details>
                         </div>
                         <div class="relative flex-1 min-w-0">
-                            <input type="text" name="search" placeholder="Nama Pelanggan..."
+                            <input type="text" name="search" placeholder="Nama / No. Telepon Pelanggan..."
                                 value="{{ $search ?? '' }}"
                                 class="bg-gray-100 rounded-full py-2 pl-12 md:py-3 md:pl-14 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm md:text-base">
                             <img src="{{ asset('assets/search-icon.svg') }}"

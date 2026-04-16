@@ -104,7 +104,6 @@ class ReportController extends Controller
 
     public function laporanPiutang(Request $request)
     {
-        // ... (kode laporan piutang tetap sama) ...
         $search = $request->input('search');
 
         $query = Transaksi::with(['pelanggan'])
@@ -120,8 +119,9 @@ class ReportController extends Controller
 
         $piutangs = $query->latest()->get();
         $totalPiutang = $piutangs->sum('sisa_bayar');
+        $pelanggans = Pelanggan::orderBy('name')->get();
 
-        return view('shared.report.piutang', compact('piutangs', 'totalPiutang'));
+        return view('shared.report.piutang', compact('piutangs', 'totalPiutang', 'pelanggans'));
     }
 
     public function laporanPelanggan(Pelanggan $pelanggan)
