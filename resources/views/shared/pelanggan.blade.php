@@ -63,7 +63,7 @@
                             </details>
                         </div>
                         <div class="relative flex-1 min-w-0">
-                            <input type="text" name="search" placeholder="Nama Layanan..." value="{{ $search ?? '' }}"
+                            <input type="text" name="search" placeholder="Nama/Kontak..." value="{{ $search ?? '' }}"
                                 class="bg-gray-100 rounded-full py-2 pl-12 md:py-3 md:pl-14 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm md:text-base">
                             <img src="{{ asset('assets/search-icon.svg') }}" alt="Search Icon"
                                 class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4 md:h-5 md:w-5">
