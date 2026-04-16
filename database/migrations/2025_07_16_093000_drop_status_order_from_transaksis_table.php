@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('transaksis', function (Blueprint $table) {
-            // Memperbesar ukuran kolom agar bisa menampung teks yang lebih panjang
-            $table->string('status_pembayaran', 50)->change();
+            $table->dropColumn('status_order');
         });
     }
 
@@ -23,8 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('transaksis', function (Blueprint $table) {
-            // Mengembalikan ke ukuran default jika migrasi di-rollback
-            $table->string('status_pembayaran')->change();
+            $table->string('status_order')->default('Baru');
         });
     }
 };

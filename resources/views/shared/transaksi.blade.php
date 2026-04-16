@@ -3,7 +3,8 @@
 
 @section('content')
     <div>
-        <header class="w-full h-[120px] bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
+        <header
+            class="w-full h-[120px] sticky top-0 z-50 bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
             <div class="flex items-center gap-4">
                 <button @click.stop="sidebarOpen = !sidebarOpen" class="lg:hidden text-gray-600">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
@@ -15,12 +16,7 @@
             </div>
             <div class="flex items-center gap-8">
                 <div class="flex items-center gap-4">
-                    <img src="{{ asset('img/rectangle-1393.png') }}"
-                         class="w-[60px] h-[60px] rounded-full object-cover" alt="Profile">
-                    <div class="hidden md:block">
-                        <p class="text-base font-medium text-gray-900">{{ Auth::user()->name ?? 'User' }}</p>
-                        <p class="text-sm text-gray-500">{{ Auth::user()->role ?? 'User' }}</p>
-                    </div>
+                    <p class="uppercase font-semibold text-sm text-gray-900">{{ Auth::user()->role ?? 'Panel' }}</p>
                 </div>
             </div>
         </header>
@@ -31,20 +27,67 @@
                     class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 md:px-6 md:py-3 rounded-lg shadow-md w-full lg:w-auto font-semibold">
                     + Tambah Transaksi
                 </button>
-                <div class="flex items-center space-x-2 text-gray-700 font-bold text-base md:text-lg w-full lg:w-auto">
-                    <img src="{{ asset('assets/filter.svg') }}" alt="Filter Icon" class="hidden lg:block">
-                    <span class="pl-2 hidden lg:block">Cari</span>
-                    <div class="relative w-full">
-                        <form action="{{ route('transaksi.index') }}" method="GET">
-                            <input type="text" name="search" placeholder="Nama atau Kontak..." value="{{ $search ?? '' }}"
-                                class="bg-gray-100 rounded-full py-2 pl-10 md:py-3 md:pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm md:text-base">
-                            <img src="{{ asset('assets/search-icon.svg') }}" alt="Search Icon"
-                                class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4 md:h-5 md:w-5">
-                        </form>
-                    </div>
+                <div
+                    class="flex items-center flex-wrap gap-3 text-gray-700 font-bold text-base md:text-lg w-full lg:w-auto">
+                    <form action="{{ route('transaksi.index') }}" method="GET" class="flex items-center gap-3 w-full">
+                        <div class="relative">
+                            <details class="relative group">
+                                <summary
+                                    class="list-none flex items-center justify-center gap-2 bg-gray-100 rounded-full px-4 py-3 cursor-pointer hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <img src="{{ asset('assets/filter.svg') }}" class="h-5 w-5">
+                                    <span class="text-sm font-semibold">Filter</span>
+                                </summary>
+
+                                <div
+                                    class="absolute right-0 top-full mt-2 w-48 rounded-xl border border-gray-200 bg-white shadow-lg z-10 overflow-hidden">
+
+                                    <button type="button"
+                                        onclick="this.closest('form').sort.value=''; this.closest('form').type.value='all'; this.closest('form').submit();"
+                                        class="w-full text-left px-4 py-3 text-sm hover:bg-gray-100 
+                                        {{ ($sort ?? '') === '' && ($type ?? '') === 'all' ? 'bg-blue-50 text-blue-600 font-semibold' : '' }}">
+                                        Semua
+                                    </button>
+                                    <button type="button"
+                                        onclick="this.closest('form').sort.value='updated_latest'; this.closest('form').type.value='all'; this.closest('form').submit();"
+                                        class="w-full text-left px-4 py-3 text-sm hover:bg-gray-100 
+                                        {{ ($sort ?? '') === 'updated_latest' && ($type ?? '') === 'all' ? 'bg-blue-50 text-blue-600 font-semibold' : '' }}">
+                                        Update Terbaru
+                                    </button>
+
+                                    <button type="button"
+                                        onclick="this.closest('form').sort.value='updated_oldest'; this.closest('form').type.value='all'; this.closest('form').submit();"
+                                        class="w-full text-left px-4 py-3 text-sm hover:bg-gray-100
+                                        {{ ($sort ?? '') === 'updated_oldest' && ($type ?? '') === 'all' ? 'bg-blue-50 text-blue-600 font-semibold' : '' }}">
+                                        Update Terlama
+                                    </button>
+                                    <button type="button"
+                                        onclick="this.closest('form').sort.value=''; this.closest('form').type.value='lunas'; this.closest('form').submit();"
+                                        class="w-full text-left px-4 py-3 text-sm hover:bg-gray-100
+                                        {{ ($sort ?? '') === '' && ($type ?? '') === 'lunas' ? 'bg-green-50 text-green-600 font-semibold' : '' }}">
+                                        Lunas
+                                    </button>
+
+                                    <button type="button"
+                                        onclick="this.closest('form').sort.value=''; this.closest('form').type.value='dp'; this.closest('form').submit();"
+                                        class="w-full text-left px-4 py-3 text-sm hover:bg-gray-100
+                                        {{ ($sort ?? '') === '' && ($type ?? '') === 'dp' ? 'bg-yellow-50 text-yellow-600 font-semibold' : '' }}">
+                                        DP
+                                    </button>
+                                </div>
+                            </details>
+                        </div>
+                        <div class="relative flex-1 min-w-0">
+                            <input type="text" name="search" placeholder="Nama / No. Telepon Pelanggan..."
+                                value="{{ $search ?? '' }}"
+                                class="bg-gray-100 rounded-full py-2 pl-12 md:py-3 md:pl-14 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm md:text-base">
+                            <img src="{{ asset('assets/search-icon.svg') }}"
+                                class="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5">
+                        </div>
+                        <input type="hidden" name="sort" value="{{ $sort ?? 'updated_latest' }}">
+                        <input type="hidden" name="type" value="{{ $type ?? '' }}">
+                    </form>
                 </div>
             </div>
-
 
             <div class="bg-white rounded-xl shadow-md p-4 md:p-6">
                 <div class="overflow-x-auto">
@@ -57,7 +100,7 @@
                                 <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Total</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Sisa Bayar</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Status</th>
-                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Aksi</th>
+                                <th class="p-3 text-center text-sm md:p-4 md:text-base lg:text-lg ...">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -65,17 +108,23 @@
                                 <tr class="border-b hover:bg-gray-50">
                                     <td class="p-3 text-sm md:p-4 md:text-base ...">
                                         {{ \Carbon\Carbon::parse($transaksi->tanggal_order)->format('d-m-Y') }}</td>
-                                    <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->pelanggan->name ?? 'N/A' }}
+                                    <td class="p-3 text-sm md:p-4 md:text-base ...">
+                                        {{ $transaksi->pelanggan->name ?? 'N/A' }}
                                     </td>
-                                    <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->created_by ?? 'User Dihapus' }}</td>
+                                    <td class="p-3 text-sm md:p-4 md:text-base ...">
+                                        {{ $transaksi->created_by ?? 'User Dihapus' }}</td>
                                     <td class="p-3 text-sm md:p-4 md:text-base ...">Rp
                                         {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
                                     <td class="p-3 text-sm md:p-4 md:text-base ...">Rp
                                         {{ number_format($transaksi->sisa_bayar, 0, ',', '.') }}</td>
                                     <td class="p-3 md:p-4">
-                                        <span class="block ... text-xs md:text-sm ...">{{ $transaksi->status_order }}</span>
-                                        <span
-                                            class="block ... text-xs md:text-sm ...">{{ $transaksi->status_pembayaran }}</span>
+                                        <span @class([
+                                            'inline-flex justify-center items-center font-bold rounded-md transition text-sm md:text-base py-1 px-3 md:py-2 md:px-6 text-center w-[100px]',
+                                            'bg-green-100 text-green-700 hover:bg-green-200' => $transaksi->status_pembayaran == 'Lunas',
+                                            'bg-red-100 text-red-700 hover:bg-red-200' => $transaksi->status_pembayaran == 'DP',
+                                        ])>
+                                            {{ $transaksi->status_pembayaran }}
+                                        </span>
                                     </td>
                                     <td class="p-3 md:p-4 flex justify-center items-center space-x-1 md:space-x-2">
                                         @php $transaksiData = json_encode($transaksi); @endphp
@@ -94,6 +143,10 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <div class="mt-6 flex justify-center">
+                {{ $transaksis->links() }}
             </div>
 
             @include('components.modal.transaksi.add-transaksi')

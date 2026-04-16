@@ -21,10 +21,8 @@ return new class extends Migration
             $table->double("total_harga");
             $table->double("jumlah_bayar");
             $table->double("sisa_bayar");
-            $table->enum("status_order", ["Proses", "Selesai", "Diambil"]);
             $table->enum("status_pembayaran", ["DP", "Lunas" ]);
             $table->timestamps();
-            
             
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_pelanggan')->references('id')->on('pelanggans')->onDelete('cascade');

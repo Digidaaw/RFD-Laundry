@@ -131,14 +131,18 @@
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-lg font-semibold mb-2">Pelanggan</label>
+                    <label class="block text-gray-700 text-lg font-semibold mb-2">Pelanggan <span class="text-red-500">*</span></label>
                     @if(isset($pelanggans))
-                        <select name="id_pelanggan" x-ref="pelangganSelectEdit">
+                        <select name="id_pelanggan" x-ref="pelangganSelectEdit" required
+                            class="@error('id_pelanggan') border-red-500 @enderror">
                             <option value="" disabled selected>Pilih Pelanggan...</option>
                             @foreach($pelanggans as $pelanggan)
                                 <option value="{{ $pelanggan->id }}">{{ $pelanggan->name }} - {{ $pelanggan->kontak }}</option>
                             @endforeach
                         </select>
+                        @error('id_pelanggan')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     @else
                         <p class="text-red-500">Error: Data pelanggan tidak ditemukan.</p>
                     @endif
@@ -147,34 +151,28 @@
                 <div class="mb-4">
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Deskripsi (Keyword)</label>
                     <textarea name="deskripsi" x-model="data.deskripsi" rows="3"
-                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('deskripsi') border-red-500 @enderror"
                               placeholder="Contoh: Baju Pesta, Selimut Tebal"></textarea>
+                    @error('deskripsi')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-lg font-semibold mb-2">Status Order</label>
-                    <select name="status_order" x-model="data.status_order"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
-                            required>
-                        <option value="Baru">Baru</option>
-                        <option value="Proses">Proses</option>
-                        <option value="Selesai">Selesai</option>
-                        <option value="Diambil">Diambil</option>
-                    </select>
-                </div>
-
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-lg font-semibold mb-2">Jumlah Bayar</label>
-                    <input type="hidden" name="jumlah_bayar" :value="bayarNumeric">
+                    <label class="block text-gray-700 text-lg font-semibold mb-2">Jumlah Bayar <span class="text-red-500">*</span></label>
+                    <input type="hidden" name="jumlah_bayar" :value="bayarNumeric" required>
                     <input type="text"
                            x-model="bayarDisplay"
                            x-on:input="onBayarInput($event.target.value)"
-                           inputmode="numeric"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                           inputmode="numeric" required
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('jumlah_bayar') border-red-500 @enderror">
                     <small x-show="data.total_harga" class="text-gray-500" x-text="'Total Tagihan: Rp ' + new Intl.NumberFormat('id-ID').format(data.total_harga)"></small>
                     <p x-show="bayarError"
                        x-text="bayarError"
                        class="text-red-600 text-sm mt-1"></p>
+                    @error('jumlah_bayar')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- Tombol Aksi -->

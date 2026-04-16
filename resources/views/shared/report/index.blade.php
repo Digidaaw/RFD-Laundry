@@ -5,7 +5,7 @@
     <!-- Main Area -->
     <div>
         <!-- Topbar -->
-        <header class="w-full h-[120px] bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
+        <header class="w-full h-[120px] sticky top-0 z-50 bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
             <div class="flex items-center gap-4">
                 {{-- Tombol Hamburger untuk Mobile --}}
                 <button @click.stop="sidebarOpen = !sidebarOpen" class="lg:hidden text-gray-600">
@@ -17,12 +17,7 @@
             </div>
             <div class="flex items-center gap-8">
                 <div class="flex items-center gap-4">
-                    <img src="{{ asset('img/rectangle-1393.png') }}"
-                         class="w-[60px] h-[60px] rounded-full object-cover" alt="Profile">
-                    <div class="hidden lg:block">
-                        <p class="text-base font-medium text-gray-900">{{ Auth::user()->name ?? 'User' }}</p>
-                        <p class="text-sm text-gray-500">{{ Auth::user()->role ?? 'User' }}</p>
-                    </div>
+                    <p class="uppercase font-semibold text-sm text-gray-900">{{ Auth::user()->role ?? 'Panel' }}</p>
                 </div>
             </div>
         </header>
