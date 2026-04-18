@@ -65,6 +65,7 @@
             this.bayarNumeric = Number(detail.jumlah_bayar || 0);
             this.bayarDisplay = this.bayarNumeric ? this.bayarNumeric.toLocaleString('id-ID') : '';
             this.bayarError = '';
+            this.validateBayar();
             this.open = true; // Ini akan memicu $watch di atas
 
             // Set form action menggunakan route yang sudah di-generate oleh backend
@@ -76,11 +77,21 @@
             });
         },
 
+        get minBayar() {
+            return Math.ceil(Number(this.data.total_harga || 0) * 0.5);
+        },
+
+        get isBayarValid() {
+            return Number(this.bayarNumeric || 0) >= this.minBayar;
+        },
+
         validateBayar() {
             const total = Number(this.data.total_harga || 0);
             const bayar = Number(this.bayarNumeric || 0);
             if (bayar > total) {
                 this.bayarError = 'Jumlah bayar tidak boleh melebihi total tagihan.';
+            } else if (bayar < this.minBayar) {
+                this.bayarError = 'Pembayaran minimal harus 50% dari total harga.';
             } else {
                 this.bayarError = '';
             }
@@ -166,7 +177,11 @@
                            x-on:input="onBayarInput($event.target.value)"
                            inputmode="numeric" required
                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('jumlah_bayar') border-red-500 @enderror">
-                    <small x-show="data.total_harga" class="text-gray-500" x-text="'Total Tagihan: Rp ' + new Intl.NumberFormat('id-ID').format(data.total_harga)"></small>
+                    <small x-show="data.total_harga" class="text-gray-500 block"
+                           x-text="'Total Tagihan: Rp ' + new Intl.NumberFormat('id-ID').format(data.total_harga)"></small>
+                    <small x-show="data.total_harga" class="text-gray-500 text-xs mt-1 block">
+                        Minimal pembayaran: Rp <span x-text="new Intl.NumberFormat('id-ID').format(minBayar)"></span> (50% dari total)
+                    </small>
                     <p x-show="bayarError"
                        x-text="bayarError"
                        class="text-red-600 text-sm mt-1"></p>
@@ -181,7 +196,9 @@
                         class="px-4 py-2 border rounded-lg text-gray-600 hover:bg-gray-100">
                         Batal
                     </button>
-                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <button type="submit" :disabled="!isBayarValid"
+                        :class="{ 'opacity-50 cursor-not-allowed': !isBayarValid }"
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                         Simpan Perubahan
                     </button>
                 </div>

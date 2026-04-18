@@ -282,6 +282,11 @@ class TransaksiController extends Controller
             return back()->withInput()->withErrors(['jumlah_bayar' => 'Jumlah bayar melebihi total.']);
         }
 
+        $minBayar = (int) ceil($transaksi->total_harga * 0.5);
+        if ($request->jumlah_bayar < $minBayar) {
+            return back()->withInput()->withErrors(['jumlah_bayar' => 'Pembayaran minimal harus 50% dari total harga.']);
+        }
+
         $sisaBayar = max(0, $transaksi->total_harga - $request->jumlah_bayar);
 
         $transaksi->update([
