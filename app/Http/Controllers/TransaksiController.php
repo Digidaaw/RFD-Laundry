@@ -173,64 +173,71 @@ class TransaksiController extends Controller
 
     private function buildCreateItems(array $items, bool $isMulti): array
     {
-        $subtotalSum = 0;
-        $createItems = [];
+        $items = collect($items)
+            ->filter(fn ($row) => $row['qty'] > 0)
+            ->values();
 
-        if ($isMulti) {
-            $layananUnitMap = $this->loadLayananUnitMap($items);
-        } else {
-            $layananMap = Layanan::whereIn('id', collect($items)->pluck('id_layanan')->unique())
-                ->get()
-                ->keyBy('id');
-        }
+        $layananUnitMap = $isMulti ? $this->loadLayananUnitMap($items->toArray()) : [];
+        $layananMap = !$isMulti ? Layanan::whereIn('id', $items->pluck('id_layanan')->unique())
+            ->get()
+            ->keyBy('id') : null;
 
-        foreach ($items as $row) {
-            $qty = $row['qty'];
-            if ($qty <= 0) {
-                continue;
-            }
-
-            if ($isMulti) {
-                $key = "{$row['id_layanan']}-{$row['unit_satuan']}";
-                $layananUnit = $layananUnitMap[$key] ?? null;
-
-                if (!$layananUnit) {
-                    continue;
-                }
-
-                $harga = (float) $layananUnit->harga;
-            } else {
-                $layanan = $layananMap[$row['id_layanan']] ?? null;
-
-                if (!$layanan) {
-                    continue;
-                }
-
-                $harga = (float) $layanan->harga;
-            }
-
-            $subtotal = $harga * $qty;
-            $subtotalSum += $subtotal;
-
-            $createItem = [
-                'layanan_id' => $row['id_layanan'],
-                'qty' => $qty,
-                'harga_satuan' => $harga,
-                'subtotal' => $subtotal,
-            ];
-
-            if ($isMulti) {
-                $createItem['unit_satuan'] = $row['unit_satuan'];
-            }
-
-            $createItems[] = $createItem;
-        }
+        $createItems = $items
+            ->map(fn ($row) => $this->buildCreateItem($row, $isMulti, $layananUnitMap, $layananMap))
+            ->filter()
+            ->values()
+            ->toArray();
 
         if (empty($createItems)) {
             throw ValidationException::withMessages(['items' => 'Minimal 1 layanan harus diinput.']);
         }
 
+        $subtotalSum = array_sum(array_column($createItems, 'subtotal'));
+
         return [$createItems, $subtotalSum];
+    }
+
+    private function buildCreateItem(array $row, bool $isMulti, array $layananUnitMap, $layananMap): ?array
+    {
+        $harga = $this->resolveItemPrice($row, $isMulti, $layananUnitMap, $layananMap);
+
+        if ($harga === null) {
+            return null;
+        }
+
+        return $this->formatCreateItem($row, $isMulti, $harga);
+    }
+
+    private function resolveItemPrice(array $row, bool $isMulti, array $layananUnitMap, $layananMap): ?float
+    {
+        if ($isMulti) {
+            $key = "{$row['id_layanan']}-{$row['unit_satuan']}";
+            $layananUnit = $layananUnitMap[$key] ?? null;
+
+            return $layananUnit ? (float) $layananUnit->harga : null;
+        }
+
+        $layanan = $layananMap[$row['id_layanan']] ?? null;
+
+        return $layanan ? (float) $layanan->harga : null;
+    }
+
+    private function formatCreateItem(array $row, bool $isMulti, float $harga): array
+    {
+        $subtotal = $harga * $row['qty'];
+
+        $createItem = [
+            'layanan_id' => $row['id_layanan'],
+            'qty' => $row['qty'],
+            'harga_satuan' => $harga,
+            'subtotal' => $subtotal,
+        ];
+
+        if ($isMulti) {
+            $createItem['unit_satuan'] = $row['unit_satuan'];
+        }
+
+        return $createItem;
     }
 
     public function update(TransaksiUpdateRequest $request, Transaksi $transaksi)

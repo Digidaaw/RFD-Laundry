@@ -37,7 +37,7 @@
                             <details class="relative group">
                                 <summary
                                     class="list-none flex items-center justify-center gap-2 bg-gray-100 rounded-full px-4 py-3 cursor-pointer hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    <img src="{{ asset('assets/filter.svg') }}" class="h-5 w-5">
+                                    <img src="{{ asset('assets/filter.svg') }}" class="h-5 w-5" alt="filter.svg">
                                     <span class="text-sm font-semibold">Filter</span>
                                 </summary>
                                 <div
@@ -94,8 +94,8 @@
                                         <button
                                             @click="
                                                                     openEditModal = true;
-                                                                    editData = { 
-                                                                        name: '{{ addslashes($kasir->name) }}', 
+                                                                    editData = {
+                                                                        name: '{{ addslashes($kasir->name) }}',
                                                                         username: '{{ $kasir->username }}',
                                                                         url: '{{ route('users.update', $kasir->id) }}'
                                                                     };
