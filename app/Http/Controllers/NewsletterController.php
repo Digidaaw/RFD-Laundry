@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\NewsletterSubscribeRequest;
 
 class NewsletterController extends Controller
 {
-    public function subscribe(Request $request)
+    public function subscribe(NewsletterSubscribeRequest $request)
     {
         // Logika untuk subscribe newsletter
         // Misalnya, simpan email ke database atau kirim ke service

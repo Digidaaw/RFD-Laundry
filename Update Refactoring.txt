@@ -1,0 +1,43 @@
+Update refactoring
+
+- Pemisahan route halaman utama
+	- Route quote-request sudah dipindah ke PageController.
+	- Sekarang route tidak pakai closure lagi, lebih rapi dan lebih gampang di-maintain.
+
+- Validasi login dan newsletter dirapikan
+	- Dibuat LoginRequest untuk validasi login.
+	- LoginController sekarang terima LoginRequest dan nggak pakai ->validate(...) di dalam controller.
+	- Dibuat NewsletterSubscribeRequest untuk form subscribe newsletter.
+	- NewsletterController sekarang menggunakan request khusus itu.
+
+- Konsistensi export laporan
+	- ReportController sudah lebih rapi.
+	- Export PDF pelanggan sudah pakai helper method internal.
+	- Export Excel pelanggan sekarang konsisten ditangani di ReportController, bukan lagi di TransaksiController.
+
+- Perbaikan route kasir / user
+	- Hapus route Route::resource('kasir', UserController::class) yang duplikat.
+	- Sekarang hanya ada resource users.
+	- Di view kasir, pencarian sudah diarahkan ke users.index yang benar.
+
+- Keamanan password diperbaiki
+	- Hapus semua penyimpanan plain_password di:
+		- UserController
+		- RegisterController
+		- User model fillable
+	- So, password hanya disimpan dalam bentuk hash saja, lebih aman.
+
+- UI halaman kasir lebih bersih
+	- Kolom password di table kasir sudah dihapus dari tampilan.
+	- Search placeholder diubah jadi Nama Kasir..., sesuai konteks.
+
+- Validasi syntax
+	- Semua file yang diubah sudah dicek dengan php -l dan lulus.
+
+
+Kesimpulan
+- kebersihan kode (clean code)
+- konsistensi route dan controller
+- validasi pakai FormRequest
+- keamanan data password
+- pemisahan tanggung jawab controller

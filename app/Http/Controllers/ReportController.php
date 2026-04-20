@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LaporanPelangganExport;
+use App\Exports\PeriodeTransaksiExport;
+use App\Http\Requests\ReportPeriodeRequest;
+use App\Http\Requests\ReportPiutangRequest;
 use App\Models\Transaksi;
 use App\Models\Pelanggan;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\LaporanPelangganExport; // PENTING: Ini harus ada
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ReportController extends Controller
 {
@@ -19,13 +20,8 @@ class ReportController extends Controller
         return view('shared.report.index');
     }
 
-    public function laporanPeriode(Request $request)
+    public function laporanPeriode(ReportPeriodeRequest $request)
     {
-        $request->validate([
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
-        ]);
-
         $startDate = $request->input('start_date', Carbon::now()->startOfMonth());
         $endDate = $request->input('end_date', Carbon::now()->endOfMonth());
 
@@ -55,69 +51,18 @@ class ReportController extends Controller
         }
 
         if ($request->get('export') === 'excel') {
-            $columns = [
-                'No Invoice',
-                'Tanggal',
-                'Pelanggan',
-                'Kasir',
-                'Total',
-                'Status Pembayaran',
-            ];
-
             $fileName = 'Laporan-Periode-' . $startDate->format('Ymd') . '-' . $endDate->format('Ymd') . '.xlsx';
 
-            $spreadsheet = new Spreadsheet();
-            $sheet = $spreadsheet->getActiveSheet();
-            $sheet->setTitle('Periode');
-
-            $sheet->fromArray($columns, null, 'A1');
-            $sheet->getStyle('A1:F1')->getFont()->setBold(true);
-
-            $row = 2;
-            foreach ($transaksis as $t) {
-                $sheet->fromArray([
-                    $t->no_invoice,
-                    \Carbon\Carbon::parse($t->tanggal_order)->format('d-m-Y'),
-                    ($t->pelanggan->name ?? 'N/A'),
-                    ($t->user->name ?? 'N/A'),
-                    $t->total_harga,
-                    $t->status_pembayaran,
-                ], null, 'A' . $row);
-                $row++;
-            }
-
-            foreach (range('A', 'F') as $col) {
-                $sheet->getColumnDimension($col)->setAutoSize(true);
-            }
-
-            $writer = new Xlsx($spreadsheet);
-
-            return response()->streamDownload(function () use ($writer) {
-                $writer->save('php://output');
-            }, $fileName, [
-                'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            ]);
+            return Excel::download(new PeriodeTransaksiExport($transaksis), $fileName);
         }
 
         return view('shared.report.periode', compact('transaksis', 'startDate', 'endDate', 'potensiPendapatan', 'pendapatanLunas', 'totalTransaksi'));
     }
 
-    public function laporanPiutang(Request $request)
+    public function laporanPiutang(ReportPiutangRequest $request)
     {
         $search = $request->input('search');
-
-        $query = Transaksi::with(['pelanggan'])
-            ->where('status_pembayaran', 'DP')
-            ->where('sisa_bayar', '>', 0);
-
-        if ($search) {
-            $query->whereHas('pelanggan', function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('kontak', 'like', "%{$search}%");
-            });
-        }
-
-        $piutangs = $query->latest()->get();
+        $piutangs = $this->buildPiutangQuery($search)->latest()->get();
         $totalPiutang = $piutangs->sum('sisa_bayar');
         $pelanggans = Pelanggan::orderBy('name')->get();
 
@@ -126,11 +71,7 @@ class ReportController extends Controller
 
     public function laporanPelanggan(Pelanggan $pelanggan)
     {
-        $transaksis = Transaksi::where('id_pelanggan', $pelanggan->id)
-            ->with(['layanan', 'items.layanan'])
-            ->latest()
-            ->get();
-
+        $transaksis = $this->getPelangganTransaksis($pelanggan);
         $pelanggans = Pelanggan::orderBy('name')->get();
 
         $totalSubtotal = $transaksis->sum('subtotal');
@@ -155,18 +96,39 @@ class ReportController extends Controller
 
     public function exportPdfPelanggan(Pelanggan $pelanggan)
     {
-        $transaksis = Transaksi::where('id_pelanggan', $pelanggan->id)
-            ->with(['layanan', 'items.layanan'])
-            ->latest()
-            ->get();
+        $transaksis = $this->getPelangganTransaksis($pelanggan);
 
         $pdf = Pdf::loadView('shared.report.pdf_pelanggan', compact('pelanggan', 'transaksis'));
 
         return $pdf->download('Laporan-Pelanggan-' . $pelanggan->name . '.pdf');
     }
 
-    public function exportPelangganXls($id)
+    public function exportPelangganXls(Pelanggan $pelanggan)
     {
-        return (new LaporanPelangganExport($id))->download();
+        return Excel::download(new LaporanPelangganExport($pelanggan->id), 'Laporan-Pelanggan-' . now()->format('Ymd') . '.xlsx');
+    }
+
+    private function buildPiutangQuery(?string $search)
+    {
+        $query = Transaksi::with(['pelanggan'])
+            ->where('status_pembayaran', 'DP')
+            ->where('sisa_bayar', '>', 0);
+
+        if ($search) {
+            $query->whereHas('pelanggan', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('kontak', 'like', "%{$search}%");
+            });
+        }
+
+        return $query;
+    }
+
+    private function getPelangganTransaksis(Pelanggan $pelanggan)
+    {
+        return Transaksi::where('id_pelanggan', $pelanggan->id)
+            ->with(['layanan', 'items.layanan'])
+            ->latest()
+            ->get();
     }
 }

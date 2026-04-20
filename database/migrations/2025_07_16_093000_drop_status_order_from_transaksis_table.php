@@ -9,10 +9,12 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('transaksis', function (Blueprint $table) {
-            $table->dropColumn('status_order');
+            if (Schema::hasColumn('transaksis', 'status_order')) {
+                $table->dropColumn('status_order');
+            }
         });
     }
 
