@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PageController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\PelangganController;
@@ -19,15 +21,8 @@ use Carbon\Carbon;
 */
 
 // public welcome page shown on first run
-Route::get('/', function () {
-    $layanans = Layanan::latest()->get();
-
-    return view('welcome', compact('layanans'));
-})->name('home');
-
-Route::get('/quote-request', function () {
-    return view('quote.request');
-})->name('quote.request');
+Route::get('/', [PageController::class, 'home'])->name('home');
+Route::get('/quote-request', [PageController::class, 'quoteRequest'])->name('quote.request');
 
 Route::post('/newsletter/subscribe', [NewsletterController::class, 'subscribe'])
     ->name('newsletter.subscribe');
@@ -47,41 +42,7 @@ Route::middleware('guest')->group(function () {
 Route::middleware(['auth', 'role'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-    Route::get('/dashboard', function () {
-        // duplicate of home; keep data for direct URL
-        $totalUser = \App\Models\User::count();
-        $totalOrder = \App\Models\Transaksi::count();
-        $totalSales = \App\Models\Transaksi::sum('total_harga');
-        $orderPending = \App\Models\Transaksi::where('sisa_bayar', '>', 0)->sum('sisa_bayar');
-
-        $endDate = Carbon::today();
-        $startDate = $endDate->copy()->subDays(6);
-
-        $dailyRanges = collect(range(0, 6))->map(function ($offset) use ($startDate) {
-            return $startDate->copy()->addDays($offset);
-        });
-
-        $dailyLabels = $dailyRanges->map(function ($date) {
-            return $date->format('d M');
-        })->toArray();
-
-        $dailyTotals = \App\Models\Transaksi::whereBetween('tanggal_order', [$startDate->startOfDay(), $endDate->endOfDay()])
-            ->selectRaw('DATE(tanggal_order) as order_date, SUM(total_harga) as total_sales, SUM(sisa_bayar) as total_piutang')
-            ->groupBy('order_date')
-            ->orderBy('order_date')
-            ->get()
-            ->keyBy('order_date');
-
-        $dailyRevenueData = $dailyRanges->map(function ($date) use ($dailyTotals) {
-            return $dailyTotals->get($date->toDateString())->total_sales ?? 0;
-        })->toArray();
-
-        $dailyDebtData = $dailyRanges->map(function ($date) use ($dailyTotals) {
-            return $dailyTotals->get($date->toDateString())->total_piutang ?? 0;
-        })->toArray();
-
-        return view('shared.dashboard', compact('totalUser', 'totalOrder', 'totalSales', 'orderPending', 'dailyLabels', 'dailyRevenueData', 'dailyDebtData'));
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::resource('users', UserController::class)->middleware('role:admin');
 
@@ -92,17 +53,13 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::resource('transaksi', TransaksiController::class);
     Route::patch('/transaksi/{transaksi}/bayar', [TransaksiController::class, 'bayarPiutang'])->name('transaksi.bayar');
 
-    Route::resource('kasir', UserController::class);
-
     Route::get('/report', [ReportController::class, 'index'])->name('report.index');
     Route::get('/report/periode', [ReportController::class, 'laporanPeriode'])->name('report.periode');
     Route::get('/report/piutang', [ReportController::class, 'laporanPiutang'])->name('report.piutang');
 
     Route::get('/report/pelanggan/{pelanggan}', [ReportController::class, 'laporanPelanggan'])->name('report.pelanggan');
-
-      Route::get('/report/pelanggan/{pelanggan}/pdf', [ReportController::class, 'exportPdfPelanggan'])->name('report.pelanggan.pdf');
-      Route::get('/report/pelanggan/excel/{id}', [TransaksiController::class, 'exportPelangganExcel'])
-    ->name('report.pelanggan.excel');
+    Route::get('/report/pelanggan/{pelanggan}/pdf', [ReportController::class, 'exportPdfPelanggan'])->name('report.pelanggan.pdf');
+    Route::get('/report/pelanggan/{pelanggan}/excel', [ReportController::class, 'exportPelangganXls'])->name('report.pelanggan.excel');
 
 
 

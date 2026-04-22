@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Requests\TransaksiBayarPiutangRequest;
+use App\Http\Requests\TransaksiStoreRequest;
+use App\Http\Requests\TransaksiUpdateRequest;
+use App\Exports\LaporanPelangganExport;
 use App\Models\Transaksi;
 use App\Models\Pelanggan;
 use App\Models\Layanan;
@@ -10,8 +14,8 @@ use App\Models\LayananUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Validation\ValidationException;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TransaksiController extends Controller
 {
@@ -56,173 +60,18 @@ class TransaksiController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-{
-    $isMulti = $request->has('items');
+    public function store(TransaksiStoreRequest $request)
+    {
+        $isMulti = $request->has('items');
+        $potongan = (float) ($request->input('potongan') ?? 0);
 
-    if ($isMulti) {
-        $request->validate([
-            'id_pelanggan' => 'required|exists:pelanggans,id',
-            'items' => 'required|array|min:1',
-            'items.*.id_layanan' => 'required|exists:layanans,id',
-            'items.*.unit_satuan' => 'required|string|in:kg,pcs,meter',
-            'items.*.qty' => 'required|numeric|min:0.1|max:999.9',
-            'potongan' => 'nullable|numeric|min:0',
-            'jumlah_bayar' => 'required|numeric|min:0',
-            'deskripsi' => 'nullable|string|max:255',
-        ], [
-            'id_pelanggan.required' => 'Pelanggan harus dipilih.',
-            'id_pelanggan.exists' => 'Pelanggan yang dipilih tidak ditemukan.',
-            'items.required' => 'Minimal 1 layanan harus ditambahkan.',
-            'items.min' => 'Minimal 1 layanan harus ditambahkan.',
-            'items.*.id_layanan.required' => 'Layanan harus dipilih.',
-            'items.*.id_layanan.exists' => 'Layanan yang dipilih tidak ditemukan.',
-            'items.*.unit_satuan.required' => 'Satuan harus dipilih.',
-            'items.*.unit_satuan.in' => 'Satuan hanya boleh: kg, pcs, atau meter.',
-            'items.*.qty.required' => 'Qty harus diisi.',
-            'items.*.qty.numeric' => 'Qty harus berupa angka.',
-            'items.*.qty.min' => 'Qty minimal 0.1.',
-            'items.*.qty.max' => 'Qty maksimal 999.9.',
-            'potongan.numeric' => 'Potongan harus berupa angka.',
-            'potongan.min' => 'Potongan tidak boleh negatif.',
-            'jumlah_bayar.required' => 'Jumlah bayar harus diisi.',
-            'jumlah_bayar.numeric' => 'Jumlah bayar harus berupa angka.',
-            'jumlah_bayar.min' => 'Jumlah bayar tidak boleh negatif.',
-        ]);
-    } else {
-        $request->validate([
-            'id_pelanggan' => 'required|exists:pelanggans,id',
-            'id_layanan' => 'required|exists:layanans,id',
-            'qty' => 'required|numeric|min:0.1|max:999.9',
-            'potongan' => 'nullable|numeric|min:0',
-            'jumlah_bayar' => 'required|numeric|min:0',
-            'deskripsi' => 'nullable|string|max:255',
-        ], [
-            'id_pelanggan.required' => 'Pelanggan harus dipilih.',
-            'id_pelanggan.exists' => 'Pelanggan yang dipilih tidak ditemukan.',
-            'id_layanan.required' => 'Layanan harus dipilih.',
-            'id_layanan.exists' => 'Layanan yang dipilih tidak ditemukan.',
-            'qty.required' => 'Qty harus diisi.',
-            'qty.numeric' => 'Qty harus berupa angka.',
-            'qty.min' => 'Qty minimal 0.1.',
-            'qty.max' => 'Qty maksimal 999.9.',
-            'potongan.numeric' => 'Potongan harus berupa angka.',
-            'potongan.min' => 'Potongan tidak boleh negatif.',
-            'jumlah_bayar.required' => 'Jumlah bayar harus diisi.',
-            'jumlah_bayar.numeric' => 'Jumlah bayar harus berupa angka.',
-            'jumlah_bayar.min' => 'Jumlah bayar tidak boleh negatif.',
-        ]);
-    }
+        $items = $this->normalizeItems($request, $isMulti);
 
-    $potongan = $request->input('potongan') ?? 0;
-    $potongan = (float) $potongan;
-
-    return DB::transaction(function () use ($request, $isMulti, $potongan) {
-        $items = [];
-
-        // ✅ SIAPKAN ITEMS DULU
         if ($isMulti) {
-            foreach ($request->items as $index => $row) {
-                $items[] = [
-                    'id_layanan' => (int) $row['id_layanan'],
-                    'unit_satuan' => $row['unit_satuan'],
-                    'qty' => (float) $row['qty'],
-                ];
-            }
-        } else {
-            $items[] = [
-                'id_layanan' => (int) $request->id_layanan,
-                'qty' => (float) $request->qty,
-            ];
+            $this->validateLayananUnits($items);
         }
 
-        // ✅ VALIDASI LAYANAN UNIT SESUAI DENGAN UNIT YANG DIPILIH
-        if ($isMulti) {
-            foreach ($request->items as $index => $row) {
-                $layananUnit = LayananUnit::where('layanan_id', $row['id_layanan'])
-                    ->where('unit_satuan', $row['unit_satuan'])
-                    ->first();
-
-                if (!$layananUnit) {
-                    return back()
-                        ->withInput()
-                        ->withErrors([
-                            "items.$index.unit_satuan" => "Unit tidak tersedia untuk layanan ini."
-                        ]);
-                }
-
-                // Validasi untuk pcs harus bilangan bulat
-                if ($layananUnit->unit_satuan === 'pcs') {
-                    $qty = (float) $row['qty'];
-
-                    if ($qty < 1 || (int)$qty != $qty) {
-                        return back()
-                            ->withInput()
-                            ->withErrors([
-                                "items.$index.qty" => "Qty harus bilangan bulat untuk satuan pcs"
-                            ]);
-                    }
-                }
-            }
-        }
-
-        // ✅ DEFINISIKAN LAYANAN+UNIT MAP
-        $layananUnitMap = [];
-        if ($isMulti) {
-            $unitIds = collect($items)->map(fn($i) => [$i['id_layanan'], $i['unit_satuan']])->unique();
-            foreach ($unitIds as [$layananId, $unitSatuan]) {
-                $key = "$layananId-$unitSatuan";
-                $layananUnitMap[$key] = LayananUnit::where('layanan_id', $layananId)
-                    ->where('unit_satuan', $unitSatuan)
-                    ->first();
-            }
-        } else {
-            // Untuk single item, gunakan harga dari layanan (backward compatibility)
-            $layananMap = Layanan::whereIn('id', collect($items)->pluck('id_layanan')->unique())
-                ->get()
-                ->keyBy('id');
-        }
-
-        // ... lanjutkan dengan perhitungan subtotal
-        $subtotalSum = 0;
-        $createItems = [];
-
-        foreach ($items as $row) {
-            $qty = (float) $row['qty'];
-            if ($qty <= 0)
-                continue;
-
-            if ($isMulti) {
-                $key = "{$row['id_layanan']}-{$row['unit_satuan']}";
-                $layananUnit = $layananUnitMap[$key] ?? null;
-
-                if (!$layananUnit)
-                    continue;
-
-                $harga = (float) $layananUnit->harga;
-            } else {
-                $layanan = $layananMap[$row['id_layanan']] ?? null;
-
-                if (!$layanan)
-                    continue;
-
-                $harga = (float) $layanan->harga;
-            }
-
-            $subtotal = $harga * $qty;
-            $subtotalSum += $subtotal;
-
-            $createItems[] = [
-                'layanan_id' => $row['id_layanan'],
-                'qty' => $qty,
-                'harga_satuan' => $harga,
-                'subtotal' => $subtotal,
-            ];
-        }
-
-        if (empty($createItems)) {
-            return back()->withInput()->withErrors(['items' => 'Minimal 1 layanan harus diinput.']);
-        }
+        [$createItems, $subtotalSum] = $this->buildCreateItems($items, $isMulti);
 
         if ($potongan > $subtotalSum) {
             return back()->withInput()->withErrors(['potongan' => 'Potongan melebihi subtotal.']);
@@ -232,51 +81,171 @@ class TransaksiController extends Controller
         $jumlahBayar = (float) $request->jumlah_bayar;
         $sisaBayar = max(0, $totalHarga - $jumlahBayar);
 
-        // Validasi minimal pembayaran 50%
-        $minBayar = ceil($totalHarga * 0.5);
+        $minBayar = (int) ceil($totalHarga * 0.5);
         if ($jumlahBayar < $minBayar) {
             return back()->withInput()->withErrors(['jumlah_bayar' => 'Pembayaran minimal harus 50% dari total harga.']);
         }
 
-        $singleLayananId = $createItems[0]['layanan_id'] ?? null;
+        return DB::transaction(function () use ($request, $createItems, $subtotalSum, $totalHarga, $potongan, $jumlahBayar, $sisaBayar) {
+            $transaksi = Transaksi::create([
+                'id_user' => Auth::id(),
+                'created_by' => Auth::user()->username,
+                'id_pelanggan' => $request->id_pelanggan,
+                'id_layanan' => $createItems[0]['layanan_id'] ?? null,
+                'deskripsi' => $request->deskripsi,
+                'tanggal_order' => now(),
+                'subtotal' => $subtotalSum,
+                'potongan' => $potongan,
+                'total_harga' => $totalHarga,
+                'jumlah_bayar' => $jumlahBayar,
+                'sisa_bayar' => $sisaBayar,
+                'status_pembayaran' => ($sisaBayar <= 0) ? 'Lunas' : 'DP',
+            ]);
 
-        $transaksi = Transaksi::create([
-            'id_user' => Auth::id(),
-            'created_by' => Auth::user()->username,
-            'id_pelanggan' => $request->id_pelanggan,
-            'id_layanan' => $singleLayananId,
-            'deskripsi' => $request->deskripsi,
-            'tanggal_order' => now(),
-            'subtotal' => $subtotalSum,
-            'potongan' => $potongan,
-            'total_harga' => $totalHarga,
-            'jumlah_bayar' => $jumlahBayar,
-            'sisa_bayar' => $sisaBayar,
-            'status_pembayaran' => ($sisaBayar <= 0) ? 'Lunas' : 'DP',
-        ]);
+            $transaksi->items()->createMany($createItems);
 
-        $transaksi->items()->createMany($createItems);
+            $transaksi->no_invoice = 'IJ' . now()->format('dmY') . str_pad($transaksi->id, 4, '0', STR_PAD_LEFT);
+            $transaksi->save();
 
-        $transaksi->no_invoice = 'IJ' . now()->format('dmY') . str_pad($transaksi->id, 4, '0', STR_PAD_LEFT);
-        $transaksi->save();
+            return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan.');
+        });
+    }
 
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan.');
-    });
-}
+    private function normalizeItems(TransaksiStoreRequest $request, bool $isMulti): array
+    {
+        if ($isMulti) {
+            return collect($request->items)
+                ->map(fn($item) => [
+                    'id_layanan' => (int) $item['id_layanan'],
+                    'unit_satuan' => $item['unit_satuan'],
+                    'qty' => (float) $item['qty'],
+                ])
+                ->toArray();
+        }
 
-    public function update(Request $request, Transaksi $transaksi)
+        return [[
+            'id_layanan' => (int) $request->id_layanan,
+            'qty' => (float) $request->qty,
+        ]];
+    }
+
+    private function validateLayananUnits(array $items): void
+    {
+        $unitMap = $this->loadLayananUnitMap($items);
+
+        foreach ($items as $index => $row) {
+            $key = "{$row['id_layanan']}-{$row['unit_satuan']}";
+            $layananUnit = $unitMap[$key] ?? null;
+
+            if (!$layananUnit) {
+                throw ValidationException::withMessages([
+                    "items.$index.unit_satuan" => 'Unit tidak tersedia untuk layanan ini.',
+                ]);
+            }
+
+            if ($layananUnit->unit_satuan === 'pcs') {
+                $qty = $row['qty'];
+
+                if ($qty < 1 || (int) $qty != $qty) {
+                    throw ValidationException::withMessages([
+                        "items.$index.qty" => 'Qty harus bilangan bulat untuk satuan pcs',
+                    ]);
+                }
+            }
+        }
+    }
+
+    private function loadLayananUnitMap(array $items): array
+    {
+        $unitIds = collect($items)
+            ->unique(fn($item) => $item['id_layanan'] . '-' . $item['unit_satuan']);
+
+        $map = [];
+        foreach ($unitIds as $row) {
+            $key = "{$row['id_layanan']}-{$row['unit_satuan']}";
+            $map[$key] = LayananUnit::where('layanan_id', $row['id_layanan'])
+                ->where('unit_satuan', $row['unit_satuan'])
+                ->first();
+        }
+
+        return $map;
+    }
+
+    private function buildCreateItems(array $items, bool $isMulti): array
+    {
+        $items = collect($items)
+            ->filter(fn ($row) => $row['qty'] > 0)
+            ->values();
+
+        $layananUnitMap = $isMulti ? $this->loadLayananUnitMap($items->toArray()) : [];
+        $layananMap = !$isMulti ? Layanan::whereIn('id', $items->pluck('id_layanan')->unique())
+            ->get()
+            ->keyBy('id') : null;
+
+        $createItems = $items
+            ->map(fn ($row) => $this->buildCreateItem($row, $isMulti, $layananUnitMap, $layananMap))
+            ->filter()
+            ->values()
+            ->toArray();
+
+        if (empty($createItems)) {
+            throw ValidationException::withMessages(['items' => 'Minimal 1 layanan harus diinput.']);
+        }
+
+        $subtotalSum = array_sum(array_column($createItems, 'subtotal'));
+
+        return [$createItems, $subtotalSum];
+    }
+
+    private function buildCreateItem(array $row, bool $isMulti, array $layananUnitMap, $layananMap): ?array
+    {
+        $harga = $this->resolveItemPrice($row, $isMulti, $layananUnitMap, $layananMap);
+
+        if ($harga === null) {
+            return null;
+        }
+
+        return $this->formatCreateItem($row, $isMulti, $harga);
+    }
+
+    private function resolveItemPrice(array $row, bool $isMulti, array $layananUnitMap, $layananMap): ?float
+    {
+        if ($isMulti) {
+            $key = "{$row['id_layanan']}-{$row['unit_satuan']}";
+            $layananUnit = $layananUnitMap[$key] ?? null;
+
+            return $layananUnit ? (float) $layananUnit->harga : null;
+        }
+
+        $layanan = $layananMap[$row['id_layanan']] ?? null;
+
+        return $layanan ? (float) $layanan->harga : null;
+    }
+
+    private function formatCreateItem(array $row, bool $isMulti, float $harga): array
+    {
+        $subtotal = $harga * $row['qty'];
+
+        $createItem = [
+            'layanan_id' => $row['id_layanan'],
+            'qty' => $row['qty'],
+            'harga_satuan' => $harga,
+            'subtotal' => $subtotal,
+        ];
+
+        if ($isMulti) {
+            $createItem['unit_satuan'] = $row['unit_satuan'];
+        }
+
+        return $createItem;
+    }
+
+    public function update(TransaksiUpdateRequest $request, Transaksi $transaksi)
     {
         // Jika ada transaksi_id di request, gunakan itu (dari edit modal)
         if ($request->has('transaksi_id')) {
             $transaksi = Transaksi::findOrFail($request->transaksi_id);
         }
-
-        $request->validate([
-            'id_pelanggan' => 'required|exists:pelanggans,id',
-            'tanggal_order' => 'required|date',
-            'deskripsi' => 'nullable|string|max:255',
-            'jumlah_bayar' => 'required|numeric|min:0',
-        ]);
 
         if ($request->jumlah_bayar > $transaksi->total_harga) {
             return back()->withInput()->withErrors(['jumlah_bayar' => 'Jumlah bayar melebihi total.']);
@@ -312,12 +281,8 @@ class TransaksiController extends Controller
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus.');
     }
 
-    public function bayarPiutang(Request $request, Transaksi $transaksi)
+    public function bayarPiutang(TransaksiBayarPiutangRequest $request, Transaksi $transaksi)
     {
-        $request->validate([
-            'bayar_sekarang' => 'required|numeric|min:0.01|lte:' . $transaksi->sisa_bayar,
-        ]);
-
         $jumlahBayarBaru = $transaksi->jumlah_bayar + $request->bayar_sekarang;
         $sisaBayarBaru = max(0, $transaksi->total_harga - $jumlahBayarBaru);
 
@@ -328,44 +293,5 @@ class TransaksiController extends Controller
         ]);
 
         return redirect()->route('report.piutang')->with('success', 'Pembayaran berhasil.');
-    }
-
-    public function exportPelangganExcel($pelangganId)
-    {
-        $data = Transaksi::where('id_pelanggan', $pelangganId)->with('layanan')->latest()->get();
-
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-
-        $sheet->fromArray([
-            'No Invoice',
-            'Tanggal',
-            'Layanan',
-            'Deskripsi',
-            'Total Harga',
-            'Bayar',
-            'Sisa',
-            'Status'
-        ], null, 'A1');
-
-        $row = 2;
-        foreach ($data as $t) {
-            $sheet->fromArray([
-                $t->no_invoice,
-                $t->tanggal_order,
-                $t->layanan->name ?? '-',
-                $t->deskripsi,
-                $t->total_harga,
-                $t->jumlah_bayar,
-                $t->sisa_bayar,
-                $t->status_pembayaran,
-            ], null, 'A' . $row++);
-        }
-
-        $writer = new Xlsx($spreadsheet);
-
-        return response()->streamDownload(function () use ($writer) {
-            $writer->save('php://output');
-        }, 'laporan.xlsx');
     }
 }
