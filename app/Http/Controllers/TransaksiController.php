@@ -142,22 +142,6 @@ class TransaksiController extends Controller
     }
 
     /**
-     * Menghapus transaksi
-     */
-    public function destroy(Request $request, Transaksi $transaksi)
-    {
-        $transaksi->delete();
-
-        // Cek jika ada URL redirect khusus
-        if ($request->has('_redirect_url') && $request->_redirect_url != '') {
-            // PERBAIKAN: Gunakan redirect()->to()
-            return redirect()->to($request->_redirect_url)->with('success', 'Transaksi berhasil dihapus.');
-        }
-
-        return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus.');
-    }
-
-    /**
      * Membayar piutang
      */
     public function bayarPiutang(Request $request, Transaksi $transaksi)

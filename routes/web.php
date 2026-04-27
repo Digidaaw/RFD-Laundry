@@ -43,7 +43,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('pelanggan', PelangganController::class);
 
-    Route::resource('transaksi', TransaksiController::class);
+    Route::resource('transaksi', TransaksiController::class)->except(['destroy']);
     Route::patch('/transaksi/{transaksi}/bayar', [TransaksiController::class, 'bayarPiutang'])->name('transaksi.bayar');
 
     Route::resource('kasir', UserController::class);
