@@ -11,7 +11,7 @@ class LayananFactory extends Factory
         return [
             'name'     => fake()->words(2, true),
             'deskripsi' => fake()->sentence(10),
-            'gambar'   => json_encode(['default.jpg']),
+            'gambar'   => ['default.jpg'],
         ];
     }
 }

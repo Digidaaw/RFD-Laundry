@@ -128,10 +128,6 @@
                                             Update
                                         </button>
                                         
-                                        <button @click="openDeleteModal = true; deleteUrl = '{{ route('transaksi.destroy', $transaksi->id) }}';" 
-                                            class="bg-red-100 text-red-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-red-200 text-sm md:text-base transition">
-                                            Delete
-                                        </button>
                                     </td>
                                 </tr>
                             @empty
@@ -144,7 +140,6 @@
             
             {{-- Menggunakan modal transaksi (karena ini adalah list transaksi) --}}
             @include('components.modal.transaksi.edit-transaksi')
-            @include('components.modal.transaksi.delete-transaksi')
         </main>
     </div>
 @endsection

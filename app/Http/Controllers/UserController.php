@@ -56,7 +56,7 @@ class UserController extends Controller
         $updateData = [
             'name' => $request->name,
             'username' => $request->username,
-            'role' => $request->role,
+            'role' => $request->role ?? $user->role,
         ];
 
         if ($request->filled('password')) {

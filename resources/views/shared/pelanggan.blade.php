@@ -21,9 +21,7 @@
         </header>
 
         <main class="p-6 lg:p-10" x-data="{
-            openAddModal: {{ $errors->any() ? 'true' : 'false' }},
-            openDeleteModal: false,
-            deleteUrl: ''
+            openAddModal: {{ $errors->any() ? 'true' : 'false' }}
         }">
 
             <div class="flex flex-col lg:flex-row justify-between items-center mb-8 gap-4">
@@ -114,11 +112,6 @@
                                             Update
                                         </button>
 
-                                        <button
-                                            @click="openDeleteModal = true; deleteUrl = '{{ route('pelanggan.destroy', $pelanggan->id) }}';"
-                                            class="bg-red-100 text-red-700 font-bold py-2 px-6 rounded-md hover:bg-red-200 transition">
-                                            Delete
-                                        </button>
                                     </td>
                                 </tr>
                             @empty
@@ -136,7 +129,6 @@
 
             @include('components.modal.customer.add-customer')
             @include('components.modal.customer.edit-customer')
-            @include('components.modal.customer.delete-customer')
         </main>
     </div>
 @endsection

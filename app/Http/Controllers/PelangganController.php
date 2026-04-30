@@ -51,16 +51,4 @@ class PelangganController extends Controller
         return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil diperbarui.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Pelanggan $pelanggan)
-    {
-        try {
-            $pelanggan->delete();
-            return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->route('pelanggan.index')->with('error', 'Gagal menghapus pelanggan.');
-        }
-    }
 }

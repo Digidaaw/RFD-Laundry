@@ -23,7 +23,8 @@
         <!-- Modal Form -->
         <form x-bind:action="editData.url" method="POST">
             @csrf
-            @method('PUT') 
+            @method('PUT')
+            <input type="hidden" name="role" x-bind:value="editData.role ?? 'kasir'">
 
             <!-- Name Field -->
             <div class="mb-4">
