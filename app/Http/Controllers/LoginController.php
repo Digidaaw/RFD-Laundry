@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,26 +13,23 @@ class LoginController extends Controller
      */
     public function index()
     {
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
         return view('auth.login');
     }
 
     /**
      * Menangani proses autentikasi.
      */
-    public function authenticate(Request $request)
+    public function authenticate(LoginRequest $request)
     {
-        // Validasi input dari form login
-        $credentials = $request->validate([
-            'username' => ['required', 'string'],
-            'password' => ['required', 'string'],
-        ]);
-
         // Mencoba untuk login
-        if (Auth::attempt($credentials)) {
+        if (Auth::attempt($request->only(['username', 'password']))) {
             $request->session()->regenerate();
 
             // Jika berhasil, arahkan ke dashboard
-            return redirect()->intended('/');
+            return redirect()->route('dashboard');
         }
 
         // Jika gagal, kembali ke halaman login dengan pesan error

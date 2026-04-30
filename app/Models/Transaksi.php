@@ -13,18 +13,22 @@ class Transaksi extends Model
         'no_invoice',
         'deskripsi',
         'id_user',
+        'created_by',
         'id_pelanggan',
         'id_layanan',
         'tanggal_order',
-        'berat_laundry',
         'subtotal',
         'potongan',
         'total_harga',
         'jumlah_bayar',
         'sisa_bayar',
-        'status_order',
         'status_pembayaran'
     ];
+
+    public function items()
+    {
+        return $this->hasMany(TransaksiItem::class, 'transaksi_id');
+    }
     public function pelanggan()
     {
         return $this->belongsTo(Pelanggan::class, 'id_pelanggan');
@@ -32,7 +36,7 @@ class Transaksi extends Model
 
     public function layanan()
     {
-        return $this->belongsTo(Layanan::class, 'id_layanan');
+        return $this->belongsTo(Layanan::class, 'id_layanan')->withTrashed();
     }
 
     public function user()

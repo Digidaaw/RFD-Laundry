@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('transaksis', function (Blueprint $table) {
-            $table->decimal('subtotal', 10, 2)->default(0)->after('berat_laundry');
-            $table->decimal('potongan', 10, 2)->default(0)->after('subtotal');
+            $table->decimal('subtotal', 10, 2)->default(0);
+            $table->decimal('potongan', 10, 2)->default(0);
         });
     }
 

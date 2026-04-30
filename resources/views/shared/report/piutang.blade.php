@@ -15,12 +15,19 @@
                 <h2 class="text-3xl lg:text-4xl font-semibold text-[#151d48]">Laporan Piutang</h2>
             </div>
             <div class="flex items-center gap-8">
-                {{-- ... (Profil Admin) ... --}}
+                <div class="flex items-center gap-4">
+                    <img src="{{ asset('img/rectangle-1393.png') }}"
+                         class="w-[60px] h-[60px] rounded-full object-cover" alt="Profile">
+                    <div class="hidden md:block">
+                        <p class="text-base font-medium text-gray-900">{{ Auth::user()->name ?? 'User' }}</p>
+                        <p class="text-sm text-gray-500">{{ Auth::user()->role ?? 'User' }}</p>
+                    </div>
+                </div>
             </div>
         </header>
 
         <!-- Content Area -->
-        <main class="p-6 lg:p-10" x-data="{ openBayarModal: false, bayarData: {} }">
+        <main class="p-6 lg:p-10">
 
             <!-- Tombol Kembali -->
             <div class="mb-6">
@@ -81,7 +88,7 @@
                                 <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->pelanggan->name ?? 'N/A' }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base font-bold text-red-600">Rp {{ number_format($transaksi->sisa_bayar, 0, ',', '.') }}</td>
                                 <td class="p-3 md:p-4 text-center">
-                                    <button @click="openBayarModal = true; bayarData = {{ json_encode($transaksi) }}"
+                                    <button @click="$dispatch('open-edit-modal', {{ json_encode($transaksi) }})"
                                         class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-green-200 text-sm md:text-base transition">
                                         Bayar
                                     </button>
@@ -95,7 +102,7 @@
                 </div>
             </div>
 
-            @include('components.modal.bayar-piutang')
+            @include('components.modal.transaksi.edit-transaksi')
         </main>
     </div>
 @endsection

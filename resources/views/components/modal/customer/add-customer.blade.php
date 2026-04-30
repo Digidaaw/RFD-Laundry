@@ -29,17 +29,25 @@
         <form method="POST" action="{{ route('pelanggan.store') }}">
             @csrf
             <div class="mb-4">
-                <label class="block text-gray-700 text-lg font-semibold mb-2">Nama Pelanggan</label>
-                <input type="text" name="name" placeholder="Masukkan nama" value="{{ old('name') }}"
+                <label class="block text-gray-700 text-lg font-semibold mb-2">Nama Pelanggan <span class="text-red-500">*</span></label>
+                <input type="text" name="name" placeholder="Masukkan nama" value="{{ old('name') }}" required
                     class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('name') border-red-500 @enderror" />
                 @error('name')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
             <div class="mb-4">
-                <label class="block text-gray-700 text-lg font-semibold mb-2">Kontak</label>
-                <input type="text" name="kontak" placeholder="Masukkan nomor kontak" value="{{ old('kontak') }}"
-                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('kontak') border-red-500 @enderror" />
+                <label class="block text-gray-700 text-lg font-semibold mb-2">Kontak <span class="text-red-500">*</span></label>
+
+                <input type="text" name="kontak" value="{{ old('kontak') }}" placeholder="Masukkan nomor kontak" required
+                    inputmode="numeric" pattern="[0-9]*" minlength="10" maxlength="13"
+                    oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2 
+        focus:outline-none focus:ring-2 focus:ring-blue-400 
+        @error('kontak') border-red-500 @enderror" />
+
+                <p class="text-gray-500 text-sm mt-1">Minimal 10 digit, maksimal 13 digit</p>
+
                 @error('kontak')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror

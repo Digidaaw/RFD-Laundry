@@ -15,7 +15,14 @@
                 <h2 class="text-3xl lg:text-4xl font-semibold text-[#151d48]">Laporan Per Periode</h2>
             </div>
             <div class="flex items-center gap-8">
-                {{-- ... (Profil Admin) ... --}}
+                <div class="flex items-center gap-4">
+                    <img src="{{ asset('img/rectangle-1393.png') }}"
+                         class="w-[60px] h-[60px] rounded-full object-cover" alt="Profile">
+                    <div class="hidden md:block">
+                        <p class="text-base font-medium text-gray-900">{{ Auth::user()->name ?? 'User' }}</p>
+                        <p class="text-sm text-gray-500">{{ Auth::user()->role ?? 'User' }}</p>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -65,9 +72,21 @@
                 </div>
             </div>
 
-            <!-- Tabel Hasil -->
+            <!-- Tabel Hasil + Export -->
             <div class="bg-white rounded-xl shadow-md p-4 md:p-6">
-                <h3 class="text-2xl font-bold mb-4">Detail Transaksi</h3>
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+                    <h3 class="text-2xl font-bold">Detail Transaksi</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="{{ route('report.periode', ['start_date' => $startDate->format('Y-m-d'), 'end_date' => $endDate->format('Y-m-d'), 'export' => 'pdf']) }}"
+                           class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg text-sm shadow">
+                            <span>Export PDF</span>
+                        </a>
+                        <a href="{{ route('report.periode', ['start_date' => $startDate->format('Y-m-d'), 'end_date' => $endDate->format('Y-m-d'), 'export' => 'excel']) }}"
+                           class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm shadow">
+                            <span>Export Excel</span>
+                        </a>
+                    </div>
+                </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead class="bg-gray-50 border-b">
@@ -90,7 +109,7 @@
                                 <td class="p-3 text-sm md:p-4 md:text-base ...">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
                                 <td class="p-3 md:p-4">
                                     <span class="px-3 py-1 text-xs md:text-sm rounded-full font-medium ..." 
-                                          :class="{ 'bg-red-100 text-red-800': '{{ $transaksi->status_pembayaran }}' === 'Belum Lunas', 'bg-green-100 text-green-800': '{{ $transaksi->status_pembayaran }}' === 'Lunas' }">
+                                          :class="{ 'bg-red-100 text-red-800': '{{ $transaksi->status_pembayaran }}' === 'DP', 'bg-green-100 text-green-800': '{{ $transaksi->status_pembayaran }}' === 'Lunas' }">
                                         {{ $transaksi->status_pembayaran }}
                                     </span>
                                 </td>

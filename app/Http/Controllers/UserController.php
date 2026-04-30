@@ -2,40 +2,46 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserStoreRequest;
+use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule; // <-- PERBAIKAN: TAMBAHKAN BARIS INI
 
 class UserController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Ambil semua user dengan role 'kasir'
-        $kasirs = User::where('role', 'kasir')->latest()->get(); 
-        return view('admin.kasir', compact('kasirs'));
+        $search = $request->input('search');
+        $sort = $request->input('sort', 'updated_latest');
+
+        $query = User::where('role', 'kasir');
+
+        if ($search) {
+            $query->where('name', 'like', "%{$search}%");
+        }
+
+        if ($sort === 'updated_oldest') {
+            $query->orderBy('updated_at', 'asc');
+        } else {
+            $query->orderBy('updated_at', 'desc');
+        }
+
+        $kasirs = $query->paginate(10)->appends(['search' => $search, 'sort' => $sort]);
+        return view('admin.kasir', compact('kasirs', 'search', 'sort'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(UserStoreRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|string|min:4|max:255|unique:users',
-            'password' => 'required|string|min:6',
-            'role' => 'required|string',
-        ]);
-
         User::create([
             'name' => $request->name,
             'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'plain_password' => $request->password, // Simpan password asli
+            'password' => $request->password,
             'role' => $request->role,
         ]);
 
@@ -45,30 +51,16 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UserUpdateRequest $request, User $user)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => [
-                'required',
-                'string',
-                'min:4',
-                'max:255',
-                Rule::unique('users')->ignore($user->id), // Baris ini yang membutuhkan 'use Illuminate\Validation\Rule;'
-            ],
-            'password' => 'nullable|string|min:6', // Password boleh kosong saat update
-        ]);
-
-        // Siapkan data untuk diupdate
         $updateData = [
             'name' => $request->name,
             'username' => $request->username,
+            'role' => $request->role,
         ];
 
-        // Hanya update password jika diisi
         if ($request->filled('password')) {
-            $updateData['password'] = Hash::make($request->password);
-            $updateData['plain_password'] = $request->password;
+            $updateData['password'] = $request->password;
         }
 
         $user->update($updateData);

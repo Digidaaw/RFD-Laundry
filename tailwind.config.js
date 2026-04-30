@@ -6,8 +6,17 @@ module.exports = {
     './resources/**/*.vue',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'brand-yellow': '#FCE844',
+        'brand-dark': '#0F1115',
+        'brand-gray': '#F8F9FA',
+      },
+      fontFamily: {
+        heading: ['Poppins', 'sans-serif'],
+        body: ['Inter', 'sans-serif'],
+      },
+    },
   },
   plugins: [],
 }
-

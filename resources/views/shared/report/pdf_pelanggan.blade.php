@@ -42,7 +42,15 @@
             <tr>
                 <td>{{ $transaksi->no_invoice }}</td>
                 <td>{{ \Carbon\Carbon::parse($transaksi->tanggal_order)->format('d-m-Y') }}</td>
-                <td>{{ $transaksi->layanan->name ?? '-' }}</td>
+                <td>
+                    @if($transaksi->items->count() > 0)
+                        @foreach($transaksi->items as $item)
+                            <div>{{ $item->layanan->name ?? 'N/A' }} ({{ $item->qty }} pcs)</div>
+                        @endforeach
+                    @else
+                        {{ $transaksi->layanan->name ?? '-' }}
+                    @endif
+                </td>
                 <td>{{ $transaksi->deskripsi ?? '-' }}</td>
                 <td>Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
                 <td>{{ $transaksi->status_pembayaran }}</td>

@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->id(); // auto increment
             $table->string('name');
             $table->string('gambar');
-            $table->double('harga', 10, 2);
             $table->text('deskripsi');
             $table->timestamps();
         });

@@ -1,6 +1,12 @@
 <!-- Modal Pembayaran Piutang -->
-<div x-data="{ open: false, data: {} }" 
-     @open-bayar-modal.window="open = true; data = $event.detail" 
+<div x-data="{
+        open: false,
+        data: {},
+        bayarNumeric: 0,
+        bayarDisplay: '',
+        error: ''
+     }" 
+     @open-bayar-modal.window="open = true; data = $event.detail; bayarNumeric = 0; bayarDisplay = ''; error = ''" 
      @keydown.escape.window="open = false" 
      x-show="open" 
      x-cloak 
@@ -23,11 +29,25 @@
 
             <div class="mb-4">
                 <label for="bayar_sekarang" class="block text-gray-700 text-lg font-semibold mb-2">Jumlah Bayar Sekarang</label>
-                <input type="number" id="bayar_sekarang" name="bayar_sekarang" 
-                       :max="data.sisa_bayar"
-                       placeholder="Masukkan nominal pembayaran" 
+                <input type="hidden" id="bayar_sekarang" name="bayar_sekarang" :value="bayarNumeric">
+                <input type="text"
+                       x-model="bayarDisplay"
+                       inputmode="numeric"
+                       placeholder="Masukkan nominal pembayaran"
                        required
+                       x-on:input="
+                            const cleaned = $event.target.value.replace(/[^0-9]/g, '');
+                            let num = cleaned === '' ? 0 : parseInt(cleaned, 10);
+                            const max = Number(data.sisa_bayar || 0);
+                            if (num > max) num = max;
+                            bayarNumeric = num;
+                            bayarDisplay = num ? num.toLocaleString('id-ID') : '';
+                            error = '';
+                       "
                        class="w-full border border-gray-300 rounded-lg px-4 py-2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <p x-show="error"
+                   x-text="error"
+                   class="text-red-600 text-sm mt-1"></p>
             </div>
 
             <div class="flex justify-end gap-4 mt-8">

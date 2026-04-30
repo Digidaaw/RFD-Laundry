@@ -13,19 +13,16 @@ return new class extends Migration
     {
         Schema::create('transaksis', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_user'); 
+            $table->unsignedBigInteger('id_user')->nullable(); 
             $table->unsignedBigInteger('id_pelanggan'); 
             $table->unsignedBigInteger('id_layanan'); 
 
             $table->date("tanggal_order");
-            $table->double("berat_laundry");
             $table->double("total_harga");
             $table->double("jumlah_bayar");
             $table->double("sisa_bayar");
-            $table->enum("status_order", ["Proses", "Selesai", "Diambil"]);
-            $table->enum("status_pemabayaran", ["DP", "Lunas" ]);
+            $table->enum("status_pembayaran", ["DP", "Lunas" ]);
             $table->timestamps();
-            
             
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_pelanggan')->references('id')->on('pelanggans')->onDelete('cascade');

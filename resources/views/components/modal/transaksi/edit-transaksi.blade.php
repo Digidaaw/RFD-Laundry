@@ -3,6 +3,9 @@
         open: false,
         data: {}, // Data transaksi akan diisi di sini
         choicesInstance: null, // Untuk menyimpan instance Choices.js
+        bayarNumeric: 0,
+        bayarDisplay: '',
+        bayarError: '',
         
         // Fungsi init() akan dijalankan saat komponen Alpine dimuat
         init() {
@@ -58,9 +61,51 @@
                 // Ambil 10 karakter pertama
                 detail.tanggal_order = detail.tanggal_order.substring(0, 10);
             }
-            
             this.data = detail;
+            this.bayarNumeric = Number(detail.jumlah_bayar || 0);
+            this.bayarDisplay = this.bayarNumeric ? this.bayarNumeric.toLocaleString('id-ID') : '';
+            this.bayarError = '';
+            this.validateBayar();
             this.open = true; // Ini akan memicu $watch di atas
+
+            // Set form action menggunakan route yang sudah di-generate oleh backend
+            this.$nextTick(() => {
+                if (this.$refs.editForm && detail.id) {
+                    // Gunakan base URL + id untuk action
+                    this.$refs.editForm.action = window.location.origin + '/transaksi/' + detail.id;
+                }
+            });
+        },
+
+        get minBayar() {
+            return Math.ceil(Number(this.data.total_harga || 0) * 0.5);
+        },
+
+        get isBayarValid() {
+            return Number(this.bayarNumeric || 0) >= this.minBayar;
+        },
+
+        validateBayar() {
+            const total = Number(this.data.total_harga || 0);
+            const bayar = Number(this.bayarNumeric || 0);
+            if (bayar > total) {
+                this.bayarError = 'Jumlah bayar tidak boleh melebihi total tagihan.';
+            } else if (bayar < this.minBayar) {
+                this.bayarError = 'Pembayaran minimal harus 50% dari total harga.';
+            } else {
+                this.bayarError = '';
+            }
+        },
+
+        onBayarInput(raw) {
+            const cleaned = String(raw).replace(/[^0-9]/g, '');
+            let num = cleaned === '' ? 0 : parseInt(cleaned, 10);
+            const max = Number(this.data.total_harga || 0);
+            if (num > max) num = max;
+            this.bayarNumeric = num;
+            this.data.jumlah_bayar = num;
+            this.bayarDisplay = num ? num.toLocaleString('id-ID') : '';
+            this.validateBayar();
         }
      }"
      @open-edit-modal.window="openModal($event)"
@@ -81,28 +126,34 @@
         <!-- Form dibuat scrollable jika kontennya panjang -->
         <div class="overflow-y-auto flex-grow pr-2">
             
-            <form x-bind:action="data.id ? '{{ url('transaksi') }}/' + data.id : ''" method="POST">
+            <form method="POST" action="" x-ref="editForm">
                 @csrf
                 @method('PUT')
 
                 {{-- Input tersembunyi untuk redirect --}}
                 <input type="hidden" name="_redirect_url" :value="window.location.href.includes('report') ? window.location.href : ''">
+                <input type="hidden" name="transaksi_id" :value="data.id">
 
                 <div class="mb-4">
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Tanggal Order</label>
                     <input type="date" name="tanggal_order" x-model="data.tanggal_order"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                           required>
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-lg font-semibold mb-2">Pelanggan</label>
+                    <label class="block text-gray-700 text-lg font-semibold mb-2">Pelanggan <span class="text-red-500">*</span></label>
                     @if(isset($pelanggans))
-                        <select name="id_pelanggan" x-ref="pelangganSelectEdit">
+                        <select name="id_pelanggan" x-ref="pelangganSelectEdit" required
+                            class="@error('id_pelanggan') border-red-500 @enderror">
                             <option value="" disabled selected>Pilih Pelanggan...</option>
                             @foreach($pelanggans as $pelanggan)
                                 <option value="{{ $pelanggan->id }}">{{ $pelanggan->name }} - {{ $pelanggan->kontak }}</option>
                             @endforeach
                         </select>
+                        @error('id_pelanggan')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
                     @else
                         <p class="text-red-500">Error: Data pelanggan tidak ditemukan.</p>
                     @endif
@@ -111,26 +162,32 @@
                 <div class="mb-4">
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Deskripsi (Keyword)</label>
                     <textarea name="deskripsi" x-model="data.deskripsi" rows="3"
-                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                              class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('deskripsi') border-red-500 @enderror"
                               placeholder="Contoh: Baju Pesta, Selimut Tebal"></textarea>
+                    @error('deskripsi')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-lg font-semibold mb-2">Status Order</label>
-                    <select name="status_order" x-model="data.status_order"
-                            class="w-full border border-gray-300 rounded-lg px-4 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
-                        <option value="Baru">Baru</option>
-                        <option value="Proses">Proses</option>
-                        <option value="Selesai">Selesai</option>
-                        <option value="Diambil">Diambil</option>
-                    </select>
-                </div>
-
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-lg font-semibold mb-2">Jumlah Bayar</label>
-                    <input type="number" name="jumlah_bayar" x-model="data.jumlah_bayar"
-                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    <small x-show="data.total_harga" class="text-gray-500" x-text="'Total Tagihan: Rp ' + new Intl.NumberFormat('id-ID').format(data.total_harga)"></small>
+                    <label class="block text-gray-700 text-lg font-semibold mb-2">Jumlah Bayar <span class="text-red-500">*</span></label>
+                    <input type="hidden" name="jumlah_bayar" :value="bayarNumeric" required>
+                    <input type="text"
+                           x-model="bayarDisplay"
+                           x-on:input="onBayarInput($event.target.value)"
+                           inputmode="numeric" required
+                           class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('jumlah_bayar') border-red-500 @enderror">
+                    <small x-show="data.total_harga" class="text-gray-500 block"
+                           x-text="'Total Tagihan: Rp ' + new Intl.NumberFormat('id-ID').format(data.total_harga)"></small>
+                    <small x-show="data.total_harga" class="text-gray-500 text-xs mt-1 block">
+                        Minimal pembayaran: Rp <span x-text="new Intl.NumberFormat('id-ID').format(minBayar)"></span> (50% dari total)
+                    </small>
+                    <p x-show="bayarError"
+                       x-text="bayarError"
+                       class="text-red-600 text-sm mt-1"></p>
+                    @error('jumlah_bayar')
+                        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <!-- Tombol Aksi -->
@@ -139,7 +196,9 @@
                         class="px-4 py-2 border rounded-lg text-gray-600 hover:bg-gray-100">
                         Batal
                     </button>
-                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    <button type="submit" :disabled="!isBayarValid"
+                        :class="{ 'opacity-50 cursor-not-allowed': !isBayarValid }"
+                        class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                         Simpan Perubahan
                     </button>
                 </div>
