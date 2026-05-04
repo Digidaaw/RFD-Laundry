@@ -128,11 +128,6 @@
                                             class="bg-green-100 text-green-700 font-bold py-2 px-6 rounded-md hover:bg-green-200">
                                             Update
                                         </button>
-                                        <button
-                                            @click="openDeleteModal = true; deleteUrl = '{{ route('layanan.destroy', $layanan->id) }}';"
-                                            class="bg-red-100 text-red-700 font-bold py-2 px-6 rounded-md hover:bg-red-200">
-                                            Delete
-                                        </button>
                                     </td>
                                 </tr>
                             @empty
@@ -189,11 +184,6 @@
                                         class="flex-1 bg-green-100 text-green-700 font-semibold py-2 rounded-md text-xs">
                                         Update
                                     </button>
-                                    <button
-                                        @click="openDeleteModal = true; deleteUrl = '{{ route('layanan.destroy', $layanan->id) }}';"
-                                        class="flex-1 bg-red-100 text-red-700 font-semibold py-2 rounded-md text-xs">
-                                        Delete
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -211,7 +201,6 @@
 
             @include('components.modal.layanan.add-layanan')
             @include('components.modal.layanan.edit-layanan')
-            @include('components.modal.layanan.delete-layanan')
         </main>
     </div>
 @endsection

@@ -113,12 +113,6 @@
                                             class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-green-200 transition text-sm md:text-base">
                                             Update
                                         </button>
-
-                                        <button
-                                            @click="openDeleteModal = true; deleteUrl = '{{ route('pelanggan.destroy', $pelanggan->id) }}';"
-                                            class="bg-red-100 text-red-700 font-bold py-2 px-6 rounded-md hover:bg-red-200 transition">
-                                            Delete
-                                        </button>
                                     </td>
                                 </tr>
                             @empty
@@ -136,7 +130,6 @@
 
             @include('components.modal.customer.add-customer')
             @include('components.modal.customer.edit-customer')
-            @include('components.modal.customer.delete-customer')
         </main>
     </div>
 @endsection
