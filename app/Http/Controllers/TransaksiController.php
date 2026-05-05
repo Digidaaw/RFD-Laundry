@@ -111,7 +111,7 @@ class TransaksiController extends Controller
         });
     }
 
-    private function normalizeItems(TransaksiStoreRequest $request, bool $isMulti): array
+    private function normalizeItems(TransaksiStoreRequest|TransaksiUpdateRequest $request, bool $isMulti): array
     {
         if ($isMulti) {
             return collect($request->items)
@@ -242,32 +242,72 @@ class TransaksiController extends Controller
 
     public function update(TransaksiUpdateRequest $request, Transaksi $transaksi)
     {
-        // Jika ada transaksi_id di request, gunakan itu (dari edit modal)
         if ($request->has('transaksi_id')) {
             $transaksi = Transaksi::findOrFail($request->transaksi_id);
         }
 
-        if ($request->jumlah_bayar > $transaksi->total_harga) {
-            return back()->withInput()->withErrors(['jumlah_bayar' => 'Jumlah bayar melebihi total.']);
+        if ($request->has('items')) {
+            $potongan = (float) ($request->input('potongan') ?? 0);
+            $items = $this->normalizeItems($request, true);
+            $this->validateLayananUnits($items);
+
+            [$createItems, $subtotalSum] = $this->buildCreateItems($items, true);
+
+            if ($potongan > $subtotalSum) {
+                return back()->withInput()->withErrors(['potongan' => 'Potongan melebihi subtotal.']);
+            }
+
+            $totalHarga = max(0, $subtotalSum - $potongan);
+            if ($request->jumlah_bayar > $totalHarga) {
+                return back()->withInput()->withErrors(['jumlah_bayar' => 'Jumlah bayar melebihi total harga.']);
+            }
+
+            $minBayar = (int) ceil($totalHarga * 0.5);
+            if ($request->jumlah_bayar < $minBayar) {
+                return back()->withInput()->withErrors(['jumlah_bayar' => 'Pembayaran minimal harus 50% dari total harga.']);
+            }
+
+            $sisaBayar = max(0, $totalHarga - $request->jumlah_bayar);
+
+            DB::transaction(function () use ($transaksi, $request, $createItems, $subtotalSum, $totalHarga, $potongan, $sisaBayar) {
+                $transaksi->update([
+                    'id_pelanggan' => $request->id_pelanggan,
+                    'tanggal_order' => $request->tanggal_order,
+                    'deskripsi' => $request->deskripsi,
+                    'subtotal' => $subtotalSum,
+                    'potongan' => $potongan,
+                    'total_harga' => $totalHarga,
+                    'jumlah_bayar' => $request->jumlah_bayar,
+                    'sisa_bayar' => $sisaBayar,
+                    'status_pembayaran' => ($sisaBayar <= 0) ? 'Lunas' : 'DP',
+                    'id_layanan' => $createItems[0]['layanan_id'] ?? null,
+                ]);
+
+                $transaksi->items()->delete();
+                $transaksi->items()->createMany($createItems);
+            });
+        } else {
+            if ($request->jumlah_bayar > $transaksi->total_harga) {
+                return back()->withInput()->withErrors(['jumlah_bayar' => 'Jumlah bayar melebihi total.']);
+            }
+
+            $minBayar = (int) ceil($transaksi->total_harga * 0.5);
+            if ($request->jumlah_bayar < $minBayar) {
+                return back()->withInput()->withErrors(['jumlah_bayar' => 'Pembayaran minimal harus 50% dari total harga.']);
+            }
+
+            $sisaBayar = max(0, $transaksi->total_harga - $request->jumlah_bayar);
+
+            $transaksi->update([
+                'id_pelanggan' => $request->id_pelanggan,
+                'tanggal_order' => $request->tanggal_order,
+                'deskripsi' => $request->deskripsi,
+                'jumlah_bayar' => $request->jumlah_bayar,
+                'sisa_bayar' => $sisaBayar,
+                'status_pembayaran' => ($sisaBayar <= 0) ? 'Lunas' : 'DP',
+            ]);
         }
 
-        $minBayar = (int) ceil($transaksi->total_harga * 0.5);
-        if ($request->jumlah_bayar < $minBayar) {
-            return back()->withInput()->withErrors(['jumlah_bayar' => 'Pembayaran minimal harus 50% dari total harga.']);
-        }
-
-        $sisaBayar = max(0, $transaksi->total_harga - $request->jumlah_bayar);
-
-        $transaksi->update([
-            'id_pelanggan' => $request->id_pelanggan,
-            'tanggal_order' => $request->tanggal_order,
-            'deskripsi' => $request->deskripsi,
-            'jumlah_bayar' => $request->jumlah_bayar,
-            'sisa_bayar' => $sisaBayar,
-            'status_pembayaran' => ($sisaBayar <= 0) ? 'Lunas' : 'DP',
-        ]);
-
-        // Handle redirect based on _redirect_url
         if ($request->has('_redirect_url') && $request->_redirect_url) {
             return redirect($request->_redirect_url)->with('success', 'Transaksi berhasil diperbarui.');
         }

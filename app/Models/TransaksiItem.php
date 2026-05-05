@@ -14,6 +14,7 @@ class TransaksiItem extends Model
     protected $fillable = [
         'transaksi_id',
         'layanan_id',
+        'unit_satuan',
         'qty',
         'harga_satuan',
         'subtotal',

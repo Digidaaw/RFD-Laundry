@@ -103,14 +103,6 @@
                                             class="bg-green-100 text-green-700 font-bold py-2 px-6 rounded-md hover:bg-green-200 transition">
                                             Update
                                         </button>
-                                        <button
-                                            @click="
-                                                                    openDeleteModal = true;
-                                                                    deleteUrl = '{{ route('users.destroy', $kasir->id) }}';
-                                                                "
-                                            class="bg-red-100 text-red-700 font-bold py-2 px-6 rounded-md hover:bg-red-200 transition">
-                                            Delete
-                                        </button>
                                     </td>
                                 </tr>
                             @empty
@@ -131,7 +123,6 @@
 
             @include('components.modal.kasir.add-kasir')
             @include('components.modal.kasir.edit-kasir')
-            @include('components.modal.kasir.delete-kasir')
         </main>
     </div>
 @endsection
