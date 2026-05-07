@@ -106,7 +106,7 @@ class LayananController extends Controller
         $fileNames = [];
 
         foreach ($images as $image) {
-            $imageName = time() . '_' . $image->getClientOriginalName();
+            $imageName = $image->hashName();
             $image->move(public_path('images/layanan'), $imageName);
             $fileNames[] = $imageName;
         }

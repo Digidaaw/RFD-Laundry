@@ -6,6 +6,7 @@ use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -39,10 +40,10 @@ class UserController extends Controller
     public function store(UserStoreRequest $request)
     {
         User::create([
-            'name' => $request->name,
+            'name'     => $request->name,
             'username' => $request->username,
             'password' => $request->password,
-            'role' => $request->role,
+            'role'     => $request->role,
         ]);
 
         return redirect()->route('users.index')->with('success', 'User kasir berhasil ditambahkan.');

@@ -65,14 +65,16 @@ class ReportController extends Controller
         $piutangs = $this->buildPiutangQuery($search)->latest()->get();
         $totalPiutang = $piutangs->sum('sisa_bayar');
         $pelanggans = Pelanggan::orderBy('name')->get();
+        $layanans = \App\Models\Layanan::with('units')->orderBy('name')->get();
 
-        return view('shared.report.piutang', compact('piutangs', 'totalPiutang', 'pelanggans'));
+        return view('shared.report.piutang', compact('piutangs', 'totalPiutang', 'pelanggans', 'layanans'));
     }
 
     public function laporanPelanggan(Pelanggan $pelanggan)
     {
         $transaksis = $this->getPelangganTransaksis($pelanggan);
         $pelanggans = Pelanggan::orderBy('name')->get();
+        $layanans = \App\Models\Layanan::with('units')->orderBy('name')->get();
 
         $totalSubtotal = $transaksis->sum('subtotal');
         $totalPotongan = $transaksis->sum('potongan');
@@ -84,6 +86,7 @@ class ReportController extends Controller
             'pelanggan',
             'transaksis',
             'pelanggans',
+            'layanans',
             'totalSubtotal',
             'totalPotongan',
             'totalHarga',

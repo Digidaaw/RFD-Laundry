@@ -19,7 +19,7 @@ class TransaksiBayarPiutangRequest extends FormRequest
             'bayar_sekarang' => [
                 'required',
                 'numeric',
-                'min:0.01',
+                'min:1000',
                 'lte:' . ($transaksi ? $transaksi->sisa_bayar : '0'),
             ],
         ];
@@ -30,7 +30,7 @@ class TransaksiBayarPiutangRequest extends FormRequest
         return [
             'bayar_sekarang.required' => 'Jumlah pembayaran harus diisi.',
             'bayar_sekarang.numeric' => 'Jumlah pembayaran harus berupa angka.',
-            'bayar_sekarang.min' => 'Pembayaran minimal 0.01.',
+            'bayar_sekarang.min' => 'Pembayaran minimal Rp1.000.',
             'bayar_sekarang.lte' => 'Pembayaran tidak boleh melebihi sisa hutang.',
         ];
     }

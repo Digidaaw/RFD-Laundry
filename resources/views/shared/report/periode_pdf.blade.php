@@ -38,7 +38,7 @@
                 <tr>
                     <td>{{ $t->no_invoice }}</td>
                     <td>{{ \Carbon\Carbon::parse($t->tanggal_order)->format('d-m-Y') }}</td>
-                    <td>{{ $t->pelanggan->name ?? 'N/A' }}</td>
+                    <td>{{ $t->pelanggan?->name ?? 'N/A' }}</td>
                     <td>{{ $t->user->name ?? 'N/A' }}</td>
                     <td>Rp {{ number_format($t->total_harga, 0, ',', '.') }}</td>
                     <td>{{ $t->status_pembayaran }}</td>

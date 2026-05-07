@@ -16,11 +16,9 @@
             </div>
             <div class="flex items-center gap-8">
                 <div class="flex items-center gap-4">
-                    <img src="{{ asset('img/rectangle-1393.png') }}"
-                         class="w-[60px] h-[60px] rounded-full object-cover" alt="Profile">
                     <div class="hidden md:block">
-                        <p class="text-base font-medium text-gray-900">{{ Auth::user()->name ?? 'User' }}</p>
-                        <p class="text-sm text-gray-500">{{ Auth::user()->role ?? 'User' }}</p>
+                        <p class="uppercase font-semibold text-sm text-gray-900">{{ Auth::user()->role ?? 'Panel' }}</p>
+                        <p class="text-xs text-gray-500">{{ Auth::user()->name ?? '' }}</p>
                     </div>
                 </div>
             </div>
@@ -104,7 +102,7 @@
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->no_invoice }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base ...">{{ \Carbon\Carbon::parse($transaksi->tanggal_order)->format('d M Y') }}</td>
-                                <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->pelanggan->name ?? 'N/A' }}</td>
+                                <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->pelanggan?->name ?? 'N/A' }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->user->name ?? 'N/A' }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base ...">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
                                 <td class="p-3 md:p-4">

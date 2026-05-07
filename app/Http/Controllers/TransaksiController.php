@@ -81,6 +81,10 @@ class TransaksiController extends Controller
         $jumlahBayar = (float) $request->jumlah_bayar;
         $sisaBayar = max(0, $totalHarga - $jumlahBayar);
 
+        if ($jumlahBayar > $totalHarga) {
+            return back()->withInput()->withErrors(['jumlah_bayar' => 'Jumlah bayar tidak boleh melebihi total harga.']);
+        }
+
         $minBayar = (int) ceil($totalHarga * 0.5);
         if ($jumlahBayar < $minBayar) {
             return back()->withInput()->withErrors(['jumlah_bayar' => 'Pembayaran minimal harus 50% dari total harga.']);
@@ -270,6 +274,7 @@ class TransaksiController extends Controller
             $sisaBayar = max(0, $totalHarga - $request->jumlah_bayar);
 
             DB::transaction(function () use ($transaksi, $request, $createItems, $subtotalSum, $totalHarga, $potongan, $sisaBayar) {
+                $transaksi = Transaksi::lockForUpdate()->findOrFail($transaksi->id);
                 $transaksi->update([
                     'id_pelanggan' => $request->id_pelanggan,
                     'tanggal_order' => $request->tanggal_order,
@@ -317,15 +322,18 @@ class TransaksiController extends Controller
 
     public function bayarPiutang(TransaksiBayarPiutangRequest $request, Transaksi $transaksi)
     {
-        $jumlahBayarBaru = $transaksi->jumlah_bayar + $request->bayar_sekarang;
-        $sisaBayarBaru = max(0, $transaksi->total_harga - $jumlahBayarBaru);
+        return DB::transaction(function () use ($request, $transaksi) {
+            $transaksi = Transaksi::lockForUpdate()->findOrFail($transaksi->id);
+            $jumlahBayarBaru = $transaksi->jumlah_bayar + $request->bayar_sekarang;
+            $sisaBayarBaru   = max(0, $transaksi->total_harga - $jumlahBayarBaru);
 
-        $transaksi->update([
-            'jumlah_bayar' => $jumlahBayarBaru,
-            'sisa_bayar' => $sisaBayarBaru,
-            'status_pembayaran' => ($sisaBayarBaru <= 0) ? 'Lunas' : 'DP',
-        ]);
+            $transaksi->update([
+                'jumlah_bayar'      => $jumlahBayarBaru,
+                'sisa_bayar'        => $sisaBayarBaru,
+                'status_pembayaran' => ($sisaBayarBaru <= 0) ? 'Lunas' : 'DP',
+            ]);
 
-        return redirect()->route('report.piutang')->with('success', 'Pembayaran berhasil.');
+            return redirect()->route('report.piutang')->with('success', 'Pembayaran berhasil.');
+        });
     }
 }

@@ -24,7 +24,7 @@ class TransaksiStoreRequest extends FormRequest
             $rules = array_merge($rules, [
                 'items' => 'required|array|min:1',
                 'items.*.id_layanan' => 'required|exists:layanans,id',
-                'items.*.unit_satuan' => 'required|in:kg,pcs,meter',
+                'items.*.unit_satuan' => 'required|string',
                 'items.*.qty' => 'required|numeric|min:0.1|max:999.9',
             ]);
         } else {
@@ -47,7 +47,7 @@ class TransaksiStoreRequest extends FormRequest
             'items.*.id_layanan.required' => 'Layanan harus dipilih.',
             'items.*.id_layanan.exists' => 'Layanan yang dipilih tidak ditemukan.',
             'items.*.unit_satuan.required' => 'Satuan harus dipilih.',
-            'items.*.unit_satuan.in' => 'Satuan hanya boleh: kg, pcs, atau meter.',
+            'items.*.unit_satuan.string' => 'Satuan harus berupa teks.',
             'items.*.qty.required' => 'Qty harus diisi.',
             'items.*.qty.numeric' => 'Qty harus berupa angka.',
             'items.*.qty.min' => 'Qty minimal 0.1.',
