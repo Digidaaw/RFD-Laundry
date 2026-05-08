@@ -52,6 +52,7 @@ Route::middleware(['auth', 'role'])->group(function () {
 
     Route::resource('transaksi', TransaksiController::class);
     Route::patch('/transaksi/{transaksi}/bayar', [TransaksiController::class, 'bayarPiutang'])->name('transaksi.bayar');
+    Route::get('/transaksi/{transaksi}/cetak-struk', [TransaksiController::class, 'cetakStruk'])->name('transaksi.cetak-struk');
 
     Route::get('/report', [ReportController::class, 'index'])->name('report.index');
     Route::get('/report/periode', [ReportController::class, 'laporanPeriode'])->name('report.periode');
