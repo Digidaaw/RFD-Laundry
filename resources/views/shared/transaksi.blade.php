@@ -29,7 +29,7 @@
                 </button>
                 <div
                     class="flex items-center flex-wrap gap-3 text-gray-700 font-bold text-base md:text-lg w-full lg:w-auto">
-                    <form action="{{ route('transaksi.index') }}" method="GET" class="flex items-center gap-3 w-full">
+                    <form action="{{ route('transaksi.index') }}" method="GET" class="flex items-center flex-wrap gap-3 w-full">
                         <div class="relative">
                             <details class="relative group">
                                 <summary
@@ -83,6 +83,10 @@
                             <img src="{{ asset('assets/search-icon.svg') }}"
                                 class="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5">
                         </div>
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 md:px-6 md:py-3 rounded-full shadow-md text-sm md:text-base font-semibold w-full sm:w-auto">
+                            Cari
+                        </button>
                         <input type="hidden" name="sort" value="{{ $sort ?? 'updated_latest' }}">
                         <input type="hidden" name="type" value="{{ $type ?? '' }}">
                     </form>

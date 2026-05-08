@@ -43,11 +43,13 @@
         openModal(event) {
             let detail = event.detail;
             if (detail.tanggal_order) {
-                detail.tanggal_order = String(detail.tanggal_order).substring(0, 10);
+                const date = new Date(detail.tanggal_order);
+
+                detail.tanggal_order = date.toISOString().split('T')[0];
             }
 
             this.transaksiId = detail.id;
-            this.tanggal_order = detail.tanggal_order || '';
+            this.tanggal_order = detail.tanggal_order ?? '';
             this.deskripsi = detail.deskripsi || '';
             this.potongan = Number(detail.potongan || 0);
             this.potonganDisplay = this.potongan ? this.potongan.toLocaleString('id-ID') : '';
@@ -223,7 +225,8 @@
 
                 <div class="mb-4">
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Tanggal Order</label>
-                    <input type="date" name="tanggal_order" x-model="tanggal_order"
+                    <input type="date" name="tanggal_order" 
+                        x-model.defer="tanggal_order"
                         class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 @error('tanggal_order') border-red-500 @enderror"
                         required>
                     @error('tanggal_order')
