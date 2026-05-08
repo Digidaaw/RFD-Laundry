@@ -107,7 +107,10 @@ class TransaksiController extends Controller
             $transaksi->no_invoice = 'IJ' . now()->format('dmY') . str_pad($transaksi->id, 4, '0', STR_PAD_LEFT);
             $transaksi->save();
 
-            return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil ditambahkan.');
+            return redirect()->route('transaksi.index')->with([
+                'success' => 'Transaksi berhasil ditambahkan.',
+                'show_print_modal' => $transaksi->id
+            ]);
         });
     }
 
@@ -333,5 +336,11 @@ class TransaksiController extends Controller
         ]);
 
         return redirect()->route('report.piutang')->with('success', 'Pembayaran berhasil.');
+    }
+
+    public function cetakStruk(Transaksi $transaksi)
+    {
+        $transaksi->load(['pelanggan', 'items.layanan', 'user']);
+        return view('shared.cetak-struk', compact('transaksi'));
     }
 }

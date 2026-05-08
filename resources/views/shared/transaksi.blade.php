@@ -149,8 +149,15 @@
                                             ])->toArray(),
                                         ];
                                         @endphp
+                                        <a href="{{ route('transaksi.cetak-struk', $transaksi) }}" target="_blank"
+                                            class="bg-blue-100 text-blue-700 font-bold py-1 px-3 md:py-2 md:px-4 rounded-md hover:bg-blue-200 text-sm md:text-base transition">
+                                            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                                            </svg>
+                                            Cetak
+                                        </a>
                                         <button @click="$dispatch('open-edit-modal', {{ json_encode($transaksiData) }})"
-                                            class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-green-200 text-sm md:text-base transition">Update</button>
+                                            class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-4 rounded-md hover:bg-green-200 text-sm md:text-base transition">Update</button>
                                     </td>
                                 </tr>
                             @empty
@@ -169,6 +176,35 @@
 
             @include('components.modal.transaksi.add-transaksi')
             @include('components.modal.transaksi.edit-transaksi')
+
+            <!-- Modal Konfirmasi Cetak Struk -->
+            @if(session('show_print_modal'))
+                @php
+                    $transaksiCetak = \App\Models\Transaksi::with(['pelanggan', 'items.layanan'])->find(session('show_print_modal'));
+                @endphp
+                @if($transaksiCetak)
+                <div x-data="{ open: true }" x-show="open" x-cloak x-transition
+                    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div @click.stop class="bg-white p-6 rounded-xl w-full max-w-md shadow-lg relative">
+                        <h2 class="text-xl font-bold mb-4 text-center">Transaksi Berhasil!</h2>
+                        <div class="mb-6">
+                            <p class="text-gray-700 mb-2">Transaksi dengan No. Invoice <strong>{{ $transaksiCetak->no_invoice }}</strong> telah berhasil dibuat.</p>
+                            <p class="text-gray-600">Apakah Anda ingin mencetak struk sekarang?</p>
+                        </div>
+                        <div class="flex justify-end gap-3">
+                            <button @click="open = false" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                                Tidak
+                            </button>
+                            <a href="{{ route('transaksi.cetak-struk', $transaksiCetak) }}" target="_blank"
+                                @click="open = false"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+                                Ya, Cetak Struk
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            @endif
         </main>
     </div>
 @endsection
