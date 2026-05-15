@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 
 class TransaksiController extends Controller
@@ -341,6 +342,10 @@ class TransaksiController extends Controller
     public function cetakStruk(Transaksi $transaksi)
     {
         $transaksi->load(['pelanggan', 'items.layanan', 'user']);
-        return view('shared.cetak-struk', compact('transaksi'));
+
+        $pdf = Pdf::loadView('shared.cetak-struk-pdf', compact('transaksi'))
+            ->setPaper('a4', 'landscape');
+
+        return $pdf->download('Struk-Transaksi-' . $transaksi->no_invoice . '.pdf');
     }
 }

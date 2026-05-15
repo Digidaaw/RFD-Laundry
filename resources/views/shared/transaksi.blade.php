@@ -153,7 +153,7 @@
                                             ])->toArray(),
                                         ];
                                         @endphp
-                                        <a href="{{ route('transaksi.cetak-struk', $transaksi) }}" target="_blank"
+                                        <a href="{{ route('transaksi.cetak-struk', $transaksi) }}"
                                             class="bg-blue-100 text-blue-700 font-bold py-1 px-3 md:py-2 md:px-4 rounded-md hover:bg-blue-200 text-sm md:text-base transition">
                                             <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
@@ -193,16 +193,16 @@
                         <h2 class="text-xl font-bold mb-4 text-center">Transaksi Berhasil!</h2>
                         <div class="mb-6">
                             <p class="text-gray-700 mb-2">Transaksi dengan No. Invoice <strong>{{ $transaksiCetak->no_invoice }}</strong> telah berhasil dibuat.</p>
-                            <p class="text-gray-600">Apakah Anda ingin mencetak struk sekarang?</p>
+                            <p class="text-gray-600">Apakah Anda ingin mengunduh struk PDF sekarang?</p>
                         </div>
                         <div class="flex justify-end gap-3">
                             <button @click="open = false" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
                                 Tidak
                             </button>
-                            <a href="{{ route('transaksi.cetak-struk', $transaksiCetak) }}" target="_blank"
+                            <a href="{{ route('transaksi.cetak-struk', $transaksiCetak) }}"
                                 @click="open = false"
                                 class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
-                                Ya, Cetak Struk
+                                Ya, Unduh PDF
                             </a>
                         </div>
                     </div>

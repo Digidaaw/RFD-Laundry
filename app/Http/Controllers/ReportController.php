@@ -8,6 +8,7 @@ use App\Http\Requests\ReportPeriodeRequest;
 use App\Http\Requests\ReportPiutangRequest;
 use App\Models\Transaksi;
 use App\Models\Pelanggan;
+use App\Models\Layanan;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -65,14 +66,16 @@ class ReportController extends Controller
         $piutangs = $this->buildPiutangQuery($search)->latest()->get();
         $totalPiutang = $piutangs->sum('sisa_bayar');
         $pelanggans = Pelanggan::orderBy('name')->get();
+        $layanans = Layanan::with('units')->orderBy('name')->get();
 
-        return view('shared.report.piutang', compact('piutangs', 'totalPiutang', 'pelanggans'));
+        return view('shared.report.piutang', compact('piutangs', 'totalPiutang', 'pelanggans', 'layanans'));
     }
 
     public function laporanPelanggan(Pelanggan $pelanggan)
     {
         $transaksis = $this->getPelangganTransaksis($pelanggan);
         $pelanggans = Pelanggan::orderBy('name')->get();
+        $layanans = Layanan::with('units')->orderBy('name')->get();
 
         $totalSubtotal = $transaksis->sum('subtotal');
         $totalPotongan = $transaksis->sum('potongan');
@@ -84,6 +87,7 @@ class ReportController extends Controller
             'pelanggan',
             'transaksis',
             'pelanggans',
+            'layanans',
             'totalSubtotal',
             'totalPotongan',
             'totalHarga',
