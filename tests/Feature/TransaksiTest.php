@@ -379,10 +379,7 @@ class TransaksiTest extends TestCase
         $response = $this->get(route('transaksi.cetak-struk', $transaksi));
 
         $response->assertOk();
-        $response->assertSee('RFD LAUNDRY');
-        $response->assertSee('IJTEST0001');
-        $response->assertSee('Budi Laundry');
-        $response->assertSee('Cetak Struk');
+        $response->assertDownload('Struk-Transaksi-IJTEST0001.pdf');
     }
 
     public function test_tc_trx_15_tambah_layanan_lebih_dari_1_pada_fitur_tambah_transaksi(): void
