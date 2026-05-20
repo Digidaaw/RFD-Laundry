@@ -187,7 +187,9 @@
 
     <!-- HEADER -->
     <div class="header">
-        <img src="{{ public_path('images/rfd laundry.png') }}" alt="logo">
+        @if (extension_loaded('gd'))
+            <img src="{{ public_path('images/rfd laundry.png') }}" alt="logo">
+        @endif
 
         <div class="company-desc">
             Garment wash,bleach wash,Stone wash,sand wash<br>
