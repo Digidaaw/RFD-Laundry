@@ -15,11 +15,7 @@
             </div>
             <div class="flex items-center gap-8">
                 <div class="flex items-center gap-4">
-                    <img src="{{ asset('img/rectangle-1393.png') }}" class="w-[60px] h-[60px] rounded-full object-cover" alt="Profile">
-                    <div class="hidden lg:block">
-                        <p class="text-base font-medium text-gray-900">Admin</p>
-                        <p class="text-sm text-gray-500">Panel</p>
-                    </div>
+                    <p class="uppercase font-semibold text-sm text-gray-900">{{ Auth::user()->role ?? 'Panel' }}</p>
                 </div>
             </div>
         </header>
@@ -103,14 +99,6 @@
                                             class="bg-green-100 text-green-700 font-bold py-2 px-6 rounded-md hover:bg-green-200 transition">
                                             Update
                                         </button>
-                                        <button
-                                            @click="
-                                                                    openDeleteModal = true;
-                                                                    deleteUrl = '{{ route('users.destroy', $kasir->id) }}';
-                                                                "
-                                            class="bg-red-100 text-red-700 font-bold py-2 px-6 rounded-md hover:bg-red-200 transition">
-                                            Delete
-                                        </button>
                                     </td>
                                 </tr>
                             @empty
@@ -131,7 +119,6 @@
 
             @include('components.modal.kasir.add-kasir')
             @include('components.modal.kasir.edit-kasir')
-            @include('components.modal.kasir.delete-kasir')
         </main>
     </div>
 @endsection

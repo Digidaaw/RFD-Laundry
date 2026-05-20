@@ -88,7 +88,29 @@
                                 <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->pelanggan->name ?? 'N/A' }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base font-bold text-red-600">Rp {{ number_format($transaksi->sisa_bayar, 0, ',', '.') }}</td>
                                 <td class="p-3 md:p-4 text-center">
-                                    <button @click="$dispatch('open-edit-modal', {{ json_encode($transaksi) }})"
+                                    @php 
+                                    $transaksiData = [
+                                        'id' => $transaksi->id,
+                                        'tanggal_order' => $transaksi->tanggal_order,
+                                        'id_pelanggan' => $transaksi->id_pelanggan,
+                                        'deskripsi' => $transaksi->deskripsi,
+                                        'subtotal' => $transaksi->subtotal,
+                                        'potongan' => $transaksi->potongan,
+                                        'total_harga' => $transaksi->total_harga,
+                                        'jumlah_bayar' => $transaksi->jumlah_bayar,
+                                        'sisa_bayar' => $transaksi->sisa_bayar,
+                                        'status_pembayaran' => $transaksi->status_pembayaran,
+                                        'items' => $transaksi->items->map(fn($item) => [
+                                            'id' => $item->id,
+                                            'layanan_id' => $item->layanan_id,
+                                            'unit_satuan' => $item->unit_satuan,
+                                            'qty' => $item->qty,
+                                            'harga_satuan' => $item->harga_satuan,
+                                            'subtotal' => $item->subtotal,
+                                        ])->toArray(),
+                                    ];
+                                    @endphp
+                                    <button @click="$dispatch('open-edit-modal', {{ json_encode($transaksiData) }})"
                                         class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-green-200 text-sm md:text-base transition">
                                         Bayar
                                     </button>

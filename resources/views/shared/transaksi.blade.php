@@ -29,7 +29,7 @@
                 </button>
                 <div
                     class="flex items-center flex-wrap gap-3 text-gray-700 font-bold text-base md:text-lg w-full lg:w-auto">
-                    <form action="{{ route('transaksi.index') }}" method="GET" class="flex items-center gap-3 w-full">
+                    <form action="{{ route('transaksi.index') }}" method="GET" class="flex items-center flex-wrap gap-3 w-full">
                         <div class="relative">
                             <details class="relative group">
                                 <summary
@@ -83,6 +83,10 @@
                             <img src="{{ asset('assets/search-icon.svg') }}"
                                 class="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 md:h-5 md:w-5">
                         </div>
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 md:px-6 md:py-3 rounded-full shadow-md text-sm md:text-base font-semibold w-full sm:w-auto">
+                            Cari
+                        </button>
                         <input type="hidden" name="sort" value="{{ $sort ?? 'updated_latest' }}">
                         <input type="hidden" name="type" value="{{ $type ?? '' }}">
                     </form>
@@ -127,12 +131,37 @@
                                         </span>
                                     </td>
                                     <td class="p-3 md:p-4 flex justify-center items-center space-x-1 md:space-x-2">
-                                        @php $transaksiData = json_encode($transaksi); @endphp
-                                        <button @click="$dispatch('open-edit-modal', {{ $transaksiData }})"
-                                            class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-green-200 text-sm md:text-base transition">Update</button>
-                                        <button
-                                            @click="openDeleteModal = true; deleteUrl = '{{ route('transaksi.destroy', $transaksi->id) }}';"
-                                            class="bg-red-100 text-red-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-red-200 text-sm md:text-base transition">Delete</button>
+                                        @php 
+                                        $transaksiData = [
+                                            'id' => $transaksi->id,
+                                            'tanggal_order' => $transaksi->tanggal_order,
+                                            'id_pelanggan' => $transaksi->id_pelanggan,
+                                            'deskripsi' => $transaksi->deskripsi,
+                                            'subtotal' => $transaksi->subtotal,
+                                            'potongan' => $transaksi->potongan,
+                                            'total_harga' => $transaksi->total_harga,
+                                            'jumlah_bayar' => $transaksi->jumlah_bayar,
+                                            'sisa_bayar' => $transaksi->sisa_bayar,
+                                            'status_pembayaran' => $transaksi->status_pembayaran,
+                                            'items' => $transaksi->items->map(fn($item) => [
+                                                'id' => $item->id,
+                                                'layanan_id' => $item->layanan_id,
+                                                'unit_satuan' => $item->unit_satuan,
+                                                'qty' => $item->qty,
+                                                'harga_satuan' => $item->harga_satuan,
+                                                'subtotal' => $item->subtotal,
+                                            ])->toArray(),
+                                        ];
+                                        @endphp
+                                        <a href="{{ route('transaksi.cetak-struk', $transaksi) }}"
+                                            class="bg-blue-100 text-blue-700 font-bold py-1 px-3 md:py-2 md:px-4 rounded-md hover:bg-blue-200 text-sm md:text-base transition">
+                                            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+                                            </svg>
+                                            Cetak
+                                        </a>
+                                        <button @click="$dispatch('open-edit-modal', {{ json_encode($transaksiData) }})"
+                                            class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-4 rounded-md hover:bg-green-200 text-sm md:text-base transition">Update</button>
                                     </td>
                                 </tr>
                             @empty
@@ -151,7 +180,35 @@
 
             @include('components.modal.transaksi.add-transaksi')
             @include('components.modal.transaksi.edit-transaksi')
-            @include('components.modal.transaksi.delete-transaksi')
+
+            <!-- Modal Konfirmasi Cetak Struk -->
+            @if(session('show_print_modal'))
+                @php
+                    $transaksiCetak = \App\Models\Transaksi::with(['pelanggan', 'items.layanan'])->find(session('show_print_modal'));
+                @endphp
+                @if($transaksiCetak)
+                <div x-data="{ open: true }" x-show="open" x-cloak x-transition
+                    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                    <div @click.stop class="bg-white p-6 rounded-xl w-full max-w-md shadow-lg relative">
+                        <h2 class="text-xl font-bold mb-4 text-center">Transaksi Berhasil!</h2>
+                        <div class="mb-6">
+                            <p class="text-gray-700 mb-2">Transaksi dengan No. Invoice <strong>{{ $transaksiCetak->no_invoice }}</strong> telah berhasil dibuat.</p>
+                            <p class="text-gray-600">Apakah Anda ingin mengunduh struk PDF sekarang?</p>
+                        </div>
+                        <div class="flex justify-end gap-3">
+                            <button @click="open = false" class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition">
+                                Tidak
+                            </button>
+                            <a href="{{ route('transaksi.cetak-struk', $transaksiCetak) }}"
+                                @click="open = false"
+                                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-semibold">
+                                Ya, Unduh PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                @endif
+            @endif
         </main>
     </div>
 @endsection

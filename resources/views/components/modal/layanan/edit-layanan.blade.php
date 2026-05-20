@@ -90,7 +90,7 @@
 
                             <!-- HARGA -->
                             <div class="col-span-5">
-                                <input type="number" :name="`units[${index}][harga]`" x-model="unit.harga" required min="0"
+                                <input type="number" :name="`units[${index}][harga]`" x-model="unit.harga" required min="1"
                                     class="w-full border rounded-lg px-2 py-1 @error('units.*.harga') border-red-500 @enderror" placeholder="Harga">
                             </div>
 

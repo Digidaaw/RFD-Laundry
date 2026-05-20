@@ -18,7 +18,7 @@ class LayananUpdateRequest extends FormRequest
             'deskripsi' => 'required|string|min:5|max:1000',
             'units' => 'required|array|min:1',
             'units.*.unit_satuan' => 'required|in:kg,pcs,meter',
-            'units.*.harga' => 'required|numeric|min:0',
+            'units.*.harga' => 'required|numeric|min:1',
             'gambar' => 'nullable|array',
             'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'images_to_delete' => 'nullable|array',
@@ -37,7 +37,7 @@ class LayananUpdateRequest extends FormRequest
             'units.*.unit_satuan.in' => 'Satuan hanya boleh: kg, pcs, atau meter.',
             'units.*.harga.required' => 'Harga harus diisi.',
             'units.*.harga.numeric' => 'Harga harus berupa angka.',
-            'units.*.harga.min' => 'Harga tidak boleh negatif.',
+            'units.*.harga.min' => 'Harga harus lebih dari 0.',
             'deskripsi.required' => 'Deskripsi harus diisi.',
             'deskripsi.string' => 'Deskripsi harus berupa teks.',
             'gambar.array' => 'Gambar harus berformat array.',
@@ -45,5 +45,19 @@ class LayananUpdateRequest extends FormRequest
             'gambar.*.mimes' => 'Format gambar: jpeg, png, jpg, gif, atau svg.',
             'gambar.*.max' => 'Ukuran gambar maksimal 2MB.',
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $layanan = $this->route('layanan');
+            $currentImages = $layanan->gambar ?? [];
+            $imagesToDelete = $this->input('images_to_delete', []);
+            $remainingImages = array_diff($currentImages, $imagesToDelete);
+            $newImages = $this->file('gambar', []);
+            if (empty($remainingImages) && empty($newImages)) {
+                $validator->errors()->add('gambar', 'Minimal 1 gambar harus ada.');
+            }
+        });
     }
 }

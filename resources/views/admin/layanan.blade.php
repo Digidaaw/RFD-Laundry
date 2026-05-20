@@ -28,8 +28,7 @@
                 </button>
                 <div
                     class="flex items-center flex-wrap gap-3 text-gray-700 font-bold text-base md:text-lg w-full lg:w-auto">
-                    <form action="{{ route('layanan.index') }}" method="GET" class="flex items-center gap-3 w-full">
-                        <div class="relative">
+                    <form action="{{ route('layanan.index') }}" method="GET" class="flex items-center flex-wrap gap-3 w-full">                        <div class="relative">
                             <details class="relative group">
                                 <summary
                                     class="list-none flex items-center justify-center gap-2 bg-gray-100 rounded-full px-4 py-3 cursor-pointer hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -63,6 +62,10 @@
                             <img src="{{ asset('assets/search-icon.svg') }}" alt="Search Icon"
                                 class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4 md:h-5 md:w-5">
                         </div>
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 md:px-6 md:py-3 rounded-full shadow-md text-sm md:text-base font-semibold w-full sm:w-auto">
+                            Cari
+                        </button>
                         <input type="hidden" name="sort" value="{{ $sort ?? 'updated_latest' }}">
                     </form>
                 </div>
@@ -128,11 +131,6 @@
                                             class="bg-green-100 text-green-700 font-bold py-2 px-6 rounded-md hover:bg-green-200">
                                             Update
                                         </button>
-                                        <button
-                                            @click="openDeleteModal = true; deleteUrl = '{{ route('layanan.destroy', $layanan->id) }}';"
-                                            class="bg-red-100 text-red-700 font-bold py-2 px-6 rounded-md hover:bg-red-200">
-                                            Delete
-                                        </button>
                                     </td>
                                 </tr>
                             @empty
@@ -189,11 +187,6 @@
                                         class="flex-1 bg-green-100 text-green-700 font-semibold py-2 rounded-md text-xs">
                                         Update
                                     </button>
-                                    <button
-                                        @click="openDeleteModal = true; deleteUrl = '{{ route('layanan.destroy', $layanan->id) }}';"
-                                        class="flex-1 bg-red-100 text-red-700 font-semibold py-2 rounded-md text-xs">
-                                        Delete
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -211,7 +204,6 @@
 
             @include('components.modal.layanan.add-layanan')
             @include('components.modal.layanan.edit-layanan')
-            @include('components.modal.layanan.delete-layanan')
         </main>
     </div>
 @endsection

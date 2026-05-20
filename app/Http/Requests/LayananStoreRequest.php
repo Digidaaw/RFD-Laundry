@@ -18,7 +18,7 @@ class LayananStoreRequest extends FormRequest
             'deskripsi' => 'required|string|min:5|max:1000',
             'units' => 'required|array|min:1',
             'units.*.unit_satuan' => 'required|in:kg,pcs,meter',
-            'units.*.harga' => 'required|numeric|min:0',
+            'units.*.harga' => 'required|numeric|min:1',
             'gambar' => 'required|array|min:1',
             'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
@@ -36,7 +36,7 @@ class LayananStoreRequest extends FormRequest
             'units.*.unit_satuan.in' => 'Satuan hanya boleh: kg, pcs, atau meter.',
             'units.*.harga.required' => 'Harga harus diisi.',
             'units.*.harga.numeric' => 'Harga harus berupa angka.',
-            'units.*.harga.min' => 'Harga tidak boleh negatif.',
+            'units.*.harga.min' => 'Harga harus lebih dari 0.',
             'deskripsi.required' => 'Deskripsi harus diisi.',
             'deskripsi.string' => 'Deskripsi harus berupa teks.',
             'gambar.required' => 'Minimal 1 gambar harus diunggah.',

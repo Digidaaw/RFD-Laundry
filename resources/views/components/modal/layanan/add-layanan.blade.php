@@ -63,7 +63,7 @@
                                 <div class="relative">
                                     <span class="absolute left-3 top-2 text-gray-500">Rp</span>
                                     <input type="number" :name="`units[${index}][harga]`" x-model="row.harga" required
-                                        class="w-full border rounded-lg pl-10 pr-2 py-2 @error('units.*.harga') border-red-500 @enderror" placeholder="50000" min="0">
+                                        class="w-full border rounded-lg pl-10 pr-2 py-2 @error('units.*.harga') border-red-500 @enderror" placeholder="50000" min="1">
                                 </div>
                             </div>
 
