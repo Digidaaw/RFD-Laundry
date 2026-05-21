@@ -7,7 +7,7 @@
     <style>
         @page {
             size: A4 landscape;
-            margin: 18mm 15mm 15mm 15mm;
+            margin: 10mm 10mm 10mm 10mm;
         }
 
         body{
@@ -15,7 +15,7 @@
             padding:0;
             font-family: "Times New Roman", serif;
             color:#000;
-            font-size:14px;
+            font-size:15px;
         }
 
         .wrapper{
@@ -27,25 +27,25 @@
         ==========================*/
         .header{
             text-align:center;
-            margin-bottom:20px;
+            margin-bottom:8px;
         }
 
         .header img{
-            width:200px;
-            margin-bottom:3px;
+            width:180px;
+            margin-bottom:2px;
         }
 
         .company-desc{
             font-family: Arial, sans-serif;
-            font-size:16px;
-            line-height:1.3;
+            font-size:15px;
+            line-height:1.1;
             font-weight:bold;
         }
 
         .line{
             border-top:2px solid #000;
-            margin-top:20px;
-            margin-bottom:10px;
+            margin-top:5px;
+            margin-bottom:5px;
         }
 
         /* =========================
@@ -54,12 +54,12 @@
         .top-info{
             width:100%;
             border-collapse:collapse;
-            margin-bottom:10px;
+            margin-bottom:5px;
         }
 
         .top-info td{
-            padding:2px 5px;
-            font-size:16px;
+            padding:1px 3px;
+            font-size:15px;
         }
 
         .label{
@@ -77,7 +77,7 @@
 
         .line-bottom{
             border-bottom:2px solid #000;
-            margin-bottom:2px;
+            margin-bottom:3px;
         }
 
         /* =========================
@@ -91,13 +91,14 @@
 
         .items thead th{
             text-align:left;
-            padding:3px 5px;
+            padding:2px 3px;
             font-weight:normal;
             border-bottom:1px solid #000;
+            font-size:15px;
         }
 
         .items tbody td{
-            padding:2px 5px;
+            padding:1px 2px;
             vertical-align:top;
         }
 
@@ -115,13 +116,13 @@
         .summary{
             width:48%;
             margin-left:auto;
-            margin-top:2px;
+            margin-top:3px;
             border-collapse:collapse;
-            font-size:16px;
+            font-size:15px;
         }
 
         .summary td{
-            padding:2px 5px;
+            padding:1px 3px;
         }
 
         .summary .label{
@@ -137,8 +138,9 @@
            NOTE
         ==========================*/
         .note{
-            margin-top:5px;
+            margin-top:3px;
             font-size:15px;
+            line-height:1.2;
         }
 
         /* =========================
@@ -146,14 +148,14 @@
         ==========================*/
         .signature{
             width:100%;
-            margin-top:100px;
+            margin-top:15px;
             border-collapse:collapse;
         }
 
         .signature td{
             width:50%;
             vertical-align:top;
-            font-size:18px;
+            font-size:15px;
         }
 
         .signature .right{
@@ -165,7 +167,7 @@
         }
 
         .sign-space{
-            height:90px;
+            height:40px;
         }
 
         /* =========================
@@ -173,10 +175,10 @@
         ==========================*/
         .footer{
             width:100%;
-            margin-top:10px;
+            margin-top:5px;
             text-align:right;
             font-style:italic;
-            font-size:16px;
+            font-size:15px;
         }
 
     </style>
@@ -220,9 +222,11 @@
                 {{ \Carbon\Carbon::parse($transaksi->tanggal_order)->format('Y-m-d') }}
             </td>
 
-            <td></td>
-            <td></td>
-            <td></td>
+            <td class="right-info">Status</td>
+            <td class="colon">:</td>
+            <td>
+                {{ $transaksi->status_pembayaran ?? '-' }}
+            </td>
         </tr>
     </table>
 
@@ -263,7 +267,7 @@
                 </td>
 
                 <td>
-                    {{ $item->layanan->deskripsi ?? '-' }}
+                    {{ $item->transaksi->deskripsi ?? '-' }}
                 </td>
 
                 <td>
@@ -275,11 +279,11 @@
                 </td>
 
                 <td>
-                    {{ number_format($item->harga_satuan, 2, ',', '.') }}
+                    Rp {{ number_format($item->harga_satuan, 2, ',', '.') }}
                 </td>
 
                 <td class="text-right">
-                    {{ number_format($item->subtotal, 2, ',', '.') }}
+                    Rp {{ number_format($item->subtotal, 2, ',', '.') }}
                 </td>
             </tr>
 
@@ -307,6 +311,27 @@
             <td class="label">Total</td>
             <td class="value">
                 Rp {{ number_format($transaksi->total_harga, 2, ',', '.') }}
+            </td>
+        </tr>
+
+        <tr>
+            <td class="label">Jumlah Bayar</td>
+            <td class="value">
+                Rp {{ number_format($transaksi->jumlah_bayar ?? 0, 2, ',', '.') }}
+            </td>
+        </tr>
+
+        <tr>
+            <td class="label">Kembalian</td>
+            <td class="value">
+                Rp {{ number_format($transaksi->kembalian ?? 0, 2, ',', '.') }}
+            </td>
+        </tr>
+
+        <tr>
+            <td class="label">Sisa Bayar</td>
+            <td class="value">
+                Rp {{ number_format($transaksi->sisa_bayar ?? 0, 2, ',', '.') }}
             </td>
         </tr>
     </table>

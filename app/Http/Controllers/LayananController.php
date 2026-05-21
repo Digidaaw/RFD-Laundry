@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LayananStoreRequest;
 use App\Http\Requests\LayananUpdateRequest;
 use App\Models\Layanan;
-use App\Models\LayananUnit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -57,13 +56,13 @@ class LayananController extends Controller
             $currentImages = $layanan->gambar ?? [];
 
             if ($request->filled('images_to_delete')) {
-                foreach ($request->input('images_to_delete') as $imageName) {
-                    $path = public_path('images/layanan/' . $imageName);
-                    if (File::exists($path)) {
-                        File::delete($path);
-                    }
-                }
-                $currentImages = array_values(array_diff($currentImages, $request->input('images_to_delete')));
+                $imagesToDelete = $this->resolveImagesToDelete(
+                    $currentImages,
+                    $request->input('images_to_delete', [])
+                );
+
+                $this->deleteImages($imagesToDelete);
+                $currentImages = array_values(array_diff($currentImages, $imagesToDelete));
             }
 
             if ($request->hasFile('gambar')) {
@@ -96,11 +95,6 @@ class LayananController extends Controller
         }
     }
 
-    public function show(Layanan $layanan)
-    {
-        return view('admin.layanan_show', compact('layanan'));
-    }
-
     private function uploadImages(array $images): array
     {
         $fileNames = [];
@@ -112,6 +106,24 @@ class LayananController extends Controller
         }
 
         return $fileNames;
+    }
+
+    private function resolveImagesToDelete(array $currentImages, array $requestedImages): array
+    {
+        $requestedImages = array_map(fn ($imageName) => basename((string) $imageName), $requestedImages);
+
+        return array_values(array_intersect($currentImages, $requestedImages));
+    }
+
+    private function deleteImages(array $imageNames): void
+    {
+        foreach ($imageNames as $imageName) {
+            $path = public_path('images/layanan/' . $imageName);
+
+            if (File::exists($path)) {
+                File::delete($path);
+            }
+        }
     }
 
     private function syncUnits(Layanan $layanan, array $units): void

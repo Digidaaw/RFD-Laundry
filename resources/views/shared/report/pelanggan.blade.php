@@ -140,7 +140,7 @@
                                             ];
                                         @endphp
                                         
-                                        <button @click="$dispatch('open-edit-modal', {{ json_encode($transaksiData) }})" 
+                                        <button @click="$dispatch('open-edit-modal', @js($transaksiData))" 
                                             class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-green-200 text-sm md:text-base transition">
                                             Update
                                         </button>
