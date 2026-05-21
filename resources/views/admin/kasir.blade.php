@@ -63,6 +63,10 @@
                             <img src="{{ asset('assets/search-icon.svg') }}" alt="Search Icon"
                                 class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4 md:h-5 md:w-5">
                         </div>
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 md:px-6 md:py-3 rounded-full shadow-md text-sm md:text-base font-semibold">
+                            Cari
+                        </button>
                         <input type="hidden" name="sort" value="{{ $sort ?? 'updated_latest' }}">
                     </form>
                 </div>
@@ -82,20 +86,20 @@
                         </thead>
                         <tbody>
                             @forelse($kasirs as $kasir)
+                                @php
+                                    $kasirData = [
+                                        'name' => $kasir->name,
+                                        'username' => $kasir->username,
+                                        'url' => route('users.update', $kasir->id),
+                                    ];
+                                @endphp
                                 <tr class="border-b hover:bg-gray-50">
                                     <td class="p-4 font-semibold text-gray-600">{{ $loop->iteration }}</td>
                                     <td class="p-4 font-semibold text-gray-800">{{ $kasir->name }}</td>
                                     <td class="p-4 font-semibold text-gray-600">{{ $kasir->username }}</td>
                                     <td class="p-4 flex justify-center items-center space-x-2">
                                         <button
-                                            @click="
-                                                                    openEditModal = true;
-                                                                    editData = {
-                                                                        name: '{{ addslashes($kasir->name) }}',
-                                                                        username: '{{ $kasir->username }}',
-                                                                        url: '{{ route('users.update', $kasir->id) }}'
-                                                                    };
-                                                                "
+                                            @click="openEditModal = true; editData = @js($kasirData)"
                                             class="bg-green-100 text-green-700 font-bold py-2 px-6 rounded-md hover:bg-green-200 transition">
                                             Update
                                         </button>
@@ -103,7 +107,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center p-6 text-gray-500">
+                                    <td colspan="4" class="text-center p-6 text-gray-500">
                                         Belum ada data kasir yang bisa ditampilkan.
                                     </td>
                                 </tr>

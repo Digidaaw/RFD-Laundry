@@ -1,8 +1,7 @@
 <div x-data="{
         open: false,
-        data: {} // Data default
+        data: {}
      }"
-     {{-- Mendengarkan event yang dikirim oleh tombol Update --}}
      @open-edit-customer-modal.window="
         data = $event.detail; 
         open = true;
@@ -24,7 +23,7 @@
 
         <form x-bind:action="data.url" method="POST">
             @csrf
-            @method('PUT') 
+            @method('PUT')
 
             <div class="mb-4">
                 <label class="block text-gray-700 text-lg font-semibold mb-2">Nama Pelanggan</label>

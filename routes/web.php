@@ -11,8 +11,6 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\NewsletterController;
-use App\Models\Layanan;
-use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,13 +42,13 @@ Route::middleware(['auth', 'role'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::resource('users', UserController::class)->middleware('role:admin');
+    Route::resource('users', UserController::class)->only(['index', 'store', 'update'])->middleware('role:admin');
 
-    Route::resource('layanan', LayananController::class);
+    Route::resource('layanan', LayananController::class)->only(['index', 'store', 'update', 'destroy']);
 
-    Route::resource('pelanggan', PelangganController::class);
+    Route::resource('pelanggan', PelangganController::class)->only(['index', 'store', 'update']);
 
-    Route::resource('transaksi', TransaksiController::class);
+    Route::resource('transaksi', TransaksiController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::patch('/transaksi/{transaksi}/bayar', [TransaksiController::class, 'bayarPiutang'])->name('transaksi.bayar');
     Route::get('/transaksi/{transaksi}/cetak-struk', [TransaksiController::class, 'cetakStruk'])->name('transaksi.cetak-struk');
 

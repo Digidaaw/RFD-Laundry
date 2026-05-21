@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PelangganStoreRequest;
 use App\Http\Requests\PelangganUpdateRequest;
-use App\Models\Pelanggan; // Pastikan model Pelanggan di-import
+use App\Models\Pelanggan;
 use Illuminate\Http\Request;
 
 class PelangganController extends Controller
@@ -41,26 +41,10 @@ class PelangganController extends Controller
         return redirect()->route('pelanggan.index')->with('success', 'Pelanggan baru berhasil ditambahkan.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(PelangganUpdateRequest $request, Pelanggan $pelanggan)
     {
         $pelanggan->update($request->validated());
 
         return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil diperbarui.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Pelanggan $pelanggan)
-    {
-        try {
-            $pelanggan->delete();
-            return redirect()->route('pelanggan.index')->with('success', 'Data pelanggan berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->route('pelanggan.index')->with('error', 'Gagal menghapus pelanggan.');
-        }
     }
 }

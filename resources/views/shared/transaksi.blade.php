@@ -98,28 +98,28 @@
                     <table class="w-full text-left">
                         <thead class="bg-gray-50 border-b">
                             <tr>
-                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Tanggal</th>
-                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Pelanggan</th>
-                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Dibuat Oleh</th>
-                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Total</th>
-                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Sisa Bayar</th>
-                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg ...">Status</th>
-                                <th class="p-3 text-center text-sm md:p-4 md:text-base lg:text-lg ...">Aksi</th>
+                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg font-extrabold text-gray-700">Tanggal</th>
+                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg font-extrabold text-gray-700">Pelanggan</th>
+                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg font-extrabold text-gray-700">Dibuat Oleh</th>
+                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg font-extrabold text-gray-700">Total</th>
+                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg font-extrabold text-gray-700">Sisa Bayar</th>
+                                <th class="p-3 text-sm md:p-4 md:text-base lg:text-lg font-extrabold text-gray-700">Status</th>
+                                <th class="p-3 text-center text-sm md:p-4 md:text-base lg:text-lg font-extrabold text-gray-700">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($transaksis as $transaksi)
                                 <tr class="border-b hover:bg-gray-50">
-                                    <td class="p-3 text-sm md:p-4 md:text-base ...">
+                                    <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">
                                         {{ \Carbon\Carbon::parse($transaksi->tanggal_order)->format('d-m-Y') }}</td>
-                                    <td class="p-3 text-sm md:p-4 md:text-base ...">
+                                    <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">
                                         {{ $transaksi->pelanggan->name ?? 'N/A' }}
                                     </td>
-                                    <td class="p-3 text-sm md:p-4 md:text-base ...">
+                                    <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">
                                         {{ $transaksi->created_by ?? 'User Dihapus' }}</td>
-                                    <td class="p-3 text-sm md:p-4 md:text-base ...">Rp
+                                    <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">Rp
                                         {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
-                                    <td class="p-3 text-sm md:p-4 md:text-base ...">Rp
+                                    <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">Rp
                                         {{ number_format($transaksi->sisa_bayar, 0, ',', '.') }}</td>
                                     <td class="p-3 md:p-4">
                                         <span @class([
@@ -160,13 +160,13 @@
                                             </svg>
                                             Cetak
                                         </a>
-                                        <button @click="$dispatch('open-edit-modal', {{ json_encode($transaksiData) }})"
+                                        <button @click="$dispatch('open-edit-modal', @js($transaksiData))"
                                             class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-4 rounded-md hover:bg-green-200 text-sm md:text-base transition">Update</button>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="text-center p-6 text-gray-500">Tidak ada data transaksi.</td>
+                                    <td colspan="7" class="text-center p-6 text-gray-500">Tidak ada data transaksi.</td>
                                 </tr>
                             @endforelse
                         </tbody>

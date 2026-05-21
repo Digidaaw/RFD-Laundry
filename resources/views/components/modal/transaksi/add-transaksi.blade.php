@@ -5,7 +5,7 @@
         bayar: 0,
         bayarDisplay: '',
         deskripsi: '',
-        layanans: {{ json_encode(
+        layanans: @js(
             $layanans->map(function ($l) {
                 return [
                     'id' => $l->id,
@@ -18,7 +18,7 @@
                     }),
                 ];
             }),
-        ) }},
+        ),
         layanansObj: {},
         items: [{ id_layanan: '', unit_satuan: '', qty: 0 }],
     
@@ -155,7 +155,7 @@
                     search: '',
                     selectedId: '{{ old('id_pelanggan') }}',
                     selectedText: '{{ old('id_pelanggan') ? $pelanggans->firstWhere('id', old('id_pelanggan'))?->name . ' - ' . $pelanggans->firstWhere('id', old('id_pelanggan'))?->kontak : '' }}',
-                    pelanggans: {{ json_encode($pelanggans->map(fn($p) => ['id' => $p->id, 'name' => $p->name, 'kontak' => $p->kontak, 'text' => $p->name . ' - ' . $p->kontak])) }}
+                    pelanggans: @js($pelanggans->map(fn($p) => ['id' => $p->id, 'name' => $p->name, 'kontak' => $p->kontak, 'text' => $p->name . ' - ' . $p->kontak]))
                 }" @click.away="open = false">
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Pelanggan</label>
 
@@ -294,7 +294,7 @@ border-red-500
                                         class="w-9 h-9 flex items-center justify-center rounded-full bg-red-100 text-red-600 hover:bg-red-200 transition font-bold"
                                         :class="{ 'opacity-50 cursor-not-allowed': items.length <= 1 }"
                                         :disabled="items.length <= 1">
-                                        ✕
+                                        &times;
                                     </button>
                                 </div>
                             </div>
