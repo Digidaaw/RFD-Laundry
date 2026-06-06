@@ -7,6 +7,8 @@ use Illuminate\Validation\Rule;
 
 class PelangganUpdateRequest extends FormRequest
 {
+    protected $errorBag = 'update';
+
     public function authorize()
     {
         return true;

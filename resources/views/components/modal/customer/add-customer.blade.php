@@ -31,8 +31,8 @@
             <div class="mb-4">
                 <label class="block text-gray-700 text-lg font-semibold mb-2">Nama Pelanggan <span class="text-red-500">*</span></label>
                 <input type="text" name="name" placeholder="Masukkan nama" value="{{ old('name') }}" required
-                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('name') border-red-500 @enderror" />
-                @error('name')
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('name', 'store') border-red-500 @enderror" />
+                @error('name', 'store')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
@@ -44,11 +44,11 @@
                     oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                     class="w-full border border-gray-300 rounded-lg px-4 py-2 
         focus:outline-none focus:ring-2 focus:ring-blue-400 
-        @error('kontak') border-red-500 @enderror" />
+        @error('kontak', 'store') border-red-500 @enderror" />
 
                 <p class="text-gray-500 text-sm mt-1">Minimal 10 digit, maksimal 13 digit</p>
 
-                @error('kontak')
+                @error('kontak', 'store')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
             </div>
