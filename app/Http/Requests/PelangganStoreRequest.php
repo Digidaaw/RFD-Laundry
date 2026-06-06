@@ -6,6 +6,8 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class PelangganStoreRequest extends FormRequest
 {
+    protected $errorBag = 'store';
+
     public function authorize()
     {
         return true;
