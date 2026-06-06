@@ -27,7 +27,6 @@
             <form method="POST" action="{{ route('layanan.store') }}" enctype="multipart/form-data">
                 @csrf
 
-                <!-- NAMA -->
                 <div class="mb-4">
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Nama Layanan <span class="text-red-500">*</span></label>
                     <input type="text" name="name" value="{{ old('name') }}" required
@@ -37,7 +36,6 @@
                     @enderror
                 </div>
 
-                <!-- 🔥 MULTI UNIT -->
                 <div class="mb-4">
                     <div class="flex justify-between items-center mb-2">
                         <label class="text-lg font-semibold text-gray-700">Satuan & Harga <span class="text-red-500">*</span></label>
@@ -47,7 +45,6 @@
 
                     <template x-for="(row, index) in units" :key="index">
                         <div class="grid grid-cols-12 gap-3 mb-3 border p-3 rounded-lg">
-                            <!-- UNIT -->
                             <div class="col-span-5">
                                 <select :name="`units[${index}][unit_satuan]`" x-model="row.unit_satuan" required
                                     class="w-full border rounded-lg px-3 py-2 @error('units.*.unit_satuan') border-red-500 @enderror">
@@ -58,7 +55,6 @@
                                 </select>
                             </div>
 
-                            <!-- HARGA -->
                             <div class="col-span-5">
                                 <div class="relative">
                                     <span class="absolute left-3 top-2 text-gray-500">Rp</span>
@@ -67,11 +63,10 @@
                                 </div>
                             </div>
 
-                            <!-- HAPUS -->
                             <div class="col-span-2 flex items-center justify-end">
                                 <button type="button" @click="removeUnit(index)" class="text-red-600 font-bold"
                                     :disabled="units.length <= 1">
-                                    ✕
+                                    &times;
                                 </button>
                             </div>
 
@@ -97,7 +92,6 @@
                     @endif
                 </div>
 
-                <!-- DESKRIPSI -->
                 <div class="mb-4">
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Deskripsi</label>
                     <textarea name="deskripsi" rows="3" class="w-full border rounded-lg px-4 py-2" required>{{ old('deskripsi') }}</textarea>
@@ -106,7 +100,6 @@
                     @endforeach
                 </div>
 
-                <!-- GAMBAR -->
                 <div class="mb-4">
                     <label class="block text-gray-700 text-lg font-semibold mb-2">Gambar <span class="text-red-500">*</span></label>
                     <input type="file" name="gambar[]" multiple required accept="image/*"
@@ -126,7 +119,6 @@
                     @endif
                 </div>
 
-                <!-- BUTTON -->
                 <div class="flex justify-end gap-4 mt-6">
                     <button type="button" @click="openAddModal = false"
                         class="px-4 py-2 border rounded-lg">Batal</button>

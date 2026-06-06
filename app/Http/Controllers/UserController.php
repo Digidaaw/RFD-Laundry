@@ -9,9 +9,6 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         $search = $request->input('search');
@@ -33,30 +30,25 @@ class UserController extends Controller
         return view('admin.kasir', compact('kasirs', 'search', 'sort'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(UserStoreRequest $request)
     {
         User::create([
             'name' => $request->name,
             'username' => $request->username,
             'password' => $request->password,
-            'role' => $request->role,
+            'role' => 'kasir',
         ]);
 
         return redirect()->route('users.index')->with('success', 'User kasir berhasil ditambahkan.');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UserUpdateRequest $request, User $user)
     {
+        abort_unless($user->role === 'kasir', 404);
+
         $updateData = [
             'name' => $request->name,
             'username' => $request->username,
-            'role' => $user->role, // Keep the existing role
         ];
 
         if ($request->filled('password')) {
@@ -66,18 +58,5 @@ class UserController extends Controller
         $user->update($updateData);
 
         return redirect()->route('users.index')->with('success', 'Data kasir berhasil diperbarui.');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(User $user)
-    {
-        try {
-            $user->delete();
-            return redirect()->route('users.index')->with('success', 'Data kasir berhasil dihapus.');
-        } catch (\Exception $e) {
-            return redirect()->route('users.index')->with('error', 'Gagal menghapus kasir.');
-        }
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Layanan extends Model
 {
     use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'name',
         'gambar',
@@ -16,12 +17,11 @@ class Layanan extends Model
     ];
 
     protected $casts = [
-        // PERUBAHAN: Memberitahu Laravel bahwa kolom 'gambar' adalah array
         'gambar' => 'array',
     ];
 
     public function units()
     {
-    return $this->hasMany(LayananUnit::class);
+        return $this->hasMany(LayananUnit::class);
     }
 }

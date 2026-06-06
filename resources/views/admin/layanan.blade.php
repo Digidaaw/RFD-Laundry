@@ -28,7 +28,8 @@
                 </button>
                 <div
                     class="flex items-center flex-wrap gap-3 text-gray-700 font-bold text-base md:text-lg w-full lg:w-auto">
-                    <form action="{{ route('layanan.index') }}" method="GET" class="flex items-center flex-wrap gap-3 w-full">                        <div class="relative">
+                    <form action="{{ route('layanan.index') }}" method="GET" class="flex items-center flex-wrap gap-3 w-full">
+                        <div class="relative">
                             <details class="relative group">
                                 <summary
                                     class="list-none flex items-center justify-center gap-2 bg-gray-100 rounded-full px-4 py-3 cursor-pointer hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -86,13 +87,31 @@
                         </thead>
                         <tbody>
                             @forelse($layanans as $layanan)
+                                @php
+                                    $units = $layanan->units
+                                        ->map(fn ($unit) => [
+                                            'unit_satuan' => $unit->unit_satuan,
+                                            'harga' => $unit->harga,
+                                        ])
+                                        ->values();
+                                    $unitText = $units
+                                        ->map(fn ($unit) => $unit['unit_satuan'] . ' - Rp ' . number_format($unit['harga'], 0, ',', '.'))
+                                        ->join(', ');
+                                    $layananData = [
+                                        'name' => $layanan->name,
+                                        'deskripsi' => $layanan->deskripsi,
+                                        'gambar' => $layanan->gambar ?? [],
+                                        'units' => $units,
+                                        'url' => route('layanan.update', $layanan->id),
+                                    ];
+                                @endphp
                                 <tr class="border-b hover:bg-gray-50">
                                     <td class="p-4 font-semibold text-gray-600">{{ $loop->iteration }}</td>
                                     <td class="p-4">
                                         @if (isset($layanan->gambar[0]))
                                             <div class="w-10 h-10 rounded-md overflow-hidden bg-gray-100">
                                                 <img src="{{ asset('images/layanan/' . $layanan->gambar[0]) }}"
-                                                    alt="{{ $layanan->name, $layanan->unit_satuan }}"
+                                                    alt="{{ $layanan->name }}"
                                                     class="w-full h-full object-cover">
                                             </div>
                                         @else
@@ -104,30 +123,13 @@
                                     </td>
                                     <td class="p-4 font-semibold text-gray-600">
                                         {{ $layanan->name }}
-                                        <span class="text-sm text-gray-500">
-                                            ({{ $layanan->unit_satuan ?? '-' }})
-                                        </span>
+                                        <div class="text-sm text-gray-500">{{ $unitText ?: '-' }}</div>
                                     </td>
                                     <td class="p-4 font-semibold text-gray-600">
                                         {{ Str::limit($layanan->deskripsi, 50) }}
                                     </td>
                                     <td class="p-4 flex justify-center items-center space-x-2">
-                                        @php
-                                            $layananData = json_encode([
-                                                'name' => $layanan->name,
-                                                'deskripsi' => $layanan->deskripsi,
-                                                'gambar' => $layanan->gambar ?? [],
-                                                'units' => $layanan->units->map(function ($u) {
-                                                    return [
-                                                        'unit_satuan' => $u->unit_satuan,
-                                                        'harga' => $u->harga,
-                                                    ];
-                                                }),
-                                                'url' => route('layanan.update', $layanan->id),
-                                            ]);
-                                        @endphp
-
-                                        <button @click="$dispatch('open-edit-modal', {{ $layananData }})"
+                                        <button @click="$dispatch('open-edit-modal', @js($layananData))"
                                             class="bg-green-100 text-green-700 font-bold py-2 px-6 rounded-md hover:bg-green-200">
                                             Update
                                         </button>
@@ -135,7 +137,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center p-6 text-gray-500">
+                                    <td colspan="5" class="text-center p-6 text-gray-500">
                                         Belum ada data layanan yang bisa ditampilkan.
                                     </td>
                                 </tr>
@@ -147,6 +149,24 @@
                 <!-- Mobile cards -->
                 <div class="md:hidden space-y-4">
                     @forelse($layanans as $layanan)
+                        @php
+                            $units = $layanan->units
+                                ->map(fn ($unit) => [
+                                    'unit_satuan' => $unit->unit_satuan,
+                                    'harga' => $unit->harga,
+                                ])
+                                ->values();
+                            $unitText = $units
+                                ->map(fn ($unit) => $unit['unit_satuan'] . ' - Rp ' . number_format($unit['harga'], 0, ',', '.'))
+                                ->join(', ');
+                            $layananData = [
+                                'name' => $layanan->name,
+                                'deskripsi' => $layanan->deskripsi,
+                                'gambar' => $layanan->gambar ?? [],
+                                'units' => $units,
+                                'url' => route('layanan.update', $layanan->id),
+                            ];
+                        @endphp
                         <div class="border rounded-xl p-4 flex gap-3">
                             <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
                                 @if (isset($layanan->gambar[0]))
@@ -162,28 +182,16 @@
                                 <div>
                                     <p class="font-semibold text-gray-800 text-sm">
                                         {{ $layanan->name }}
-                                        <span class="text-xs text-gray-500">
-                                            ({{ $layanan->unit_satuan ?? '-' }})
-                                        </span>
                                     </p>
-                                    <p class="font-bold text-blue-600 text-sm mt-1">
-                                        Rp {{ number_format($layanan->harga, 0, ',', '.') }}
+                                    <p class="font-bold text-blue-600 text-xs mt-1">
+                                        {{ $unitText ?: '-' }}
                                     </p>
                                     <p class="text-xs text-gray-600 mt-1">
                                         {{ Str::limit($layanan->deskripsi, 60) }}
                                     </p>
                                 </div>
                                 <div class="flex gap-2 mt-3">
-                                    @php
-                                        $layananData = json_encode([
-                                            'name' => $layanan->name,
-                                            'harga' => $layanan->harga,
-                                            'deskripsi' => $layanan->deskripsi,
-                                            'gambar' => $layanan->gambar ?? [],
-                                            'url' => route('layanan.update', $layanan->id),
-                                        ]);
-                                    @endphp
-                                    <button @click="$dispatch('open-edit-modal', {{ $layananData }})"
+                                    <button @click="$dispatch('open-edit-modal', @js($layananData))"
                                         class="flex-1 bg-green-100 text-green-700 font-semibold py-2 rounded-md text-xs">
                                         Update
                                     </button>

@@ -2,9 +2,7 @@
 @section('title', 'Laporan Per Periode')
 
 @section('content')
-    <!-- Main Area -->
     <div>
-        <!-- Topbar -->
         <header class="w-full h-[120px] bg-white flex justify-between items-center px-6 lg:px-12 shadow-sm">
             <div class="flex items-center gap-4">
                 <button @click.stop="sidebarOpen = !sidebarOpen" class="lg:hidden text-gray-600">
@@ -26,10 +24,8 @@
             </div>
         </header>
 
-        <!-- Content Area -->
         <main class="p-6 lg:p-10">
 
-            <!-- Tombol Kembali -->
             <div class="mb-6">
                 <a href="{{ route('report.index') }}" class="flex items-center gap-2 text-lg text-gray-600 hover:text-blue-600 font-semibold w-fit">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -39,7 +35,6 @@
                 </a>
             </div>
 
-            <!-- Filter Form -->
             <div class="bg-white rounded-xl shadow-md p-6 mb-8">
                 <form action="{{ route('report.periode') }}" method="GET">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
@@ -56,7 +51,6 @@
                 </form>
             </div>
 
-            <!-- Ringkasan Data -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="bg-white p-6 rounded-xl shadow-md">
                     <h3 class="text-lg font-semibold text-gray-500">Potensi Pendapatan</h3>
@@ -72,7 +66,6 @@
                 </div>
             </div>
 
-            <!-- Tabel Hasil + Export -->
             <div class="bg-white rounded-xl shadow-md p-4 md:p-6">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
                     <h3 class="text-2xl font-bold">Detail Transaksi</h3>
@@ -91,24 +84,24 @@
                     <table class="w-full text-left">
                         <thead class="bg-gray-50 border-b">
                             <tr>
-                                <th class="p-3 text-sm md:p-4 md:text-base ...">No Invoice</th>
-                                <th class="p-3 text-sm md:p-4 md:text-base ...">Tanggal</th>
-                                <th class="p-3 text-sm md:p-4 md:text-base ...">Pelanggan</th>
-                                <th class="p-3 text-sm md:p-4 md:text-base ...">Kasir</th>
-                                <th class="p-3 text-sm md:p-4 md:text-base ...">Total</th>
-                                <th class="p-3 text-sm md:p-4 md:text-base ...">Status Bayar</th>
+                                <th class="p-3 text-sm md:p-4 md:text-base font-extrabold text-gray-700">No Invoice</th>
+                                <th class="p-3 text-sm md:p-4 md:text-base font-extrabold text-gray-700">Tanggal</th>
+                                <th class="p-3 text-sm md:p-4 md:text-base font-extrabold text-gray-700">Pelanggan</th>
+                                <th class="p-3 text-sm md:p-4 md:text-base font-extrabold text-gray-700">Kasir</th>
+                                <th class="p-3 text-sm md:p-4 md:text-base font-extrabold text-gray-700">Total</th>
+                                <th class="p-3 text-sm md:p-4 md:text-base font-extrabold text-gray-700">Status Bayar</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($transaksis as $transaksi)
                             <tr class="border-b hover:bg-gray-50">
-                                <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->no_invoice }}</td>
-                                <td class="p-3 text-sm md:p-4 md:text-base ...">{{ \Carbon\Carbon::parse($transaksi->tanggal_order)->format('d M Y') }}</td>
-                                <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->pelanggan->name ?? 'N/A' }}</td>
-                                <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->user->name ?? 'N/A' }}</td>
-                                <td class="p-3 text-sm md:p-4 md:text-base ...">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
+                                <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">{{ $transaksi->no_invoice }}</td>
+                                <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">{{ \Carbon\Carbon::parse($transaksi->tanggal_order)->format('d M Y') }}</td>
+                                <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">{{ $transaksi->pelanggan->name ?? 'N/A' }}</td>
+                                <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">{{ $transaksi->user->name ?? 'N/A' }}</td>
+                                <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
                                 <td class="p-3 md:p-4">
-                                    <span class="px-3 py-1 text-xs md:text-sm rounded-full font-medium ..." 
+                                    <span class="px-3 py-1 text-xs md:text-sm rounded-full font-medium"
                                           :class="{ 'bg-red-100 text-red-800': '{{ $transaksi->status_pembayaran }}' === 'DP', 'bg-green-100 text-green-800': '{{ $transaksi->status_pembayaran }}' === 'Lunas' }">
                                         {{ $transaksi->status_pembayaran }}
                                     </span>

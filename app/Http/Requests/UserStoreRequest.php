@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules;
 
 class UserStoreRequest extends FormRequest
 {
@@ -18,7 +17,6 @@ class UserStoreRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'min:4', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6'],
-            'role' => ['required', 'string', 'in:admin,kasir'],
         ];
     }
 
@@ -36,8 +34,6 @@ class UserStoreRequest extends FormRequest
             'password.required' => 'Password harus diisi.',
             'password.string' => 'Password harus berupa teks.',
             'password.min' => 'Password minimal 6 karakter.',
-            'role.required' => 'Role harus dipilih.',
-            'role.in' => 'Role tidak valid.',
         ];
     }
 }

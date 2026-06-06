@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Http\Requests\TransaksiBayarPiutangRequest;
 use App\Http\Requests\TransaksiStoreRequest;
 use App\Http\Requests\TransaksiUpdateRequest;
-use App\Exports\LaporanPelangganExport;
 use App\Models\Transaksi;
 use App\Models\Pelanggan;
 use App\Models\Layanan;
@@ -16,7 +14,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Maatwebsite\Excel\Facades\Excel;
 
 class TransaksiController extends Controller
 {
@@ -322,6 +319,11 @@ class TransaksiController extends Controller
     public function destroy(Request $request, Transaksi $transaksi)
     {
         $transaksi->delete();
+
+        if ($request->filled('_redirect_url')) {
+            return redirect($request->_redirect_url)->with('success', 'Transaksi berhasil dihapus.');
+        }
+
         return redirect()->route('transaksi.index')->with('success', 'Transaksi berhasil dihapus.');
     }
 

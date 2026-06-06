@@ -1,31 +1,21 @@
-{{-- 
-    PERBAIKAN: 
-    1. Hapus 'x-data' dari div ini.
-    2. Ganti 'x-show="open"' menjadi 'x-show="openAddModal"'.
-    3. Ganti '@click.away' menjadi 'openAddModal = false'.
---}}
 <div x-show="openAddModal" x-cloak x-transition:enter="transition ease-out duration-300"
     x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
     x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
 
-    <!-- Modal Content -->
     <div @click.away="openAddModal = false" x-transition:enter="transition ease-out duration-300 transform"
         x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
         x-transition:leave="transition ease-in duration-200 transform" x-transition:leave-start="opacity-100 scale-100"
         x-transition:leave-end="opacity-0 scale-95" class="bg-white p-8 rounded-xl w-full max-w-xl shadow-lg relative">
 
-        <!-- Close Button -->
         <button @click="openAddModal = false"
             class="absolute top-3 right-3 text-gray-500 hover:text-black text-2xl font-bold">
             &times;
         </button>
 
-        <!-- Modal Title -->
         <h2 class="text-2xl font-bold mb-6 text-center">Tambah Pelanggan Baru</h2>
 
-        <!-- Form -->
         <form method="POST" action="{{ route('pelanggan.store') }}">
             @csrf
             <div class="mb-4">
@@ -45,6 +35,7 @@
                     class="w-full border border-gray-300 rounded-lg px-4 py-2 
         focus:outline-none focus:ring-2 focus:ring-blue-400 
         @error('kontak', 'store') border-red-500 @enderror" />
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('kontak') border-red-500 @enderror" />
 
                 <p class="text-gray-500 text-sm mt-1">Minimal 10 digit, maksimal 13 digit</p>
 

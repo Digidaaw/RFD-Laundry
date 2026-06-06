@@ -22,6 +22,7 @@ class LayananUpdateRequest extends FormRequest
             'gambar' => 'nullable|array',
             'gambar.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'images_to_delete' => 'nullable|array',
+            'images_to_delete.*' => 'string',
         ];
     }
 
@@ -52,7 +53,10 @@ class LayananUpdateRequest extends FormRequest
         $validator->after(function ($validator) {
             $layanan = $this->route('layanan');
             $currentImages = $layanan->gambar ?? [];
-            $imagesToDelete = $this->input('images_to_delete', []);
+            $imagesToDelete = array_map(
+                fn ($imageName) => basename((string) $imageName),
+                $this->input('images_to_delete', [])
+            );
             $remainingImages = array_diff($currentImages, $imagesToDelete);
             $newImages = $this->file('gambar', []);
             if (empty($remainingImages) && empty($newImages)) {

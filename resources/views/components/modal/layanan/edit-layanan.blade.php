@@ -1,11 +1,10 @@
 <div x-data="{
     open: false,
-    data: { gambar: [], unit_satuan: '' }, // Tambahkan unit_satuan di default
+    data: { gambar: [], units: [] },
     imagesToDelete: [],
     showDeleteConfirm: false,
     imageNameToDelete: null,
 
-    // Fungsi untuk membuka modal dan mengisi data
     initModal(event) {
         this.data = event.detail;
         this.imagesToDelete = [];
@@ -13,18 +12,11 @@
         this.open = true;
     },
 
-    data: {
-        gambar: [],
-        units: []
-    },
-
-    // Fungsi untuk konfirmasi hapus gambar
     confirmRemoveImage(imageName) {
         this.imageNameToDelete = imageName;
         this.showDeleteConfirm = true;
     },
 
-    // Fungsi untuk eksekusi hapus gambar
     executeRemoveImage() {
         if (this.imageNameToDelete) {
             if (!this.imagesToDelete.includes(this.imageNameToDelete)) {
@@ -77,7 +69,6 @@
                     <template x-for="(unit, index) in data.units" :key="index">
                         <div class="grid grid-cols-12 gap-2 mb-2 items-center border p-2 rounded-lg">
 
-                            <!-- UNIT -->
                             <div class="col-span-5">
                                 <select :name="`units[${index}][unit_satuan]`" x-model="unit.unit_satuan" required
                                     class="w-full border rounded-lg px-2 py-1 @error('units.*.unit_satuan') border-red-500 @enderror">
@@ -88,17 +79,15 @@
                                 </select>
                             </div>
 
-                            <!-- HARGA -->
                             <div class="col-span-5">
                                 <input type="number" :name="`units[${index}][harga]`" x-model="unit.harga" required min="1"
                                     class="w-full border rounded-lg px-2 py-1 @error('units.*.harga') border-red-500 @enderror" placeholder="Harga">
                             </div>
 
-                            <!-- DELETE -->
                             <div class="col-span-2 text-right">
                                 <button type="button" @click="data.units.splice(index,1)"
                                     class="text-red-600 font-bold">
-                                    ✕
+                                    &times;
                                 </button>
                             </div>
                         </div>

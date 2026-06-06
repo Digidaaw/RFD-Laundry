@@ -21,26 +21,18 @@
         </header>
 
         <main class="p-6 lg:p-10" x-data="{
-            openAddModal: {{ $errors->store->any() ? 'true' : 'false' }},
-            openDeleteModal: false,
-            deleteUrl: '',
-            openEditModal: {{ $errors->update->any() ? 'true' : 'false' }},
-            editData: {
-                name: '{{ addslashes(old('name', '')) }}',
-                kontak: '{{ old('kontak', '') }}',
-                url: '{{ old('edit_url', '') }}'
-            }
+            openAddModal: {{ $errors->any() ? 'true' : 'false' }}
         }">
 
             <div class="flex flex-col lg:flex-row justify-between items-center mb-8 gap-4">
-                {{-- Tombol ini mengacu ke x-data di <main> --}}
                 <button @click="openAddModal = true"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow-md w-full lg:w-auto">
                     + Tambah Pelanggan
                 </button>
                 <div
                     class="flex items-center flex-wrap gap-3 text-gray-700 font-bold text-base md:text-lg w-full lg:w-auto">
-                    <form action="{{ route('pelanggan.index') }}" method="GET" class="flex items-center flex-wrap gap-3 w-full">                        <div class="relative">
+                    <form action="{{ route('pelanggan.index') }}" method="GET" class="flex items-center flex-wrap gap-3 w-full">
+                        <div class="relative">
                             <details class="relative group">
                                 <summary
                                     class="list-none flex items-center justify-center gap-2 bg-gray-100 rounded-full px-4 py-3 cursor-pointer hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -102,11 +94,11 @@
                                     <td class="p-4 font-semibold text-gray-600">{{ $pelanggan->kontak }}</td>
                                     <td class="p-4 flex justify-center items-center space-x-2">
                                         @php
-                                            $pelangganData = json_encode([
+                                            $pelangganData = [
                                                 'name' => $pelanggan->name,
                                                 'kontak' => $pelanggan->kontak,
                                                 'url' => route('pelanggan.update', $pelanggan->id),
-                                            ]);
+                                            ];
                                         @endphp
                                         <a href="{{ route('report.pelanggan', $pelanggan->id) }}"
                                             class="bg-blue-100 text-blue-700 font-bold py-2 px-6 rounded-md hover:bg-blue-200 transition">
@@ -114,11 +106,7 @@
                                         </a>
 
                                         <button
-                                            @click="$dispatch('open-edit-customer-modal', {{ json_encode([
-                                                'name' => $pelanggan->name,
-                                                'kontak' => $pelanggan->kontak,
-                                                'url' => route('pelanggan.update', $pelanggan->id),
-                                            ]) }})"
+                                            @click="$dispatch('open-edit-customer-modal', @js($pelangganData))"
                                             class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-green-200 transition text-sm md:text-base">
                                             Update
                                         </button>
