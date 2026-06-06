@@ -1,18 +1,15 @@
-<div x-data="{
-        open: false,
-        data: {}
-     }"
-     @open-edit-customer-modal.window="
-        data = $event.detail; 
-        open = true;
-     "
-     @keydown.escape.window="open = false"
-     x-show="open"
-     x-cloak
-     x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
-     x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
-     x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+<div
+    @open-edit-customer-modal.window="
+        editData = $event.detail;
+        openEditModal = true;
+    "
+    @keydown.escape.window="openEditModal = false"
+    x-show="openEditModal"
+    x-cloak
+    x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
 
     <div @click.away="openEditModal = false" x-transition
         class="bg-white p-8 rounded-xl w-full max-w-xl shadow-lg relative">
@@ -24,6 +21,9 @@
         <form x-bind:action="editData.url" method="POST">
             @csrf
             @method('PUT')
+
+            {{-- Hidden input untuk menyimpan URL agar tersedia di old('edit_url') saat validasi gagal --}}
+            <input type="hidden" name="edit_url" x-bind:value="editData.url">
 
             <div class="mb-4">
                 <label class="block text-gray-700 text-lg font-semibold mb-2">Nama Pelanggan</label>
