@@ -14,7 +14,6 @@ class PelangganSearchTest extends TestCase
     // TC-CUST-14
     public function test_customer_can_be_searched_using_lowercase_keyword(): void
     {
-        // Arrange
         $user = User::factory()->create([
             'role' => 'admin',
             'password' => 'password123',
@@ -32,14 +31,12 @@ class PelangganSearchTest extends TestCase
             'kontak' => '08222222222',
         ]);
 
-        // Act
         $response = $this->get(
             route('pelanggan.index', [
                 'search' => 'faiz'
             ])
         );
 
-        // Assert
         $response->assertStatus(200);
 
         $response->assertSee('Faiz');
@@ -50,7 +47,6 @@ class PelangganSearchTest extends TestCase
     // TC-CUST-15
     public function test_customer_can_be_searched_using_uppercase_keyword(): void
     {
-        // Arrange
         $user = User::factory()->create([
             'role' => 'admin',
             'password' => 'password123',
@@ -68,14 +64,12 @@ class PelangganSearchTest extends TestCase
             'kontak' => '08222222222',
         ]);
 
-        // Act
         $response = $this->get(
             route('pelanggan.index', [
                 'search' => 'FAIZ'
             ])
         );
 
-        // Assert
         $response->assertStatus(200);
 
         $response->assertSee('Faiz');
@@ -86,7 +80,6 @@ class PelangganSearchTest extends TestCase
     // TC-CUST-18
     public function test_customer_can_be_searched_using_partial_name(): void
     {
-        // Arrange
         $user = User::factory()->create([
             'role' => 'admin',
             'password' => 'password123',
@@ -104,14 +97,12 @@ class PelangganSearchTest extends TestCase
             'kontak' => '08222222222',
         ]);
 
-        // Act
         $response = $this->get(
             route('pelanggan.index', [
                 'search' => 'rai'
             ])
         );
 
-        // Assert
         $response->assertStatus(200);
 
         $response->assertSee('Raihan');

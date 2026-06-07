@@ -15,7 +15,6 @@ class PelangganReportTest extends TestCase
     // TC-CUST-16
     public function test_customer_report_can_be_downloaded_as_pdf(): void
     {
-        // Arrange
         $user = User::factory()->create([
             'role' => 'admin',
             'password' => 'password123',
@@ -28,12 +27,10 @@ class PelangganReportTest extends TestCase
             'kontak' => '08111111111',
         ]);
 
-        // Act
         $response = $this->get(
             route('report.pelanggan.pdf', $pelanggan)
         );
 
-        // Assert
         $response->assertStatus(200);
 
         $response->assertHeader(
@@ -45,7 +42,6 @@ class PelangganReportTest extends TestCase
     // TC-CUST-17
     public function test_customer_report_can_be_downloaded_as_excel(): void
     {
-        // Arrange
         Excel::fake();
 
         $user = User::factory()->create([
@@ -60,12 +56,10 @@ class PelangganReportTest extends TestCase
             'kontak' => '08111111111',
         ]);
 
-        // Act
         $this->get(
             route('report.pelanggan.excel', $pelanggan)
         );
 
-        // Assert
         Excel::assertDownloaded(
             'Laporan-Pelanggan-' . now()->format('Ymd') . '.xlsx'
         );

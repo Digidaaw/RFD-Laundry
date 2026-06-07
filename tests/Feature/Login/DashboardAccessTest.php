@@ -12,10 +12,8 @@ class DashboardAccessTest extends TestCase
     // TC-LOG-09
     public function test_guest_cannot_access_dashboard(): void
     {
-        // Act
         $response = $this->get(route('dashboard'));
 
-        // Assert
         $response->assertRedirect(route('login'));
     }
 }

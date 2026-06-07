@@ -13,7 +13,6 @@ class LogoutTest extends TestCase
     // TC-LOG-08
     public function test_user_can_logout(): void
     {
-        // Arrange
         $user = User::factory()->create([
             'name' => 'Administrator',
             'role' => 'admin',
@@ -23,10 +22,8 @@ class LogoutTest extends TestCase
 
         $this->actingAs($user);
 
-        // Act
         $response = $this->post(route('logout'));
 
-        // Assert
         $this->assertGuest();
 
         $response->assertRedirect('/login');
