@@ -21,7 +21,13 @@
         </header>
 
         <main class="p-6 lg:p-10" x-data="{
-            openAddModal: {{ $errors->any() ? 'true' : 'false' }}
+            openAddModal: {{ $errors->store->any() ? 'true' : 'false' }},
+            openEditModal: {{ $errors->update->any() ? 'true' : 'false' }},
+            editData: {
+                name: '{{ addslashes(old('name', '')) }}',
+                kontak: '{{ old('kontak', '') }}',
+                url: '{{ old('edit_url', '') }}'
+            }
         }">
 
             <div class="flex flex-col lg:flex-row justify-between items-center mb-8 gap-4">
