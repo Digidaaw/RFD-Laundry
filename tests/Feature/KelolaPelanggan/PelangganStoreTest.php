@@ -26,10 +26,13 @@ class PelangganStoreTest extends TestCase
             'kontak' => '',
         ]);
 
-        $response->assertSessionHasErrors([
-            'name',
-            'kontak',
-        ]);
+        $response->assertSessionHasErrorsIn(
+            'store',
+            [
+                'name',
+                'kontak',
+            ]
+        );
     }
 
     // TC-CUST-02
@@ -43,14 +46,14 @@ class PelangganStoreTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->post(route('pelanggan.store'), [
-            'name' => 'Test',
+            'name' => 'David',
             'kontak' => 'abc',
         ]);
 
-        $response->assertSessionHasErrors('kontak');
+        $response->assertSessionHasErrorsIn('store', ['kontak']);
 
         $this->assertDatabaseMissing('pelanggans', [
-            'name' => 'Test',
+            'name' => 'David',
         ]);
     }
 
@@ -65,14 +68,14 @@ class PelangganStoreTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->post(route('pelanggan.store'), [
-            'name' => 'Test',
+            'name' => 'David',
             'kontak' => '08',
         ]);
 
-        $response->assertSessionHasErrors('kontak');
+        $response->assertSessionHasErrorsIn('store', ['kontak']);
 
         $this->assertDatabaseMissing('pelanggans', [
-            'name' => 'Test',
+            'name' => 'David',
             'kontak' => '08',
         ]);
     }
@@ -88,7 +91,7 @@ class PelangganStoreTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->post(route('pelanggan.store'), [
-            'name' => 'Test',
+            'name' => 'David',
             'kontak' => '08111111111',
         ]);
 
@@ -97,12 +100,43 @@ class PelangganStoreTest extends TestCase
         $response->assertSessionHas('success');
 
         $this->assertDatabaseHas('pelanggans', [
-            'name' => 'Test',
+            'name' => 'David',
             'kontak' => '08111111111',
         ]);
     }
 
     // TC-CUST-05
+    public function test_customer_can_be_created_with_same_name_but_different_contact(): void
+    {
+        $user = User::factory()->create([
+            'role' => 'admin',
+            'password' => 'password123',
+        ]);
+
+        $this->actingAs($user);
+
+        Pelanggan::create([
+            'name' => 'David',
+            'kontak' => '08111111111',
+        ]);
+
+        $response = $this->post(route('pelanggan.store'), [
+            'name' => 'David',
+            'kontak' => '08222222222',
+        ]);
+
+        $response->assertRedirect(route('pelanggan.index'));
+
+        $response->assertSessionHas('success');
+
+        $this->assertDatabaseHas('pelanggans', [
+            'name' => 'David',
+            'kontak' => '08222222222',
+        ]);
+    }
+
+
+    // TC-CUST-06
     public function test_customer_cannot_be_created_with_contact_more_than_13_digits(): void
     {
         $user = User::factory()->create([
@@ -113,18 +147,19 @@ class PelangganStoreTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->post(route('pelanggan.store'), [
-            'name' => 'Testing',
+            'name' => 'David',
             'kontak' => '12345678901234567890',
         ]);
 
-        $response->assertSessionHasErrors('kontak');
+        $response->assertSessionHasErrorsIn('store', ['kontak']);
 
         $this->assertDatabaseMissing('pelanggans', [
-            'name' => 'Testing',
+            'name' => 'David',
+            'kontak' => '12345678901234567890',
         ]);
     }
 
-    // TC-CUST-06
+    // TC-CUST-07
     public function test_customer_cannot_be_created_with_contact_containing_spaces(): void
     {
         $user = User::factory()->create([
@@ -135,18 +170,19 @@ class PelangganStoreTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->post(route('pelanggan.store'), [
-            'name' => 'Testing',
+            'name' => 'David',
             'kontak' => '08123 456789',
         ]);
 
-        $response->assertSessionHasErrors('kontak');
+        $response->assertSessionHasErrorsIn('store', ['kontak']);
 
         $this->assertDatabaseMissing('pelanggans', [
-            'name' => 'Testing',
+            'name' => 'David',
+            'kontak' => '08123 456789',
         ]);
     }
 
-    // TC-CUST-07
+    // TC-CUST-08
     public function test_customer_cannot_be_created_with_contact_containing_symbols(): void
     {
         $user = User::factory()->create([
@@ -157,18 +193,19 @@ class PelangganStoreTest extends TestCase
         $this->actingAs($user);
 
         $response = $this->post(route('pelanggan.store'), [
-            'name' => 'Testing',
+            'name' => 'David',
             'kontak' => '08123-456789',
         ]);
 
-        $response->assertSessionHasErrors('kontak');
+        $response->assertSessionHasErrorsIn('store', ['kontak']);
 
         $this->assertDatabaseMissing('pelanggans', [
-            'name' => 'Testing',
+            'name' => 'David',
+            'kontak' => '08123-456789',
         ]);
     }
 
-    // TC-CUST-08
+    // TC-CUST-09
     public function test_customer_cannot_be_created_with_duplicate_contact(): void
     {
         $user = User::factory()->create([
@@ -179,16 +216,16 @@ class PelangganStoreTest extends TestCase
         $this->actingAs($user);
 
         Pelanggan::create([
-            'name' => 'Raihan',
-            'kontak' => '08996755432',
+            'name' => 'Faizah',
+            'kontak' => '08111111111',
         ]);
 
         $response = $this->post(route('pelanggan.store'), [
-            'name' => 'Faiz',
-            'kontak' => '08996755432',
+            'name' => 'Faizah',
+            'kontak' => '08111111111',
         ]);
 
-        $response->assertSessionHasErrors('kontak');
+        $response->assertSessionHasErrorsIn('store', ['kontak']);
 
         $this->assertDatabaseCount('pelanggans', 1);
     }

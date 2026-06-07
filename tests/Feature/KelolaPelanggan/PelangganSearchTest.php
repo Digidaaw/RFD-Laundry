@@ -11,7 +11,7 @@ class PelangganSearchTest extends TestCase
 {
     use RefreshDatabase;
 
-    // TC-CUST-14
+    // TC-CUST-15
     public function test_customer_can_be_searched_using_lowercase_keyword(): void
     {
         $user = User::factory()->create([
@@ -22,29 +22,29 @@ class PelangganSearchTest extends TestCase
         $this->actingAs($user);
 
         Pelanggan::create([
-            'name' => 'Faiz',
+            'name' => 'David',
             'kontak' => '08111111111',
         ]);
 
         Pelanggan::create([
-            'name' => 'Raihan',
+            'name' => 'Faizah',
             'kontak' => '08222222222',
         ]);
 
         $response = $this->get(
             route('pelanggan.index', [
-                'search' => 'faiz'
+                'search' => 'david'
             ])
         );
 
         $response->assertStatus(200);
 
-        $response->assertSee('Faiz');
+        $response->assertSee('David');
 
-        $response->assertDontSee('Raihan');
+        $response->assertDontSee('Faizah');
     }
 
-    // TC-CUST-15
+    // TC-CUST-16
     public function test_customer_can_be_searched_using_uppercase_keyword(): void
     {
         $user = User::factory()->create([
@@ -55,29 +55,29 @@ class PelangganSearchTest extends TestCase
         $this->actingAs($user);
 
         Pelanggan::create([
-            'name' => 'Faiz',
+            'name' => 'David',
             'kontak' => '08111111111',
         ]);
 
         Pelanggan::create([
-            'name' => 'Raihan',
+            'name' => 'Faizah',
             'kontak' => '08222222222',
         ]);
 
         $response = $this->get(
             route('pelanggan.index', [
-                'search' => 'FAIZ'
+                'search' => 'DAVID'
             ])
         );
 
         $response->assertStatus(200);
 
-        $response->assertSee('Faiz');
+        $response->assertSee('David');
 
-        $response->assertDontSee('Raihan');
+        $response->assertDontSee('Faizah');
     }
 
-    // TC-CUST-18
+    // TC-CUST-19
     public function test_customer_can_be_searched_using_partial_name(): void
     {
         $user = User::factory()->create([
@@ -88,25 +88,25 @@ class PelangganSearchTest extends TestCase
         $this->actingAs($user);
 
         Pelanggan::create([
-            'name' => 'Raihan',
+            'name' => 'David',
             'kontak' => '08111111111',
         ]);
 
         Pelanggan::create([
-            'name' => 'Faiz',
+            'name' => 'Faizah',
             'kontak' => '08222222222',
         ]);
 
         $response = $this->get(
             route('pelanggan.index', [
-                'search' => 'rai'
+                'search' => 'dav'
             ])
         );
 
         $response->assertStatus(200);
 
-        $response->assertSee('Raihan');
+        $response->assertSee('David');
 
-        $response->assertDontSee('Faiz');
+        $response->assertDontSee('Faizah');
     }
 }

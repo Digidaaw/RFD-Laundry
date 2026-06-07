@@ -11,7 +11,7 @@ class PelangganUpdateTest extends TestCase
 {
     use RefreshDatabase;
 
-    // TC-CUST-09
+    // TC-CUST-10
     public function test_customer_cannot_be_updated_with_empty_name(): void
     {
         $user = User::factory()->create([
@@ -20,7 +20,7 @@ class PelangganUpdateTest extends TestCase
         ]);
 
         $pelanggan = Pelanggan::create([
-            'name' => 'Raihan',
+            'name' => 'David',
             'kontak' => '08996755432',
         ]);
 
@@ -34,16 +34,16 @@ class PelangganUpdateTest extends TestCase
             ]
         );
 
-        $response->assertSessionHasErrors('name');
+        $response->assertSessionHasErrorsIn('update', ['name']);
 
         $this->assertDatabaseHas('pelanggans', [
             'id' => $pelanggan->id,
-            'name' => 'Raihan',
+            'name' => 'David',
             'kontak' => '08996755432',
         ]);
     }
 
-    // TC-CUST-10
+    // TC-CUST-11
     public function test_customer_can_be_updated(): void
     {
         $user = User::factory()->create([
@@ -52,7 +52,7 @@ class PelangganUpdateTest extends TestCase
         ]);
 
         $pelanggan = Pelanggan::create([
-            'name' => 'Raihan',
+            'name' => 'David',
             'kontak' => '08996755432',
         ]);
 
@@ -61,7 +61,7 @@ class PelangganUpdateTest extends TestCase
         $response = $this->put(
             route('pelanggan.update', $pelanggan),
             [
-                'name' => 'Coba',
+                'name' => 'Faizah',
                 'kontak' => '0851111111',
             ]
         );
@@ -72,12 +72,12 @@ class PelangganUpdateTest extends TestCase
 
         $this->assertDatabaseHas('pelanggans', [
             'id' => $pelanggan->id,
-            'name' => 'Coba',
+            'name' => 'Faizah',
             'kontak' => '0851111111',
         ]);
     }
 
-    // TC-CUST-11
+    // TC-CUST-12
     public function test_customer_can_be_updated_without_changing_data(): void
     {
         $user = User::factory()->create([
@@ -86,7 +86,7 @@ class PelangganUpdateTest extends TestCase
         ]);
 
         $pelanggan = Pelanggan::create([
-            'name' => 'Raihan',
+            'name' => 'David',
             'kontak' => '08996755432',
         ]);
 
@@ -95,7 +95,7 @@ class PelangganUpdateTest extends TestCase
         $response = $this->put(
             route('pelanggan.update', $pelanggan),
             [
-                'name' => 'Raihan',
+                'name' => 'David',
                 'kontak' => '08996755432',
             ]
         );
@@ -106,12 +106,12 @@ class PelangganUpdateTest extends TestCase
 
         $this->assertDatabaseHas('pelanggans', [
             'id' => $pelanggan->id,
-            'name' => 'Raihan',
+            'name' => 'David',
             'kontak' => '08996755432',
         ]);
     }
 
-    // TC-CUST-12
+    // TC-CUST-13
     public function test_customer_can_be_updated_with_existing_name(): void
     {
         $user = User::factory()->create([
@@ -122,19 +122,19 @@ class PelangganUpdateTest extends TestCase
         $this->actingAs($user);
 
         $pelanggan1 = Pelanggan::create([
-            'name' => 'Faiz',
+            'name' => 'David',
             'kontak' => '08111111111',
         ]);
 
         $pelanggan2 = Pelanggan::create([
-            'name' => 'Raihan',
+            'name' => 'Faizah',
             'kontak' => '08222222222',
         ]);
 
         $response = $this->put(
             route('pelanggan.update', $pelanggan2),
             [
-                'name' => 'Faiz',
+                'name' => 'David',
                 'kontak' => '08222222222',
             ]
         );
@@ -145,12 +145,12 @@ class PelangganUpdateTest extends TestCase
 
         $this->assertDatabaseHas('pelanggans', [
             'id' => $pelanggan2->id,
-            'name' => 'Faiz',
+            'name' => 'David',
             'kontak' => '08222222222',
         ]);
     }
 
-    // TC-CUST-13
+    // TC-CUST-14
     public function test_customer_cannot_be_updated_with_duplicate_contact(): void
     {
         $user = User::factory()->create([
@@ -161,28 +161,28 @@ class PelangganUpdateTest extends TestCase
         $this->actingAs($user);
 
         $pelanggan1 = Pelanggan::create([
-            'name' => 'Faiz',
+            'name' => 'David',
             'kontak' => '08111111111',
         ]);
 
         $pelanggan2 = Pelanggan::create([
-            'name' => 'Raihan',
+            'name' => 'Faizah',
             'kontak' => '08222222222',
         ]);
 
         $response = $this->put(
             route('pelanggan.update', $pelanggan2),
             [
-                'name' => 'Raihan',
+                'name' => 'Faizah',
                 'kontak' => '08111111111', 
             ]
         );
 
-        $response->assertSessionHasErrors('kontak');
+        $response->assertSessionHasErrorsIn('update', ['kontak']);
 
         $this->assertDatabaseHas('pelanggans', [
             'id' => $pelanggan2->id,
-            'name' => 'Raihan',
+            'name' => 'Faizah',
             'kontak' => '08222222222',
         ]);
     }

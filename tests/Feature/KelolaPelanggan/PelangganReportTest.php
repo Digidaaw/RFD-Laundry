@@ -12,7 +12,7 @@ class PelangganReportTest extends TestCase
 {
     use RefreshDatabase;
 
-    // TC-CUST-16
+    // TC-CUST-17
     public function test_customer_report_can_be_downloaded_as_pdf(): void
     {
         $user = User::factory()->create([
@@ -23,7 +23,7 @@ class PelangganReportTest extends TestCase
         $this->actingAs($user);
 
         $pelanggan = Pelanggan::create([
-            'name' => 'Raihan',
+            'name' => 'David',
             'kontak' => '08111111111',
         ]);
 
@@ -35,11 +35,11 @@ class PelangganReportTest extends TestCase
 
         $response->assertHeader(
             'content-disposition',
-            'attachment; filename=Laporan-Pelanggan-Raihan.pdf'
+            'attachment; filename=Laporan-Pelanggan-David.pdf'
         );
     }
 
-    // TC-CUST-17
+    // TC-CUST-18
     public function test_customer_report_can_be_downloaded_as_excel(): void
     {
         Excel::fake();
@@ -52,7 +52,7 @@ class PelangganReportTest extends TestCase
         $this->actingAs($user);
 
         $pelanggan = Pelanggan::create([
-            'name' => 'Raihan',
+            'name' => 'David',
             'kontak' => '08111111111',
         ]);
 
