@@ -1,0 +1,6 @@
+Label,# Samples,Average,Min,Max,Std. Dev.,Error %,Throughput,Received KB/sec,Sent KB/sec,Avg. Bytes
+[TC01] Step 1: GET /login,45,140,15,1492,354.45,0.000%,1.38688,6.74,0.35,4979.0
+[TC01] Step 2: POST /login,45,238,89,1645,367.59,0.000%,1.38756,29.18,2.88,21537.0
+[TC01] Step 3: GET /transaksi,45,177,29,1163,322.68,0.000%,1.45749,148.75,1.40,104506.0
+[TC01] Step 4: GET /transaksi?search=IJ,45,159,27,1410,365.91,0.000%,1.45740,148.78,1.46,104534.0
+TOTAL,180,178,15,1645,355.01,0.000%,5.18956,298.45,5.57,58889.0
