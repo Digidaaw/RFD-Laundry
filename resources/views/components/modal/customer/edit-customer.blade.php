@@ -21,8 +21,7 @@
         <form x-bind:action="editData.url" method="POST">
             @csrf
             @method('PUT')
-
-            {{-- Menyimpan URL agar tersedia di old('edit_url') saat validasi gagal --}}
+            {{-- Hidden input untuk menyimpan URL agar tersedia di old('edit_url') saat validasi gagal --}}
             <input type="hidden" name="edit_url" x-bind:value="editData.url">
 
             <div class="mb-4">
