@@ -119,11 +119,25 @@
                                 color: '#1f2937',
                                 boxWidth: 12,
                                 padding: 16,
+                                font: {
+                                    family: "'Plus Jakarta Sans', sans-serif",
+                                    size: 14,
+                                    weight: '600'
+                                }
                             },
                         },
                         tooltip: {
                             mode: 'index',
                             intersect: false,
+                            titleFont: {
+                                family: "'Plus Jakarta Sans', sans-serif",
+                                size: 14,
+                                weight: 'bold'
+                            },
+                            bodyFont: {
+                                family: "'Plus Jakarta Sans', sans-serif",
+                                size: 13
+                            }
                         },
                     },
                     scales: {
@@ -135,24 +149,33 @@
                             ticks: {
                                 color: '#475569',
                                 font: {
-                                    size: 12,
+                                    family: "'Plus Jakarta Sans', sans-serif",
+                                    size: 13,
+                                    weight: '500'
                                 },
                             },
                         },
                         y: {
                             stacked: true,
                             beginAtZero: true,
+                            suggestedMax: 100000,
                             ticks: {
                                 color: '#475569',
                                 font: {
-                                    size: 12,
+                                    family: "'Plus Jakarta Sans', sans-serif",
+                                    size: 13,
+                                    weight: '500'
                                 },
                                 callback: function (value) {
-                                    return new Intl.NumberFormat('id-ID', {
-                                        style: 'currency',
-                                        currency: 'IDR',
-                                        maximumFractionDigits: 0,
-                                    }).format(value);
+                                    // Hanya tampilkan jika berupa angka bulat
+                                    if (value % 1 === 0) {
+                                        return new Intl.NumberFormat('id-ID', {
+                                            style: 'currency',
+                                            currency: 'IDR',
+                                            maximumFractionDigits: 0,
+                                        }).format(value);
+                                    }
+                                    return '';
                                 },
                             },
                             grid: {

@@ -28,17 +28,11 @@
             </div>
             <div class="mb-4">
                 <label class="block text-gray-700 text-lg font-semibold mb-2">Kontak <span class="text-red-500">*</span></label>
-
                 <input type="text" name="kontak" value="{{ old('kontak') }}" placeholder="Masukkan nomor kontak" required
                     inputmode="numeric" pattern="[0-9]*" minlength="10" maxlength="13"
                     oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                    class="w-full border border-gray-300 rounded-lg px-4 py-2 
-        focus:outline-none focus:ring-2 focus:ring-blue-400 
-        @error('kontak', 'store') border-red-500 @enderror" />
-                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('kontak') border-red-500 @enderror" />
-
+                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 @error('kontak', 'store') border-red-500 @enderror" />
                 <p class="text-gray-500 text-sm mt-1">Minimal 10 digit, maksimal 13 digit</p>
-
                 @error('kontak', 'store')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror

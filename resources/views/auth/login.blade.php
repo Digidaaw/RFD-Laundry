@@ -57,14 +57,6 @@
                 class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-colors">
                 Login
             </button>
-
-            <!-- <p class="text-center text-sm text-gray-600 mt-6">
-                Belum punya akun?
-                <a href="{{ route('register') }}" class="font-semibold text-blue-600 hover:underline">
-                    Daftar di sini
-                </a>
-            </p> -->
-
         </form>
     </div>
 

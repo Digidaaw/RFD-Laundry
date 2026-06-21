@@ -17,11 +17,16 @@ class User extends Authenticatable
         'role',
         'username',
         'password',
+        'is_active',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     public function setPasswordAttribute($value)
