@@ -59,4 +59,17 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'Data kasir berhasil diperbarui.');
     }
+
+    public function toggleStatus(User $user)
+    {
+        abort_unless($user->role === 'kasir', 404);
+
+        $user->update([
+            'is_active' => !$user->is_active,
+        ]);
+
+        $status = $user->is_active ? 'diaktifkan' : 'dinonaktifkan';
+
+        return redirect()->route('users.index')->with('success', "Kasir {$user->name} berhasil {$status}.");
+    }
 }

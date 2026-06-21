@@ -1,5 +1,6 @@
-﻿<div x-data="{
+<div x-data="{
         open: false,
+        isOpeningModal: false,
         transaksiId: null,
         tanggal_order: '',
         pelangganSearch: '',
@@ -41,6 +42,7 @@
         },
 
         openModal(event) {
+            this.isOpeningModal = true;
             let detail = event.detail;
             if (detail.tanggal_order) {
                 const date = new Date(detail.tanggal_order);
@@ -81,6 +83,8 @@
                 if (this.$refs.editForm && detail.id) {
                     this.$refs.editForm.action = window.location.origin + '/transaksi/' + detail.id;
                 }
+                // Setelah semua render selesai, aktifkan kembali reset unit saat user ganti layanan
+                this.isOpeningModal = false;
             });
         },
 
@@ -305,24 +309,29 @@
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
                                     <label class="block text-gray-700 text-sm font-semibold mb-1">Layanan</label>
+                                    {{-- Gunakan Blade @foreach (bukan Alpine x-for) agar options sudah ada di DOM
+                                         sebelum x-model diproses, menghindari race condition --}}
                                     <select :name="`items[${index}][id_layanan]`" x-model="row.id_layanan"
-                                        @change="row.unit_satuan = ''"
+                                        @change="if (!isOpeningModal) { row.unit_satuan = ''; }"
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white" required>
                                         <option value="">Pilih Layanan</option>
-                                        <template x-for="layanan in layanans" :key="layanan.id">
-                                            <option :value="layanan.id" x-text="layanan.name"></option>
-                                        </template>
+                                        @foreach($layanans as $layanan)
+                                            <option value="{{ $layanan->id }}">{{ $layanan->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 text-sm font-semibold mb-1">Unit</label>
-                                    <select :name="`items[${index}][unit_satuan]`" x-model="row.unit_satuan"
+                                    {{-- Gunakan :selected bukan x-model agar unit dipilih SETELAH options di-render --}}
+                                    <select :name="`items[${index}][unit_satuan]`"
+                                        @change="row.unit_satuan = $event.target.value"
                                         :disabled="!row.id_layanan"
                                         class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white disabled:bg-gray-200"
                                         required>
                                         <option value="">Pilih Unit</option>
-                                        <template x-for="unit in (layanansObj[row.id_layanan]?.units || [])" :key="unit.unit_satuan">
+                                        <template x-for="unit in (layanansObj[String(row.id_layanan)]?.units || [])" :key="unit.unit_satuan">
                                             <option :value="unit.unit_satuan"
+                                                :selected="row.unit_satuan === unit.unit_satuan"
                                                 x-text="unit.unit_satuan + ' (Rp ' + new Intl.NumberFormat('id-ID').format(unit.harga) + ')'">
                                             </option>
                                         </template>

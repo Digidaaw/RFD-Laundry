@@ -12,18 +12,27 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 class LaporanPelangganExport implements FromCollection, WithHeadings, WithMapping, ShouldAutoSize
 {
     protected $pelangganId;
+    protected $startDate;
+    protected $endDate;
 
-    public function __construct($pelangganId)
+    public function __construct($pelangganId, $startDate = null, $endDate = null)
     {
         $this->pelangganId = $pelangganId;
+        $this->startDate   = $startDate;
+        $this->endDate     = $endDate;
     }
 
     public function collection()
     {
-        return Transaksi::where('id_pelanggan', $this->pelangganId)
+        $query = Transaksi::where('id_pelanggan', $this->pelangganId)
             ->with(['layanan', 'items.layanan'])
-            ->latest()
-            ->get();
+            ->latest();
+
+        if ($this->startDate && $this->endDate) {
+            $query->whereBetween('tanggal_order', [$this->startDate, $this->endDate]);
+        }
+
+        return $query->get();
     }
 
     public function headings(): array

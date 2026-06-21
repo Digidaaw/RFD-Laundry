@@ -15,13 +15,31 @@ class RoleMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
         if (!Auth::check()) {
             return redirect('/login');
         }
 
         $user = Auth::user();
+
+        // Check if user is active
+        if (!$user->is_active) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            return redirect('/login')->withErrors([
+                'username' => 'Akun Anda telah dinonaktifkan.',
+            ]);
+        }
+
+        // If roles parameter is passed, enforce it
+        if (!empty($roles)) {
+            if (in_array($user->role, $roles)) {
+                return $next($request);
+            }
+            abort(403, 'Anda tidak memiliki akses ke halaman ini');
+        }
 
         // Jika role adalah admin, izinkan semua
         if ($user->role === 'admin') {

@@ -1,0 +1,74 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        // ── Task 1: Laravel PHP server ──────────────────────────
+        {
+            "label": "Laravel: Serve",
+            "type": "shell",
+            "command": "php artisan serve",
+            "group": "build",
+            "presentation": {
+                "label": "Laravel Server",
+                "reveal": "always",
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^$"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "Starting Laravel development server",
+                    "endsPattern": "Laravel development server started"
+                }
+            }
+        },
+
+        // ── Task 2: Vite dev server ──────────────────────────────
+        {
+            "label": "Vite: Dev",
+            "type": "shell",
+            "command": "npm run dev",
+            "group": "build",
+            "presentation": {
+                "label": "Vite Dev Server",
+                "reveal": "always",
+                "panel": "dedicated",
+                "showReuseMessage": false,
+                "clear": true
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "pattern": {
+                    "regexp": "^$"
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": "VITE",
+                    "endsPattern": "ready in"
+                }
+            }
+        },
+
+        // ── Task 3: Compound — jalankan keduanya sekaligus ──────
+        {
+            "label": "🚀 RFD Laundry: Start All",
+            "dependsOn": [
+                "Laravel: Serve",
+                "Vite: Dev"
+            ],
+            "dependsOrder": "parallel",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

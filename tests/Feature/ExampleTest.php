@@ -16,4 +16,11 @@ class ExampleTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function test_registration_page_is_removed(): void
+    {
+        $response = $this->get('/register');
+
+        $response->assertStatus(404);
+    }
 }

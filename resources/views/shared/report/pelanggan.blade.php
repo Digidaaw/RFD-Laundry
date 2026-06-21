@@ -19,11 +19,7 @@
             </div>
             <div class="flex items-center gap-8">
                 <div class="flex items-center gap-4">
-                    <img src="{{ asset('img/rectangle-1393.png') }}" class="w-[60px] h-[60px] rounded-full object-cover" alt="Profile">
-                    <div class="hidden lg:block">
-                        <p class="text-base font-medium text-gray-900">Admin</p>
-                        <p class="text-sm text-gray-500">Panel</p>
-                    </div>
+                    <p class="uppercase font-semibold text-sm text-gray-900">{{ Auth::user()->role ?? 'Panel' }}</p>
                 </div>
             </div>
         </header>
@@ -31,9 +27,8 @@
         <!-- Content Area -->
         <main class="p-6 lg:p-10">
 
-            <!-- Tombol Kembali -->
-            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                <!-- Tombol Kembali -->
+            <!-- Baris Atas: Kembali + Export -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <a href="{{ route('pelanggan.index') }}" class="flex items-center gap-2 text-lg text-gray-600 hover:text-blue-600 font-semibold">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -41,21 +36,63 @@
                     Kembali ke Daftar Pelanggan
                 </a>
 
-                <!-- Tombol Export -->
+                <!-- Tombol Export (meneruskan filter tanggal yang aktif) -->
                 <div class="flex gap-3">
-                    <a href="{{ route('report.pelanggan.pdf', $pelanggan->id) }}" target="_blank" class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-md transition-colors">
+                    <a href="{{ route('report.pelanggan.pdf', $pelanggan->id) }}?start_date={{ request('start_date') }}&end_date={{ request('end_date') }}"
+                        target="_blank"
+                        class="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow-md transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
                         </svg>
                         Export PDF
                     </a>
-                    <a href="{{ route('report.pelanggan.excel', $pelanggan->id) }}" class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-md transition-colors"> 
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"> <path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0112 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25v1.5c0 .621.504 1.125 1.125 1.125m17.25-2.625v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125" /> 
-                </svg> Export Excel </a>       
+                    <a href="{{ route('report.pelanggan.excel', $pelanggan->id) }}?start_date={{ request('start_date') }}&end_date={{ request('end_date') }}"
+                        class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg shadow-md transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0112 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25v1.5c0 .621.504 1.125 1.125 1.125m17.25-2.625v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125" />
+                        </svg>
+                        Export Excel
+                    </a>
+                </div>
             </div>
+
+            <!-- Form Filter Rentang Tanggal -->
+            <div class="bg-white rounded-xl shadow-md p-5 mb-8">
+                <form method="GET" action="{{ route('report.pelanggan', $pelanggan->id) }}" class="flex flex-col md:flex-row items-end gap-4">
+                    <div class="flex-1">
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Tanggal Mulai</label>
+                        <input type="date" name="start_date" value="{{ $startDate ? $startDate->format('Y-m-d') : '' }}"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm">
+                    </div>
+                    <div class="flex-1">
+                        <label class="block text-sm font-semibold text-gray-600 mb-1">Tanggal Akhir</label>
+                        <input type="date" name="end_date" value="{{ $endDate ? $endDate->format('Y-m-d') : '' }}"
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm">
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow text-sm font-semibold transition-colors">
+                            Filter
+                        </button>
+                        @if(request('start_date') || request('end_date'))
+                            <a href="{{ route('report.pelanggan', $pelanggan->id) }}"
+                                class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg shadow text-sm font-semibold transition-colors">
+                                Reset
+                            </a>
+                        @endif
+                    </div>
+                </form>
+
+                @if($startDate && $endDate)
+                    <p class="mt-3 text-sm text-blue-600 font-medium">
+                        Menampilkan transaksi: {{ $startDate->format('d M Y') }} — {{ $endDate->format('d M Y') }}
+                    </p>
+                @else
+                    <p class="mt-3 text-sm text-gray-400">Menampilkan semua riwayat transaksi</p>
+                @endif
             </div>
-            
-            <!-- Ringkasan Totalan Akhir -->
+
+            <!-- Ringkasan Totalan -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                 <div class="bg-white p-6 rounded-xl shadow-md">
                     <h3 class="text-lg font-semibold text-gray-500">Total Subtotal</h3>
@@ -88,7 +125,7 @@
                                 <th class="p-3 text-sm md:p-4 md:text-base font-extrabold text-gray-700">No Invoice</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base font-extrabold text-gray-700">Tanggal</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base font-extrabold text-gray-700">Layanan</th>
-                                <th class="p-3 text-sm md:p-4 md:text-base font-extrabold text-gray-700">Deskripsi</th>
+                                <th class="p-3 text-sm md:p-4 md:text-base font-extrabold text-gray-700 w-40">Deskripsi</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base font-extrabold text-gray-700">Total</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base font-extrabold text-gray-700">Status Bayar</th>
                                 <th class="p-3 text-sm md:p-4 md:text-base font-extrabold text-gray-700 text-center">Aksi</th>
@@ -108,58 +145,71 @@
                                             {{ $transaksi->layanan->name ?? 'N/A' }}
                                         @endif
                                     </td>
-                                    <td class="p-3 text-sm md:p-4 md:text-base font-semibold text-gray-600">{{ $transaksi->deskripsi ?? '-' }}</td>
-                                    <td class="p-3 text-sm md:p-4 md:text-base font-semibold text-gray-900">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
-                                    <td class="p-3 md:p-4">
-                                        <span class="px-3 py-1 text-xs md:text-sm rounded-full font-medium" 
-                                              :class="{ 'bg-red-100 text-red-800': '{{ $transaksi->status_pembayaran }}' === 'DP', 'bg-green-100 text-green-800': '{{ $transaksi->status_pembayaran }}' === 'Lunas' }">
-                                            {{ $transaksi->status_pembayaran }}
+                                    <td class="p-3 text-sm md:p-4 md:text-base font-semibold text-gray-600">
+                                        <span class="block max-w-[10rem] truncate" title="{{ $transaksi->deskripsi ?? '-' }}">
+                                            {{ $transaksi->deskripsi ?? '-' }}
                                         </span>
                                     </td>
+                                    <td class="p-3 text-sm md:p-4 md:text-base font-semibold text-gray-900">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
+                                    <td class="p-3 md:p-4">
+                                        @if($transaksi->status_pembayaran === 'Lunas')
+                                            <span class="px-3 py-1 text-xs md:text-sm rounded-full font-medium bg-green-100 text-green-800">Lunas</span>
+                                        @else
+                                            <span class="px-3 py-1 text-xs md:text-sm rounded-full font-medium bg-red-100 text-red-800">{{ $transaksi->status_pembayaran }}</span>
+                                        @endif
+                                    </td>
                                     <td class="p-3 md:p-4 flex justify-center items-center space-x-1 md:space-x-2">
-                                        @php 
+                                        @php
                                             $transaksiData = [
-                                                'id' => $transaksi->id,
-                                                'tanggal_order' => $transaksi->tanggal_order,
-                                                'id_pelanggan' => $transaksi->id_pelanggan,
-                                                'deskripsi' => $transaksi->deskripsi,
-                                                'subtotal' => $transaksi->subtotal,
-                                                'potongan' => $transaksi->potongan,
-                                                'total_harga' => $transaksi->total_harga,
-                                                'jumlah_bayar' => $transaksi->jumlah_bayar,
-                                                'sisa_bayar' => $transaksi->sisa_bayar,
-                                                'status_pembayaran' => $transaksi->status_pembayaran,
-                                                'items' => $transaksi->items->map(fn($item) => [
-                                                    'id' => $item->id,
-                                                    'layanan_id' => $item->layanan_id,
-                                                    'unit_satuan' => $item->unit_satuan,
-                                                    'qty' => $item->qty,
+                                                'id'                 => $transaksi->id,
+                                                'tanggal_order'      => $transaksi->tanggal_order,
+                                                'id_pelanggan'       => $transaksi->id_pelanggan,
+                                                'deskripsi'          => $transaksi->deskripsi,
+                                                'subtotal'           => $transaksi->subtotal,
+                                                'potongan'           => $transaksi->potongan,
+                                                'total_harga'        => $transaksi->total_harga,
+                                                'jumlah_bayar'       => $transaksi->jumlah_bayar,
+                                                'sisa_bayar'         => $transaksi->sisa_bayar,
+                                                'status_pembayaran'  => $transaksi->status_pembayaran,
+                                                'items'              => $transaksi->items->map(fn($item) => [
+                                                    'id'           => $item->id,
+                                                    'layanan_id'   => $item->layanan_id,
+                                                    'unit_satuan'  => $item->unit_satuan,
+                                                    'qty'          => $item->qty,
                                                     'harga_satuan' => $item->harga_satuan,
-                                                    'subtotal' => $item->subtotal,
+                                                    'subtotal'     => $item->subtotal,
                                                 ])->toArray(),
                                             ];
                                         @endphp
-                                        
-                                        <button @click="$dispatch('open-edit-modal', @js($transaksiData))" 
+
+                                        <button @click="$dispatch('open-edit-modal', @js($transaksiData))"
                                             class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-green-200 text-sm md:text-base transition">
                                             Update
                                         </button>
-                                        
-                                        <button @click="openDeleteModal = true; deleteUrl = '{{ route('transaksi.destroy', $transaksi->id) }}';" 
+
+                                        <button @click="openDeleteModal = true; deleteUrl = '{{ route('transaksi.destroy', $transaksi->id) }}';"
                                             class="bg-red-100 text-red-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-red-200 text-sm md:text-base transition">
                                             Delete
                                         </button>
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="7" class="text-center p-6 text-gray-500">Pelanggan ini belum memiliki riwayat transaksi.</td></tr>
+                                <tr>
+                                    <td colspan="7" class="text-center p-6 text-gray-500">
+                                        @if($startDate && $endDate)
+                                            Tidak ada transaksi pada rentang tanggal yang dipilih.
+                                        @else
+                                            Pelanggan ini belum memiliki riwayat transaksi.
+                                        @endif
+                                    </td>
+                                </tr>
                             @endforelse
                         </tbody>
                     </table>
                 </div>
             </div>
-            
-            {{-- Menggunakan modal transaksi (karena ini adalah list transaksi) --}}
+
+            {{-- Modal transaksi --}}
             @include('components.modal.transaksi.edit-transaksi')
             @include('components.modal.transaksi.delete-transaksi')
         </main>

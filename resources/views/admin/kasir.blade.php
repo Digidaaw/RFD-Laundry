@@ -81,6 +81,7 @@
                                 <th class="p-3 text-sm md:p-4 md:text-lg font-extrabold text-gray-700">#</th>
                                 <th class="p-3 text-sm md:p-4 md:text-lg font-extrabold text-gray-700">Nama</th>
                                 <th class="p-3 text-sm md:p-4 md:text-lg font-extrabold text-gray-700">Username</th>
+                                <th class="p-3 text-sm md:p-4 md:text-lg font-extrabold text-gray-700 text-center">Status</th>
                                 <th class="p-3 text-sm md:p-4 md:text-lg font-extrabold text-gray-700 text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -97,17 +98,43 @@
                                     <td class="p-4 font-semibold text-gray-600">{{ $loop->iteration }}</td>
                                     <td class="p-4 font-semibold text-gray-800">{{ $kasir->name }}</td>
                                     <td class="p-4 font-semibold text-gray-600">{{ $kasir->username }}</td>
+                                    <td class="p-4 text-center">
+                                        @if($kasir->is_active)
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                                Aktif
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                                                Nonaktif
+                                            </span>
+                                        @endif
+                                    </td>
                                     <td class="p-4 flex justify-center items-center space-x-2">
                                         <button
                                             @click="openEditModal = true; editData = @js($kasirData)"
                                             class="bg-green-100 text-green-700 font-bold py-2 px-6 rounded-md hover:bg-green-200 transition">
                                             Update
                                         </button>
+                                        @if(Auth::user()->role === 'admin')
+                                            @if($kasir->is_active)
+                                                <button type="button"
+                                                    @click="openStatusModal = true; statusUrl = '{{ route('users.toggle-status', $kasir->id) }}'; statusTitle = 'Nonaktifkan Kasir?'; statusMessage = 'Apakah Anda yakin ingin menonaktifkan kasir {{ $kasir->name }}?';"
+                                                    class="bg-red-100 text-red-700 font-bold py-2 px-6 rounded-md hover:bg-red-200 transition">
+                                                    Nonaktifkan
+                                                </button>
+                                            @else
+                                                <button type="button"
+                                                    @click="openStatusModal = true; statusUrl = '{{ route('users.toggle-status', $kasir->id) }}'; statusTitle = 'Aktifkan Kasir?'; statusMessage = 'Apakah Anda yakin ingin mengaktifkan kasir {{ $kasir->name }}?';"
+                                                    class="bg-blue-100 text-blue-700 font-bold py-2 px-6 rounded-md hover:bg-blue-200 transition">
+                                                    Aktifkan
+                                                </button>
+                                            @endif
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="text-center p-6 text-gray-500">
+                                    <td colspan="5" class="text-center p-6 text-gray-500">
                                         Belum ada data kasir yang bisa ditampilkan.
                                     </td>
                                 </tr>
@@ -123,6 +150,7 @@
 
             @include('components.modal.kasir.add-kasir')
             @include('components.modal.kasir.edit-kasir')
+            @include('components.modal.kasir.status-kasir')
         </main>
     </div>
 @endsection
