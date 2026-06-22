@@ -87,6 +87,7 @@
             width:100%;
             border-collapse:collapse;
             font-size:15px;
+            table-layout: fixed;
         }
 
         .items thead th{
@@ -103,11 +104,11 @@
         }
 
         .text-center{
-            text-align:center;
+            text-align:center !important;
         }
 
         .text-right{
-            text-align:right;
+            text-align:right !important;
         }
 
         /* =========================
@@ -294,46 +295,34 @@
         @endforeach
         <tfoot>
             <tr>
-                <td colspan="4" style="border: none; border-top: 1px solid #000;"></td>
-                <td colspan="2" style="padding: 4px 3px; font-weight: bold; text-align: left; font-size: 15px; border-top: 1px solid #000;">Sub Total</td>
-                <td class="text-right" style="padding: 4px 3px; font-weight: bold; font-size: 15px; border-top: 1px solid #000;">
-                    Rp {{ number_format($transaksi->subtotal, 0, ',', '.') }}
-                </td>
+                <td colspan="5" style="border-top: 1px solid #000;"></td>
+                <td style="border-top: 1px solid #000; padding: 4px 3px; font-weight: bold; font-size: 15px;">Sub Total</td>
+                <td class="text-right" style="border-top: 1px solid #000; padding: 4px 3px; font-weight: bold; font-size: 15px;">Rp {{ number_format($transaksi->subtotal, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td colspan="4" style="border: none;"></td>
-                <td colspan="2" style="padding: 4px 3px; font-weight: bold; text-align: left; font-size: 15px;">Potongan</td>
-                <td class="text-right" style="padding: 4px 3px; font-weight: bold; font-size: 15px;">
-                    Rp {{ number_format($transaksi->potongan ?? 0, 0, ',', '.') }}
-                </td>
+                <td colspan="5"></td>
+                <td style="padding: 4px 3px; font-weight: bold; font-size: 15px;">Potongan</td>
+                <td class="text-right" style="padding: 4px 3px; font-weight: bold; font-size: 15px;">Rp {{ number_format($transaksi->potongan ?? 0, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td colspan="4" style="border: none;"></td>
-                <td colspan="2" style="padding: 4px 3px; font-weight: bold; text-align: left; font-size: 15px;">Total</td>
-                <td class="text-right" style="padding: 4px 3px; font-weight: bold; font-size: 15px;">
-                    Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}
-                </td>
+                <td colspan="5" style="border-top: 1px solid #000;"></td>
+                <td style="border-top: 1px solid #000; padding: 4px 3px; font-weight: bold; font-size: 15px;">Total</td>
+                <td class="text-right" style="border-top: 1px solid #000; padding: 4px 3px; font-weight: bold; font-size: 15px;">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td colspan="4" style="border: none;"></td>
-                <td colspan="2" style="padding: 4px 3px; font-weight: bold; text-align: left; font-size: 15px;">Jumlah Bayar</td>
-                <td class="text-right" style="padding: 4px 3px; font-weight: bold; font-size: 15px;">
-                    Rp {{ number_format($transaksi->jumlah_bayar ?? 0, 0, ',', '.') }}
-                </td>
+                <td colspan="5"></td>
+                <td style="padding: 4px 3px; font-weight: bold; font-size: 15px;">Jumlah Bayar</td>
+                <td class="text-right" style="padding: 4px 3px; font-weight: bold; font-size: 15px;">Rp {{ number_format($transaksi->jumlah_bayar ?? 0, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td colspan="4" style="border: none;"></td>
-                <td colspan="2" style="padding: 4px 3px; font-weight: bold; text-align: left; font-size: 15px;">Kembalian</td>
-                <td class="text-right" style="padding: 4px 3px; font-weight: bold; font-size: 15px;">
-                    Rp {{ number_format($transaksi->kembalian ?? 0, 0, ',', '.') }}
-                </td>
+                <td colspan="5"></td>
+                <td style="padding: 4px 3px; font-weight: bold; font-size: 15px;">Kembalian</td>
+                <td class="text-right" style="padding: 4px 3px; font-weight: bold; font-size: 15px;">Rp {{ number_format($transaksi->kembalian ?? 0, 0, ',', '.') }}</td>
             </tr>
             <tr>
-                <td colspan="4" style="border: none;"></td>
-                <td colspan="2" style="padding: 4px 3px; font-weight: bold; text-align: left; font-size: 15px;">Sisa Bayar</td>
-                <td class="text-right" style="padding: 4px 3px; font-weight: bold; font-size: 15px;">
-                    Rp {{ number_format($transaksi->sisa_bayar ?? 0, 0, ',', '.') }}
-                </td>
+                <td colspan="5"></td>
+                <td style="padding: 4px 3px; font-weight: bold; font-size: 15px;">Sisa Bayar</td>
+                <td class="text-right" style="padding: 4px 3px; font-weight: bold; font-size: 15px;">Rp {{ number_format($transaksi->sisa_bayar ?? 0, 0, ',', '.') }}</td>
             </tr>
         </tfoot>
     </table>
