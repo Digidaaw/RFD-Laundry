@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Update gambar
             if (service.gambar && service.gambar.length > 0) {
-                serviceImg.src = `/images/layanan/${service.gambar[0]}`;
+                serviceImg.src = service.gambar[0].startsWith('data:') ? service.gambar[0] : `/images/layanan/${service.gambar[0]}`;
             }
         });
     });

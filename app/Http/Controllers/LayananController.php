@@ -95,33 +95,43 @@ class LayananController extends Controller
         }
     }
 
+    public function toggleStatus(Layanan $layanan)
+    {
+        $layanan->update([
+            'is_active' => !$layanan->is_active,
+        ]);
+
+        $status = $layanan->is_active ? 'diaktifkan' : 'dinonaktifkan';
+
+        return redirect()->route('layanan.index')->with('success', "Layanan {$layanan->name} berhasil {$status}.");
+    }
+
     private function uploadImages(array $images): array
     {
-        $fileNames = [];
+        $base64Images = [];
 
         foreach ($images as $image) {
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('images/layanan'), $imageName);
-            $fileNames[] = $imageName;
+            $base64 = 'data:' . $image->getClientMimeType() . ';base64,' . base64_encode(file_get_contents($image->getRealPath()));
+            $base64Images[] = $base64;
         }
 
-        return $fileNames;
+        return $base64Images;
     }
 
     private function resolveImagesToDelete(array $currentImages, array $requestedImages): array
     {
-        $requestedImages = array_map(fn ($imageName) => basename((string) $imageName), $requestedImages);
-
         return array_values(array_intersect($currentImages, $requestedImages));
     }
 
     private function deleteImages(array $imageNames): void
     {
         foreach ($imageNames as $imageName) {
-            $path = public_path('images/layanan/' . $imageName);
+            if (!str_starts_with($imageName, 'data:')) {
+                $path = public_path('images/layanan/' . $imageName);
 
-            if (File::exists($path)) {
-                File::delete($path);
+                if (File::exists($path)) {
+                    File::delete($path);
+                }
             }
         }
     }

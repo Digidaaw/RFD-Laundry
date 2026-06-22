@@ -124,7 +124,7 @@
                             <template x-if="data.gambar && data.gambar.length > 0">
                                 <template x-for="image in data.gambar" :key="image">
                                     <div class="relative flex-shrink-0">
-                                        <img :src="'/images/layanan/' + image"
+                                        <img :src="image.startsWith('data:') ? image : '/images/layanan/' + image"
                                             class="w-24 h-24 object-cover rounded-md border">
                                         <button type="button" @click="confirmRemoveImage(image)"
                                             class="absolute top-0 right-0 m-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center font-bold text-sm hover:bg-red-700 transition-colors">&times;</button>
