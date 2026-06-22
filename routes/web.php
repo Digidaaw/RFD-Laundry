@@ -41,6 +41,7 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggle-status')->middleware('role:admin');
 
     Route::resource('layanan', LayananController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::patch('/layanan/{layanan}/toggle-status', [LayananController::class, 'toggleStatus'])->name('layanan.toggle-status');
 
     Route::resource('pelanggan', PelangganController::class)->only(['index', 'store', 'update']);
 

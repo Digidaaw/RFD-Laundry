@@ -14,10 +14,12 @@ class Layanan extends Model
         'name',
         'gambar',
         'deskripsi',
+        'is_active',
     ];
 
     protected $casts = [
         'gambar' => 'array',
+        'is_active' => 'boolean',
     ];
 
     public function units()

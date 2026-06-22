@@ -82,6 +82,7 @@
                                 <th class="p-4 text-lg font-extrabold text-gray-700">Gambar</th>
                                 <th class="p-4 text-lg font-extrabold text-gray-700">Nama Layanan</th>
                                 <th class="p-4 text-lg font-extrabold text-gray-700">Deskripsi</th>
+                                <th class="p-4 text-lg font-extrabold text-gray-700 text-center">Status</th>
                                 <th class="p-4 text-lg font-extrabold text-gray-700 text-center">Aksi</th>
                             </tr>
                         </thead>
@@ -110,7 +111,7 @@
                                     <td class="p-4">
                                         @if (isset($layanan->gambar[0]))
                                             <div class="w-10 h-10 rounded-md overflow-hidden bg-gray-100">
-                                                <img src="{{ asset('images/layanan/' . $layanan->gambar[0]) }}"
+                                                <img src="{{ str_starts_with($layanan->gambar[0], 'data:') ? $layanan->gambar[0] : asset('images/layanan/' . $layanan->gambar[0]) }}"
                                                     alt="{{ $layanan->name }}"
                                                     class="w-full h-full object-cover">
                                             </div>
@@ -128,16 +129,44 @@
                                     <td class="p-4 font-semibold text-gray-600">
                                         {{ Str::limit($layanan->deskripsi, 50) }}
                                     </td>
+                                    <td class="p-4 text-center">
+                                        @if($layanan->is_active)
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                                Aktif
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                                                Nonaktif
+                                            </span>
+                                        @endif
+                                    </td>
                                     <td class="p-4 flex justify-center items-center space-x-2">
                                         <button @click="$dispatch('open-edit-modal', @js($layananData))"
                                             class="bg-green-100 text-green-700 font-bold py-2 px-6 rounded-md hover:bg-green-200">
                                             Update
                                         </button>
+                                        @if(Auth::user()->role === 'admin')
+                                            @if($layanan->is_active)
+                                                <button type="button"
+                                                    @click="openStatusModal = true; statusUrl = '{{ route('layanan.toggle-status', $layanan->id) }}'; statusTitle = 'Nonaktifkan Layanan?'; statusMessage = 'Apakah Anda yakin ingin menonaktifkan layanan {{ $layanan->name }}?';"
+                                                    class="bg-red-100 text-red-700 font-bold py-2 px-6 rounded-md hover:bg-red-200 transition"
+                                                >
+                                                    Nonaktifkan
+                                                </button>
+                                            @else
+                                                <button type="button"
+                                                    @click="openStatusModal = true; statusUrl = '{{ route('layanan.toggle-status', $layanan->id) }}'; statusTitle = 'Aktifkan Layanan?'; statusMessage = 'Apakah Anda yakin ingin mengaktifkan layanan {{ $layanan->name }}?';"
+                                                    class="bg-blue-100 text-blue-700 font-bold py-2 px-6 rounded-md hover:bg-blue-200 transition"
+                                                >
+                                                    Aktifkan
+                                                </button>
+                                            @endif
+                                        @endif
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center p-6 text-gray-500">
+                                    <td colspan="6" class="text-center p-6 text-gray-500">
                                         Belum ada data layanan yang bisa ditampilkan.
                                     </td>
                                 </tr>
@@ -170,7 +199,7 @@
                         <div class="border rounded-xl p-4 flex gap-3">
                             <div class="w-20 h-20 rounded-md overflow-hidden bg-gray-100 flex-shrink-0">
                                 @if (isset($layanan->gambar[0]))
-                                    <img src="{{ asset('images/layanan/' . $layanan->gambar[0]) }}"
+                                    <img src="{{ str_starts_with($layanan->gambar[0], 'data:') ? $layanan->gambar[0] : asset('images/layanan/' . $layanan->gambar[0]) }}"
                                         alt="{{ $layanan->name }}" class="w-full h-full object-cover">
                                 @else
                                     <div class="w-full h-full flex items-center justify-center text-xs text-gray-500">
@@ -180,9 +209,20 @@
                             </div>
                             <div class="flex-1 flex flex-col justify-between">
                                 <div>
-                                    <p class="font-semibold text-gray-800 text-sm">
-                                        {{ $layanan->name }}
-                                    </p>
+                                    <div class="flex justify-between items-start gap-2">
+                                        <p class="font-semibold text-gray-800 text-sm">
+                                            {{ $layanan->name }}
+                                        </p>
+                                        @if($layanan->is_active)
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-100 text-green-800 whitespace-nowrap">
+                                                Aktif
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-100 text-red-800 whitespace-nowrap">
+                                                Nonaktif
+                                            </span>
+                                        @endif
+                                    </div>
                                     <p class="font-bold text-blue-600 text-xs mt-1">
                                         {{ $unitText ?: '-' }}
                                     </p>
@@ -195,6 +235,21 @@
                                         class="flex-1 bg-green-100 text-green-700 font-semibold py-2 rounded-md text-xs">
                                         Update
                                     </button>
+                                    @if(Auth::user()->role === 'admin')
+                                        @if($layanan->is_active)
+                                            <button type="button"
+                                                @click="openStatusModal = true; statusUrl = '{{ route('layanan.toggle-status', $layanan->id) }}'; statusTitle = 'Nonaktifkan Layanan?'; statusMessage = 'Apakah Anda yakin ingin menonaktifkan layanan {{ $layanan->name }}?';"
+                                                class="flex-1 bg-red-100 text-red-700 font-semibold py-2 rounded-md text-xs">
+                                                Nonaktifkan
+                                            </button>
+                                        @else
+                                            <button type="button"
+                                                @click="openStatusModal = true; statusUrl = '{{ route('layanan.toggle-status', $layanan->id) }}'; statusTitle = 'Aktifkan Layanan?'; statusMessage = 'Apakah Anda yakin ingin mengaktifkan layanan {{ $layanan->name }}?';"
+                                                class="flex-1 bg-blue-100 text-blue-700 font-semibold py-2 rounded-md text-xs">
+                                                Aktifkan
+                                            </button>
+                                        @endif
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -212,6 +267,7 @@
 
             @include('components.modal.layanan.add-layanan')
             @include('components.modal.layanan.edit-layanan')
+            @include('components.modal.layanan.status-layanan')
         </main>
     </div>
 @endsection
