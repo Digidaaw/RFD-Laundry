@@ -14,12 +14,7 @@
             </div>
             <div class="flex items-center gap-8">
                 <div class="flex items-center gap-4">
-                    <img src="{{ asset('img/rectangle-1393.png') }}"
-                         class="w-[60px] h-[60px] rounded-full object-cover" alt="Profile">
-                    <div class="hidden md:block">
-                        <p class="text-base font-medium text-gray-900">{{ Auth::user()->name ?? 'User' }}</p>
-                        <p class="text-sm text-gray-500">{{ Auth::user()->role ?? 'User' }}</p>
-                    </div>
+                    <p class="uppercase font-semibold text-sm text-gray-900">{{ Auth::user()->role ?? 'Panel' }}</p>
                 </div>
             </div>
         </header>
@@ -81,7 +76,7 @@
                                 <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">{{ $transaksi->pelanggan->name ?? 'N/A' }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base font-bold text-red-600">Rp {{ number_format($transaksi->sisa_bayar, 0, ',', '.') }}</td>
                                 <td class="p-3 md:p-4 text-center">
-                                    @php 
+                                    @php
                                     $transaksiData = [
                                         'id' => $transaksi->id,
                                         'tanggal_order' => $transaksi->tanggal_order,
