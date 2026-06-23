@@ -10,7 +10,7 @@ class TC_LAY_12_Test extends LayananFeatureTestCase
      * Test Case 12: Mengupdate data layanan dengan field wajib kosong
      * Expected: Sistem menampilkan pesan validasi field wajib
      */
-    public function testCannotUpdateLayananWithEmptyField()
+    public function test_update_dengan_field_kosong()
     {
         $layanan = Layanan::create([
             'name' => 'Cuci Reguler',
@@ -99,3 +99,4 @@ class TC_LAY_12_Test extends LayananFeatureTestCase
         ]);
     }
 }
+

@@ -11,7 +11,7 @@ class TC_LAY_11_Test extends LayananFeatureTestCase
      * Test Case 11: Mengupdate data layanan dengan data valid
      * Expected: Sistem berhasil memperbarui data layanan
      */
-    public function testCanUpdateLayananWithValidData()
+    public function test_update_dengan_data_valid()
     {
         $layanan = Layanan::create([
             'name' => 'Cuci Reguler',
@@ -85,3 +85,4 @@ class TC_LAY_11_Test extends LayananFeatureTestCase
         $this->assertTrue($updatedLayanan->units->contains('unit_satuan', 'meter'));
     }
 }
+

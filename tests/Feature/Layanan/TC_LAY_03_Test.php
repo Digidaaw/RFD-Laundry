@@ -10,7 +10,7 @@ class TC_LAY_03_Test extends LayananFeatureTestCase
      * Test Case 3: Menambahkan data layanan dengan format harga tidak valid
      * Expected: Sistem hanya bisa menambahkan harga dengan angka
      */
-    public function testCannotStoreLayananWithInvalidPrice()
+    public function test_add_dengan_harga_tidak_valid()
     {
         $dataWithInvalidPrice = [
             'name' => 'Layanan Valid',
@@ -71,3 +71,4 @@ class TC_LAY_03_Test extends LayananFeatureTestCase
         $this->assertDatabaseMissing('layanans', ['name' => 'Layanan Valid']);
     }
 }
+

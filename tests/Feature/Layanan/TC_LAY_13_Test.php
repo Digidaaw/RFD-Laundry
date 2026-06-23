@@ -10,7 +10,7 @@ class TC_LAY_13_Test extends LayananFeatureTestCase
      * Test Case 13: Mengupdate data layanan dengan format harga tidak valid
      * Expected: Sistem menampilkan validasi bahwa harga harus angka
      */
-    public function testCannotUpdateLayananWithInvalidPrice()
+    public function test_update_dengan_harga_tidak_valid()
     {
         $layanan = Layanan::create([
             'name' => 'Cuci Reguler',
@@ -91,3 +91,4 @@ class TC_LAY_13_Test extends LayananFeatureTestCase
         ]);
     }
 }
+

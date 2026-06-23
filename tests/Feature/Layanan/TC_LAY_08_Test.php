@@ -10,7 +10,7 @@ class TC_LAY_08_Test extends LayananFeatureTestCase
      * Test Case 8: Mencari data layanan yang tersedia
      * Expected: Sistem menampilkan data layanan sesuai keyword pencarian
      */
-    public function testCanSearchExistingLayanan()
+    public function test_cari_layanan_ada()
     {
         $layanan1 = Layanan::create([
             'name' => 'Cuci Jasa Reguler',
@@ -63,3 +63,4 @@ class TC_LAY_08_Test extends LayananFeatureTestCase
         $response->assertViewHas('search', 'Express');
     }
 }
+

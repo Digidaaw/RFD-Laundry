@@ -10,7 +10,7 @@ class TC_LAY_15_Test extends LayananFeatureTestCase
      * Test Case 15: Mengupdate data layanan dengan menambahkan unit layanan
      * Expected: Sistem berhasil menyimpan layanan dengan lebih dari satu unit
      */
-    public function testCanUpdateLayananWithAddingMoreUnits()
+    public function test_update_dengan_tambah_unit()
     {
         $layanan = Layanan::create([
             'name' => 'Cuci Jasa',
@@ -91,3 +91,4 @@ class TC_LAY_15_Test extends LayananFeatureTestCase
         $this->assertEquals('Layanan cuci jasa dengan banyak pilihan unit', $updatedLayanan->deskripsi);
     }
 }
+

@@ -10,7 +10,7 @@ class TC_LAY_07_Test extends LayananFeatureTestCase
      * Test Case 7: Membatalkan penambahan layanan setelah form diisi
      * Expected: Form tertutup dan data tidak tersimpan ke tabel layanan
      */
-    public function testCanCancelAddingLayananForm()
+    public function test_batal_tambah_form_layanan()
     {
         $existingCount = Layanan::count();
 
@@ -30,3 +30,4 @@ class TC_LAY_07_Test extends LayananFeatureTestCase
         $response->assertViewHasAll(['layanans', 'search', 'sort']);
     }
 }
+

@@ -10,7 +10,7 @@ class TC_LAY_16_Test extends LayananFeatureTestCase
      * Test Case 16: Membatalkan perubahan saat update data layanan
      * Expected: Form edit tertutup dan data lama tetap tersimpan tanpa perubahan
      */
-    public function testCanCancelUpdatingLayananForm()
+    public function test_batal_update_form_layanan()
     {
         $layanan = Layanan::create([
             'name' => 'Cuci Reguler',
@@ -51,3 +51,4 @@ class TC_LAY_16_Test extends LayananFeatureTestCase
         ]);
     }
 }
+

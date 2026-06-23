@@ -10,7 +10,7 @@ class TC_LAY_10_Test extends LayananFeatureTestCase
      * Test Case 10: Mengurutkan data layanan
      * Expected: Sistem menampilkan data sesuai urutan yang dipilih
      */
-    public function testCanSortLayananData()
+    public function test_urutkan_data_layanan()
     {
         $layanan1 = Layanan::create([
             'name' => 'Layanan A',
@@ -81,3 +81,4 @@ class TC_LAY_10_Test extends LayananFeatureTestCase
         $response->assertDontSee('Cuci A');
     }
 }
+

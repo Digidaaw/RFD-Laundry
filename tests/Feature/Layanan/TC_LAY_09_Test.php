@@ -10,7 +10,7 @@ class TC_LAY_09_Test extends LayananFeatureTestCase
      * Test Case 9: Mencari data layanan yang tidak tersedia
      * Expected: Sistem menampilkan pesan bahwa data layanan tidak ditemukan
      */
-    public function testCanSearchNonExistingLayanan()
+    public function test_cari_layanan_tidak_ada()
     {
         Layanan::create([
             'name' => 'Cuci Jasa Reguler',
@@ -41,3 +41,4 @@ class TC_LAY_09_Test extends LayananFeatureTestCase
         $this->assertCount(0, $layanans);
     }
 }
+

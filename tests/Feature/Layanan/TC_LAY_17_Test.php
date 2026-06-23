@@ -10,7 +10,7 @@ class TC_LAY_17_Test extends LayananFeatureTestCase
      * Test Case 17: Mengakses halaman layanan tanpa login
      * Expected: Sistem mengarahkan user ke halaman login
      */
-    public function testGuestCannotAccessLayananPage()
+    public function test_guest_tidak_akses_halaman_layanan()
     {
         $response = $this->get(route('layanan.index'));
         $response->assertRedirect(route('login'));
@@ -39,3 +39,4 @@ class TC_LAY_17_Test extends LayananFeatureTestCase
         ]);
     }
 }
+

@@ -10,7 +10,7 @@ class TC_LAY_02_Test extends LayananFeatureTestCase
      * Test Case 2: Menambahkan data layanan dengan field kosong
      * Expected: Sistem menampilkan pesan validasi bahwa field wajib harus diisi
      */
-    public function testCannotStoreLayananWithEmptyField()
+    public function test_add_dengan_field_kosong()
     {
         $dataWithoutName = [
             'name' => '',
@@ -84,3 +84,4 @@ class TC_LAY_02_Test extends LayananFeatureTestCase
         $this->assertDatabaseMissing('layanans', ['name' => 'Layanan Valid']);
     }
 }
+

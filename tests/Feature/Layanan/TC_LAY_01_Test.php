@@ -11,7 +11,7 @@ class TC_LAY_01_Test extends LayananFeatureTestCase
      * Test Case 1: Menambahkan data layanan dengan data valid
      * Expected: Sistem berhasil menyimpan data layanan dan menampilkan data pada tabel layanan
      */
-    public function testCanStoreLayananWithValidData()
+    public function test_add_dengan_data_valid()
     {
         $validData = [
             'name' => 'Cuci Jasa Reguler',
@@ -52,3 +52,4 @@ class TC_LAY_01_Test extends LayananFeatureTestCase
         $this->assertCount(1, $layanan->gambar);
     }
 }
+

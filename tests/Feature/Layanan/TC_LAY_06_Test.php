@@ -11,7 +11,7 @@ class TC_LAY_06_Test extends LayananFeatureTestCase
      * Test Case 6: Menambahkan layanan dengan lebih dari satu unit layanan
      * Expected: Sistem berhasil menyimpan layanan dengan lebih dari satu unit
      */
-    public function testCanStoreLayananWithMultipleUnits()
+    public function test_add_dengan_multiple_unit()
     {
         $dataWithMultipleUnits = [
             'name' => 'Cuci Kering Plus',
@@ -62,3 +62,4 @@ class TC_LAY_06_Test extends LayananFeatureTestCase
         $this->assertEquals(12000, $meterUnit->harga);
     }
 }
+

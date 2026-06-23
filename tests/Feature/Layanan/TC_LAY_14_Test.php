@@ -11,7 +11,7 @@ class TC_LAY_14_Test extends LayananFeatureTestCase
      * Test Case 14: Mengupdate gambar layanan dengan format file tidak valid
      * Expected: Sistem menampilkan validasi format file tidak didukung
      */
-    public function testCannotUpdateLayananWithInvalidImageFormat()
+    public function test_update_dengan_format_gambar_tidak_valid()
     {
         $layanan = Layanan::create([
             'name' => 'Cuci Reguler',
@@ -90,3 +90,4 @@ class TC_LAY_14_Test extends LayananFeatureTestCase
         ]);
     }
 }
+

@@ -11,7 +11,7 @@ class TC_LAY_05_Test extends LayananFeatureTestCase
      * Test Case 5: Menampilkan dan menutup form tambah layanan
      * Expected: Form tambah layanan berhasil ditampilkan dan ditutup
      */
-    public function testCanDisplayAndCloseLayananForm()
+    public function test_tampilkan_dan_tutup_form_layanan()
     {
         $response = $this->actingAs($this->user)
             ->get(route('layanan.index'));
@@ -56,3 +56,4 @@ class TC_LAY_05_Test extends LayananFeatureTestCase
         $response->assertSessionHas('success', 'Layanan berhasil ditambahkan.');
     }
 }
+

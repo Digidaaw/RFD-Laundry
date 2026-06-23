@@ -10,7 +10,7 @@ class TC_LAY_04_Test extends LayananFeatureTestCase
      * Test Case 4: Mengupload gambar layanan dengan format file tidak valid
      * Expected: Sistem hanya menerima format gambar yang didukung
      */
-    public function testCannotStoreLayananWithInvalidImageFormat()
+    public function test_add_dengan_format_gambar_tidak_valid()
     {
         $dataWithPdfFile = [
             'name' => 'Layanan Valid',
@@ -71,3 +71,4 @@ class TC_LAY_04_Test extends LayananFeatureTestCase
         $this->assertDatabaseMissing('layanans', ['name' => 'Layanan Valid']);
     }
 }
+
