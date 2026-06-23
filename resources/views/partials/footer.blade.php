@@ -50,7 +50,7 @@
                     class="w-10 h-10 rounded-full bg-brand-gray flex items-center justify-center text-brand-dark hover:bg-brand-yellow transition-colors">
                     <i class="ph-fill ph-map-pin text-xl"></i>
                 </a>
-                <a href="https://wa.me/6289656562116" target="_blank"
+                <a href="https://wa.me/6285738419881" target="_blank"
                     class="w-10 h-10 rounded-full bg-brand-gray flex items-center justify-center text-brand-dark hover:bg-brand-yellow transition-colors">
                     <i class="ph-fill ph-whatsapp-logo text-xl"></i>
                 </a>
