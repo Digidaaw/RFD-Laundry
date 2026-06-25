@@ -31,32 +31,30 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
 
                 <!-- Card Total User (Dinamis) -->
-                <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="bg-white rounded-xl shadow-md p-6 flex flex-col justify-between h-full">
                     <p class="text-gray-700 text-sm font-semibold mb-2">Total User</p>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">{{ $totalUser ?? 0 }}</h3>
+                    <h3 class="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-4 whitespace-nowrap">{{ $totalUser ?? 0 }}</h3>
                     <p class="text-sm text-gray-500 font-semibold">Total akun terdaftar</p>
                 </div>
 
                 <!-- Card Total Order (Dinamis) -->
-                <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="bg-white rounded-xl shadow-md p-6 flex flex-col justify-between h-full">
                     <p class="text-gray-700 text-sm font-semibold mb-2">Total Order</p>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">{{ $totalOrder ?? 0 }}</h3>
+                    <h3 class="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-4 whitespace-nowrap">{{ $totalOrder ?? 0 }}</h3>
                     <p class="text-sm text-gray-500 font-semibold">Transaksi sepanjang waktu</p>
                 </div>
 
                 <!-- Card Total Sales (Dinamis) -->
-                <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="bg-white rounded-xl shadow-md p-6 overflow-hidden">
                     <p class="text-gray-700 text-sm font-semibold mb-2">Total Sales</p>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Rp {{ number_format($totalSales ?? 0, 0, ',', '.') }}
-                    </h3>
+                    <h3 class="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-4 whitespace-nowrap truncate">Rp {{ number_format($totalSales ?? 0, 0, ',', '.') }}</h3>
                     <p class="text-sm text-gray-500 font-semibold">Total nilai transaksi</p>
                 </div>
 
                 <!-- Card Total Piutang (Dinamis) -->
-                <div class="bg-white rounded-xl shadow-md p-6">
+                <div class="bg-white rounded-xl shadow-md p-6 overflow-hidden">
                     <p class="text-gray-700 text-sm font-semibold mb-2">Total Piutang</p>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Rp
-                        {{ number_format($orderPending ?? 0, 0, ',', '.') }}</h3>
+                    <h3 class="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-4 whitespace-nowrap truncate">Rp {{ number_format($orderPending ?? 0, 0, ',', '.') }}</h3>
                     <p class="text-sm text-gray-500 font-semibold">Total jumlah yang belum dibayar</p>
                 </div>
             </div>

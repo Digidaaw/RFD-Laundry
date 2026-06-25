@@ -100,11 +100,11 @@
                                     <td class="p-4 font-semibold text-gray-600">{{ $kasir->username }}</td>
                                     <td class="p-4 text-center">
                                         @if($kasir->is_active)
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                            <span class="font-semibold text-sm md:text-base text-green-600">
                                                 Aktif
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                                            <span class="font-semibold text-sm md:text-base text-red-600">
                                                 Nonaktif
                                             </span>
                                         @endif
@@ -112,7 +112,7 @@
                                     <td class="p-4 flex justify-center items-center space-x-2">
                                         <button
                                             @click="openEditModal = true; editData = @js($kasirData)"
-                                            class="bg-green-100 text-green-700 font-bold py-2 px-6 rounded-md hover:bg-green-200 transition">
+                                            class="bg-yellow-100 text-yellow-800 font-bold py-2 px-6 rounded-md hover:bg-yellow-200 transition">
                                             Update
                                         </button>
                                         @if(Auth::user()->role === 'admin')

@@ -96,7 +96,7 @@
     // =================================================================
 }"
 @open-signout-modal.window="openSignOutModal = true" 
-class="font-sans bg-gray-100">
+class="font-sans bg-gray-100 overflow-x-hidden">
 
     <div class="relative min-h-screen lg:flex">
         
@@ -104,7 +104,7 @@ class="font-sans bg-gray-100">
         @include('components.sidebar')
 
         <!-- Konten Utama -->
-        <div class="flex-1 lg:ml-[347px]">
+        <div class="flex-1 lg:ml-[347px] min-w-0">
             @yield('content')
         </div>
 

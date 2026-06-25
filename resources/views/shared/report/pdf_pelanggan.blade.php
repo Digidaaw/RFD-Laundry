@@ -127,15 +127,15 @@
                                     {{ rtrim(rtrim(number_format($item->qty, 2, ',', '.'), '0'), ',') }}
                                 @endif
                             </td>
-                            <td class="text-right">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
-                            <td class="text-right">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
+                            <td class="text-right">Rp {{ number_format(max(0, $item->harga_satuan), 0, ',', '.') }}</td>
+                            <td class="text-right">Rp {{ number_format(max(0, $item->subtotal), 0, ',', '.') }}</td>
 
                             @if($loopIndex === 0)
                                 <td rowspan="{{ $rowspan }}" style="vertical-align:top; color:#555;">
                                     {{ $transaksi->deskripsi ?? '-' }}
                                 </td>
                                 <td rowspan="{{ $rowspan }}" class="text-right" style="vertical-align:top; font-weight:bold;">
-                                    Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}
+                                    Rp {{ number_format(max(0, $transaksi->total_harga), 0, ',', '.') }}
                                 </td>
                             @endif
                         </tr>
@@ -151,7 +151,7 @@
                         <td class="text-right">-</td>
                         <td style="color:#555;">{{ $transaksi->deskripsi ?? '-' }}</td>
                         <td class="text-right" style="font-weight:bold;">
-                            Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}
+                            Rp {{ number_format(max(0, $transaksi->total_harga), 0, ',', '.') }}
                         </td>
                     </tr>
                 @endif
@@ -160,15 +160,15 @@
         <tfoot>
             <tr>
                 <td colspan="8" class="label">Total Transaksi:</td>
-                <td class="value">Rp {{ number_format($transaksis->sum('total_harga'), 0, ',', '.') }}</td>
+                <td class="value">Rp {{ number_format(max(0, $transaksis->sum('total_harga')), 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td colspan="8" class="label">Total Sudah Dibayar:</td>
-                <td class="value text-green">Rp {{ number_format($transaksis->sum('jumlah_bayar'), 0, ',', '.') }}</td>
+                <td class="value text-green">Rp {{ number_format(max(0, $transaksis->sum('jumlah_bayar')), 0, ',', '.') }}</td>
             </tr>
             <tr>
                 <td colspan="8" class="label">Sisa Hutang:</td>
-                <td class="value text-red">Rp {{ number_format($transaksis->sum('sisa_bayar'), 0, ',', '.') }}</td>
+                <td class="value text-red">Rp {{ number_format(max(0, $transaksis->sum('sisa_bayar')), 0, ',', '.') }}</td>
             </tr>
         </tfoot>
     </table>
