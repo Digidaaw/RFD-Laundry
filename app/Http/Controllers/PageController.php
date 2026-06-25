@@ -8,7 +8,7 @@ class PageController extends Controller
 {
     public function home()
     {
-        $layanans = Layanan::latest()->get();
+        $layanans = Layanan::where('is_active', true)->latest()->get();
 
         return view('welcome', compact('layanans'));
     }

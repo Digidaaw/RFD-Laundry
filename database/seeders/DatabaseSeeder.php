@@ -12,11 +12,19 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        $username = env('SEEDER_ADMIN_USERNAME');
+        $password = env('SEEDER_ADMIN_PASSWORD');
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        if ($username && $password) {
+            \App\Models\User::updateOrCreate(
+                ['username' => $username],
+                [
+                    'name' => 'Tanto Admin',
+                    'password' => $password,
+                    'role' => 'admin',
+                    'is_active' => true,
+                ]
+            );
+        }
     }
 }

@@ -59,7 +59,7 @@
             {{-- IMAGE --}}
             <div class="relative h-full min-h-[300px] md:min-h-[400px] rounded-2xl overflow-hidden border-4 border-white shadow-xl">
                 <img id="service-img"
-                    src="{{ $first && $first->gambar ? asset('images/layanan/'.$first->gambar[0]) : '' }}"
+                    src="{{ $first && $first->gambar ? (str_starts_with($first->gambar[0], 'data:') ? $first->gambar[0] : asset('images/layanan/'.$first->gambar[0])) : '' }}"
                     alt="Service Image"
                     class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300" />
             </div>

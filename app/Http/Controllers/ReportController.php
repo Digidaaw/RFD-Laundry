@@ -71,15 +71,18 @@ class ReportController extends Controller
         return view('shared.report.piutang', compact('piutangs', 'totalPiutang', 'pelanggans', 'layanans'));
     }
 
-    public function laporanPelanggan(Pelanggan $pelanggan)
+    public function laporanPelanggan(Request $request, Pelanggan $pelanggan)
     {
-        $transaksis = $this->getPelangganTransaksis($pelanggan);
-        $pelanggans = Pelanggan::orderBy('name')->get();
-        $layanans = Layanan::with('units')->orderBy('name')->get();
+        $startDate = $request->filled('start_date') ? Carbon::parse($request->input('start_date'))->startOfDay() : null;
+        $endDate   = $request->filled('end_date')   ? Carbon::parse($request->input('end_date'))->endOfDay()   : Carbon::now()->endOfDay();
 
-        $totalSubtotal = $transaksis->sum('subtotal');
-        $totalPotongan = $transaksis->sum('potongan');
-        $totalHarga = $transaksis->sum('total_harga');
+        $transaksis = $this->getPelangganTransaksis($pelanggan, $startDate, $endDate);
+        $pelanggans = Pelanggan::orderBy('name')->get();
+        $layanans   = Layanan::with('units')->orderBy('name')->get();
+
+        $totalSubtotal  = $transaksis->sum('subtotal');
+        $totalPotongan  = $transaksis->sum('potongan');
+        $totalHarga     = $transaksis->sum('total_harga');
         $totalSudahBayar = $transaksis->sum('jumlah_bayar');
         $totalSisaHutang = $transaksis->sum('sisa_bayar');
 
@@ -92,24 +95,43 @@ class ReportController extends Controller
             'totalPotongan',
             'totalHarga',
             'totalSudahBayar',
-            'totalSisaHutang'
+            'totalSisaHutang',
+            'startDate',
+            'endDate'
         ));
     }
 
     // --- FUNGSI EXPORT ---
 
-    public function exportPdfPelanggan(Pelanggan $pelanggan)
+    public function exportPdfPelanggan(Request $request, Pelanggan $pelanggan)
     {
-        $transaksis = $this->getPelangganTransaksis($pelanggan);
+        $startDate = $request->filled('start_date') ? Carbon::parse($request->input('start_date'))->startOfDay() : null;
+        $endDate   = $request->filled('end_date')   ? Carbon::parse($request->input('end_date'))->endOfDay()   : Carbon::now()->endOfDay();
 
-        $pdf = Pdf::loadView('shared.report.pdf_pelanggan', compact('pelanggan', 'transaksis'));
+        $transaksis = $this->getPelangganTransaksis($pelanggan, $startDate, $endDate);
 
-        return $pdf->download('Laporan-Pelanggan-' . $pelanggan->name . '.pdf');
+        $pdf = Pdf::loadView('shared.report.pdf_pelanggan', compact('pelanggan', 'transaksis', 'startDate', 'endDate'));
+
+        $suffix = ($startDate && $endDate)
+            ? '-' . $startDate->format('Ymd') . '-sd-' . $endDate->format('Ymd')
+            : '';
+
+        return $pdf->download('Laporan-Pelanggan-' . $pelanggan->name . $suffix . '.pdf');
     }
 
-    public function exportPelangganXls(Pelanggan $pelanggan)
+    public function exportPelangganXls(Request $request, Pelanggan $pelanggan)
     {
-        return Excel::download(new LaporanPelangganExport($pelanggan->id), 'Laporan-Pelanggan-' . now()->format('Ymd') . '.xlsx');
+        $startDate = $request->filled('start_date') ? Carbon::parse($request->input('start_date'))->startOfDay() : null;
+        $endDate   = $request->filled('end_date')   ? Carbon::parse($request->input('end_date'))->endOfDay()   : Carbon::now()->endOfDay();
+
+        $suffix = ($startDate && $endDate)
+            ? '-' . $startDate->format('Ymd') . '-sd-' . $endDate->format('Ymd')
+            : '';
+
+        return Excel::download(
+            new LaporanPelangganExport($pelanggan->id, $startDate, $endDate),
+            'Laporan-Pelanggan-' . $pelanggan->name . $suffix . '.xlsx'
+        );
     }
 
     private function buildPiutangQuery(?string $search)
@@ -128,11 +150,18 @@ class ReportController extends Controller
         return $query;
     }
 
-    private function getPelangganTransaksis(Pelanggan $pelanggan)
+    private function getPelangganTransaksis(Pelanggan $pelanggan, $startDate = null, $endDate = null)
     {
-        return Transaksi::where('id_pelanggan', $pelanggan->id)
-            ->with(['layanan', 'items.layanan'])
-            ->latest()
-            ->get();
+        $query = Transaksi::where('id_pelanggan', $pelanggan->id)
+            ->with(['layanan', 'items.layanan']);
+
+        if ($startDate) {
+            $query->where('tanggal_order', '>=', $startDate);
+        }
+        if ($endDate) {
+            $query->where('tanggal_order', '<=', $endDate);
+        }
+
+        return $query->latest()->get();
     }
 }

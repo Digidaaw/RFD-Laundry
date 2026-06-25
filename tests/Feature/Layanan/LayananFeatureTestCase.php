@@ -27,6 +27,7 @@ abstract class LayananFeatureTestCase extends TestCase
             'username' => 'admin_layanan_' . uniqid(),
             'password' => 'password',
             'role' => 'admin',
+            'is_active' => true,
         ]);
     }
 

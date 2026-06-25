@@ -10,8 +10,15 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js" defer></script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         [x-cloak] { display: none !important; }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
         .choices__inner {
             background-color: white; border: 1px solid #d1d5db;
             border-radius: 0.5rem; padding: 0.5rem 1rem; font-size: 1rem;
@@ -36,6 +43,10 @@
     deleteUrl: '',
     openEditModal: false,
     editData: {},
+    openStatusModal: false,
+    statusUrl: '',
+    statusTitle: '',
+    statusMessage: '',
 
     // =================================================================
     // PERBAIKAN: Logika Kalkulasi Transaksi dipindah ke sini

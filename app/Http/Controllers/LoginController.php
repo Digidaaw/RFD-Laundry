@@ -24,6 +24,14 @@ class LoginController extends Controller
      */
     public function authenticate(LoginRequest $request)
     {
+        $user = \App\Models\User::where('username', $request->username)->first();
+
+        if ($user && !$user->is_active) {
+            return back()->withErrors([
+                'username' => 'Akun Anda dinonaktifkan. Silakan hubungi admin.',
+            ])->onlyInput('username');
+        }
+
         // Mencoba untuk login
         if (Auth::attempt($request->only(['username', 'password']))) {
             $request->session()->regenerate();
