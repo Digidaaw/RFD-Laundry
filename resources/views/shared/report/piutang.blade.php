@@ -45,13 +45,13 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between h-full">
                     <h3 class="text-lg font-semibold text-gray-500">Total Piutang</h3>
-                    <p class="text-3xl font-bold text-red-600 mt-2">Rp {{ number_format($totalPiutang, 0, ',', '.') }}</p>
+                    <p class="text-lg md:text-xl lg:text-2xl font-bold text-red-600 mt-2 whitespace-nowrap">Rp {{ number_format(max(0, $totalPiutang), 0, ',', '.') }}</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between h-full">
                     <h3 class="text-lg font-semibold text-gray-500">Jumlah Transaksi Belum Lunas</h3>
-                    <p class="text-3xl font-bold text-gray-900 mt-2">{{ $piutangs->count() }}</p>
+                    <p class="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mt-2 whitespace-nowrap">{{ $piutangs->count() }}</p>
                 </div>
             </div>
 
@@ -74,7 +74,7 @@
                                 <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">{{ $transaksi->no_invoice }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">{{ \Carbon\Carbon::parse($transaksi->tanggal_order)->format('d M Y') }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">{{ $transaksi->pelanggan->name ?? 'N/A' }}</td>
-                                <td class="p-3 text-sm md:p-4 md:text-base font-bold text-red-600">Rp {{ number_format($transaksi->sisa_bayar, 0, ',', '.') }}</td>
+                                <td class="p-3 text-sm md:p-4 md:text-base font-bold text-red-600">Rp {{ number_format(max(0, $transaksi->sisa_bayar), 0, ',', '.') }}</td>
                                 <td class="p-3 md:p-4 text-center">
                                     @php
                                     $transaksiData = [
@@ -99,7 +99,7 @@
                                     ];
                                     @endphp
                                     <button @click="$dispatch('open-edit-modal', @js($transaksiData))"
-                                        class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-green-200 text-sm md:text-base transition">
+                                        class="bg-yellow-100 text-yellow-800 font-bold py-2 px-6 rounded-md hover:bg-yellow-200">
                                         Bayar
                                     </button>
                                 </td>

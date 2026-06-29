@@ -131,37 +131,39 @@
                                     </td>
                                     <td class="p-4 text-center">
                                         @if($layanan->is_active)
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800">
+                                            <span class="font-semibold text-sm md:text-base text-green-600">
                                                 Aktif
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                                            <span class="font-semibold text-sm md:text-base text-red-600">
                                                 Nonaktif
                                             </span>
                                         @endif
                                     </td>
-                                    <td class="p-4 flex justify-center items-center space-x-2">
-                                        <button @click="$dispatch('open-edit-modal', @js($layananData))"
-                                            class="bg-green-100 text-green-700 font-bold py-2 px-6 rounded-md hover:bg-green-200">
-                                            Update
-                                        </button>
-                                        @if(Auth::user()->role === 'admin')
-                                            @if($layanan->is_active)
-                                                <button type="button"
-                                                    @click="openStatusModal = true; statusUrl = '{{ route('layanan.toggle-status', $layanan->id) }}'; statusTitle = 'Nonaktifkan Layanan?'; statusMessage = 'Apakah Anda yakin ingin menonaktifkan layanan {{ $layanan->name }}?';"
-                                                    class="bg-red-100 text-red-700 font-bold py-2 px-6 rounded-md hover:bg-red-200 transition"
-                                                >
-                                                    Nonaktifkan
-                                                </button>
-                                            @else
-                                                <button type="button"
-                                                    @click="openStatusModal = true; statusUrl = '{{ route('layanan.toggle-status', $layanan->id) }}'; statusTitle = 'Aktifkan Layanan?'; statusMessage = 'Apakah Anda yakin ingin mengaktifkan layanan {{ $layanan->name }}?';"
-                                                    class="bg-blue-100 text-blue-700 font-bold py-2 px-6 rounded-md hover:bg-blue-200 transition"
-                                                >
-                                                    Aktifkan
-                                                </button>
+                                    <td class="p-4">
+                                        <div class="flex justify-center items-center gap-2">
+                                            <button @click="$dispatch('open-edit-modal', @js($layananData))"
+                                                class="bg-yellow-100 text-yellow-800 font-bold py-2 px-6 rounded-md hover:bg-yellow-200">
+                                                Update
+                                            </button>
+                                            @if(Auth::user()->role === 'admin')
+                                                @if($layanan->is_active)
+                                                    <button type="button"
+                                                        @click="openStatusModal = true; statusUrl = '{{ route('layanan.toggle-status', $layanan->id) }}'; statusTitle = 'Nonaktifkan Layanan?'; statusMessage = 'Apakah Anda yakin ingin menonaktifkan layanan {{ $layanan->name }}?';"
+                                                        class="bg-red-100 text-red-700 font-bold py-2 px-6 rounded-md hover:bg-red-200 transition"
+                                                    >
+                                                        Nonaktifkan
+                                                    </button>
+                                                @else
+                                                    <button type="button"
+                                                        @click="openStatusModal = true; statusUrl = '{{ route('layanan.toggle-status', $layanan->id) }}'; statusTitle = 'Aktifkan Layanan?'; statusMessage = 'Apakah Anda yakin ingin mengaktifkan layanan {{ $layanan->name }}?';"
+                                                        class="bg-blue-100 text-blue-700 font-bold py-2 px-6 rounded-md hover:bg-blue-200 transition"
+                                                    >
+                                                        Aktifkan
+                                                    </button>
+                                                @endif
                                             @endif
-                                        @endif
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
@@ -214,11 +216,11 @@
                                             {{ $layanan->name }}
                                         </p>
                                         @if($layanan->is_active)
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-green-100 text-green-800 whitespace-nowrap">
+                                            <span class="font-semibold text-xs text-green-600 whitespace-nowrap">
                                                 Aktif
                                             </span>
                                         @else
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-100 text-red-800 whitespace-nowrap">
+                                            <span class="font-semibold text-xs text-red-600 whitespace-nowrap">
                                                 Nonaktif
                                             </span>
                                         @endif
@@ -232,7 +234,7 @@
                                 </div>
                                 <div class="flex gap-2 mt-3">
                                     <button @click="$dispatch('open-edit-modal', @js($layananData))"
-                                        class="flex-1 bg-green-100 text-green-700 font-semibold py-2 rounded-md text-xs">
+                                        class="flex-1 bg-yellow-100 text-yellow-800 font-semibold py-2 rounded-md text-xs hover:bg-yellow-200 transition">
                                         Update
                                     </button>
                                     @if(Auth::user()->role === 'admin')

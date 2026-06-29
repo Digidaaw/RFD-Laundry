@@ -32,7 +32,7 @@
 
             <div class="flex flex-col lg:flex-row justify-between items-center mb-8 gap-4">
                 <button @click="openAddModal = true"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg shadow-md w-full lg:w-auto">
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 md:px-6 md:py-3 rounded-lg shadow-md w-full lg:w-auto font-semibold">
                     + Tambah Pelanggan
                 </button>
                 <div
@@ -107,13 +107,13 @@
                                             ];
                                         @endphp
                                         <a href="{{ route('report.pelanggan', $pelanggan->id) }}"
-                                            class="bg-blue-100 text-blue-700 font-bold py-2 px-6 rounded-md hover:bg-blue-200 transition">
+                                            class="bg-blue-100 text-blue-800 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-blue-200 transition text-sm md:text-base">
                                             Laporan
                                         </a>
 
                                         <button
                                             @click="$dispatch('open-edit-customer-modal', @js($pelangganData))"
-                                            class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-green-200 transition text-sm md:text-base">
+                                            class="bg-yellow-100 text-yellow-800 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-yellow-200 transition text-sm md:text-base">
                                             Update
                                         </button>
                                     </td>

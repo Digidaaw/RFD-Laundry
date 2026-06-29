@@ -40,7 +40,7 @@
                     <td>{{ \Carbon\Carbon::parse($t->tanggal_order)->format('d-m-Y') }}</td>
                     <td>{{ $t->pelanggan->name ?? 'N/A' }}</td>
                     <td>{{ $t->user->name ?? 'N/A' }}</td>
-                    <td>Rp {{ number_format($t->total_harga, 0, ',', '.') }}</td>
+                    <td>Rp {{ number_format(max(0, $t->total_harga), 0, ',', '.') }}</td>
                     <td>{{ $t->status_pembayaran }}</td>
                 </tr>
             @empty
@@ -54,11 +54,11 @@
     <table class="summary">
         <tr>
             <td class="font-bold">Potensi Pendapatan:</td>
-            <td class="text-right">Rp {{ number_format($potensiPendapatan, 0, ',', '.') }}</td>
+            <td class="text-right">Rp {{ number_format(max(0, $potensiPendapatan), 0, ',', '.') }}</td>
         </tr>
         <tr>
             <td class="font-bold">Pendapatan Diterima:</td>
-            <td class="text-right">Rp {{ number_format($pendapatanLunas, 0, ',', '.') }}</td>
+            <td class="text-right">Rp {{ number_format(max(0, $pendapatanLunas), 0, ',', '.') }}</td>
         </tr>
         <tr>
             <td class="font-bold">Jumlah Transaksi:</td>

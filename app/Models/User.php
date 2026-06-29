@@ -28,6 +28,10 @@ class User extends Authenticatable
     protected $casts = [
         'is_active' => 'boolean',
     ];
+    
+    protected $attributes = [
+        'is_active' => true,
+    ];
 
     public function setPasswordAttribute($value)
     {

@@ -63,21 +63,21 @@
                                     <button type="button"
                                         onclick="this.closest('form').sort.value=''; this.closest('form').type.value='lunas'; this.closest('form').submit();"
                                         class="w-full text-left px-4 py-3 text-sm hover:bg-gray-100
-                                        {{ ($sort ?? '') === '' && ($type ?? '') === 'lunas' ? 'bg-green-50 text-green-600 font-semibold' : '' }}">
+                                        {{ ($sort ?? '') === '' && ($type ?? '') === 'lunas' ? 'bg-green-100 text-green-800 font-semibold' : '' }}">
                                         Lunas
                                     </button>
 
                                     <button type="button"
                                         onclick="this.closest('form').sort.value=''; this.closest('form').type.value='dp'; this.closest('form').submit();"
                                         class="w-full text-left px-4 py-3 text-sm hover:bg-gray-100
-                                        {{ ($sort ?? '') === '' && ($type ?? '') === 'dp' ? 'bg-yellow-50 text-yellow-600 font-semibold' : '' }}">
+                                        {{ ($sort ?? '') === '' && ($type ?? '') === 'dp' ? 'bg-red-100 text-red-800 font-semibold' : '' }}">
                                         DP
                                     </button>
                                 </div>
                             </details>
                         </div>
                         <div class="relative flex-1 min-w-0">
-                            <input type="text" name="search" placeholder="Nama / No. Telepon Pelanggan..."
+                            <input type="text" name="search" placeholder="Nama / No.Telepon "
                                 value="{{ $search ?? '' }}"
                                 class="bg-gray-100 rounded-full py-2 pl-12 md:py-3 md:pl-14 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-sm md:text-base">
                             <img src="{{ asset('assets/search-icon.svg') }}"
@@ -123,9 +123,9 @@
                                         {{ number_format($transaksi->sisa_bayar, 0, ',', '.') }}</td>
                                     <td class="p-3 md:p-4">
                                         <span @class([
-                                            'inline-flex justify-center items-center font-bold rounded-md transition text-sm md:text-base py-1 px-3 md:py-2 md:px-6 text-center w-[100px]',
-                                            'bg-green-100 text-green-700 hover:bg-green-200' => $transaksi->status_pembayaran == 'Lunas',
-                                            'bg-red-100 text-red-700 hover:bg-red-200' => $transaksi->status_pembayaran == 'DP',
+                                            'font-semibold text-sm md:text-base',
+                                            'text-green-600' => $transaksi->status_pembayaran == 'Lunas',
+                                            'text-red-600' => $transaksi->status_pembayaran == 'DP',
                                         ])>
                                             {{ $transaksi->status_pembayaran }}
                                         </span>
@@ -154,14 +154,14 @@
                                         ];
                                         @endphp
                                         <a href="{{ route('transaksi.cetak-struk', $transaksi) }}"
-                                            class="bg-blue-100 text-blue-700 font-bold py-1 px-3 md:py-2 md:px-4 rounded-md hover:bg-blue-200 text-sm md:text-base transition">
-                                            <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            class="inline-flex items-center gap-1 bg-blue-100 text-blue-700 font-bold py-1 px-3 md:py-2 md:px-4 rounded-md hover:bg-blue-200 text-sm md:text-base transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
                                             </svg>
-                                            Cetak
+                                            <span>Cetak</span>
                                         </a>
                                         <button @click="$dispatch('open-edit-modal', @js($transaksiData))"
-                                            class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-4 rounded-md hover:bg-green-200 text-sm md:text-base transition">Update</button>
+                                            class="bg-yellow-100 text-yellow-800 font-bold py-1 px-3 md:py-2 md:px-4 rounded-md hover:bg-yellow-200 text-sm md:text-base transition">Update</button>
                                     </td>
                                 </tr>
                             @empty

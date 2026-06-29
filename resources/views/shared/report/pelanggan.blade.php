@@ -58,25 +58,25 @@
 
             <!-- Form Filter Rentang Tanggal -->
             <div class="bg-white rounded-xl shadow-md p-5 mb-8">
-                <form method="GET" action="{{ route('report.pelanggan', $pelanggan->id) }}" class="flex flex-col md:flex-row items-end gap-4">
-                    <div class="flex-1">
+                <form method="GET" action="{{ route('report.pelanggan', $pelanggan->id) }}" class="flex flex-col md:flex-row items-stretch md:items-end gap-4 w-full">
+                    <div class="w-full md:flex-1">
                         <label class="block text-sm font-semibold text-gray-600 mb-1">Tanggal Mulai</label>
                         <input type="date" name="start_date" value="{{ $startDate ? $startDate->format('Y-m-d') : '' }}"
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm">
                     </div>
-                    <div class="flex-1">
+                    <div class="w-full md:flex-1">
                         <label class="block text-sm font-semibold text-gray-600 mb-1">Tanggal Akhir</label>
                         <input type="date" name="end_date" value="{{ $endDate ? $endDate->format('Y-m-d') : '' }}"
                             class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 text-sm">
                     </div>
-                    <div class="flex gap-2">
+                    <div class="w-full md:w-auto flex gap-2">
                         <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow text-sm font-semibold transition-colors">
+                            class="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg shadow text-sm font-semibold transition-colors">
                             Filter
                         </button>
                         @if(request('start_date') || request('end_date'))
                             <a href="{{ route('report.pelanggan', $pelanggan->id) }}"
-                                class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg shadow text-sm font-semibold transition-colors">
+                                class="flex-1 md:flex-none text-center bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2 rounded-lg shadow text-sm font-semibold transition-colors">
                                 Reset
                             </a>
                         @endif
@@ -94,25 +94,25 @@
 
             <!-- Ringkasan Totalan -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between h-full">
                     <h3 class="text-lg font-semibold text-gray-500">Total Subtotal</h3>
-                    <p class="text-2xl lg:text-3xl font-bold text-gray-800 mt-2">Rp {{ number_format($totalSubtotal, 0, ',', '.') }}</p>
+                    <p class="text-lg md:text-xl lg:text-2xl font-bold text-gray-800 mt-2 whitespace-nowrap">Rp {{ number_format(max(0, $totalSubtotal), 0, ',', '.') }}</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between h-full">
                     <h3 class="text-lg font-semibold text-gray-500">Total Potongan</h3>
-                    <p class="text-2xl lg:text-3xl font-bold text-red-500 mt-2">- Rp {{ number_format($totalPotongan, 0, ',', '.') }}</p>
+                    <p class="text-lg md:text-xl lg:text-2xl font-bold text-red-600 mt-2 whitespace-nowrap">Rp {{ number_format(max(0, $totalPotongan ?? 0), 0, ',', '.') }}</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between h-full">
                     <h3 class="text-lg font-semibold text-gray-500">Total Transaksi</h3>
-                    <p class="text-2xl lg:text-3xl font-bold text-blue-600 mt-2">Rp {{ number_format($totalHarga, 0, ',', '.') }}</p>
+                    <p class="text-lg md:text-xl lg:text-2xl font-bold text-blue-600 mt-2 whitespace-nowrap">Rp {{ number_format(max(0, $totalHarga), 0, ',', '.') }}</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between h-full">
                     <h3 class="text-lg font-semibold text-gray-500">Total Sudah Dibayar</h3>
-                    <p class="text-2xl lg:text-3xl font-bold text-green-600 mt-2">Rp {{ number_format($totalSudahBayar, 0, ',', '.') }}</p>
+                    <p class="text-lg md:text-xl lg:text-2xl font-bold text-green-600 mt-2 whitespace-nowrap">Rp {{ number_format(max(0, $totalSudahBayar), 0, ',', '.') }}</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between h-full">
                     <h3 class="text-lg font-semibold text-gray-500">Total Sisa Hutang</h3>
-                    <p class="text-2xl lg:text-3xl font-bold text-red-600 mt-2">Rp {{ number_format($totalSisaHutang, 0, ',', '.') }}</p>
+                    <p class="text-lg md:text-xl lg:text-2xl font-bold text-red-600 mt-2 whitespace-nowrap">Rp {{ number_format(max(0, $totalSisaHutang), 0, ',', '.') }}</p>
                 </div>
             </div>
 
@@ -150,47 +150,44 @@
                                             {{ $transaksi->deskripsi ?? '-' }}
                                         </span>
                                     </td>
-                                    <td class="p-3 text-sm md:p-4 md:text-base font-semibold text-gray-900">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
+                                    <td class="p-3 text-sm md:p-4 md:text-base font-semibold text-gray-900">Rp {{ number_format(max(0, $transaksi->total_harga), 0, ',', '.') }}</td>
                                     <td class="p-3 md:p-4">
                                         @if($transaksi->status_pembayaran === 'Lunas')
-                                            <span class="px-3 py-1 text-xs md:text-sm rounded-full font-medium bg-green-100 text-green-800">Lunas</span>
+                                            <span class="px-3 py-1 text-xs md:text-sm font-semibold text-green-600">Lunas</span>
                                         @else
-                                            <span class="px-3 py-1 text-xs md:text-sm rounded-full font-medium bg-red-100 text-red-800">{{ $transaksi->status_pembayaran }}</span>
+                                            <span class="px-3 py-1 text-xs md:text-sm font-semibold text-red-600">{{ $transaksi->status_pembayaran }}</span>
                                         @endif
                                     </td>
-                                    <td class="p-3 md:p-4 flex justify-center items-center space-x-1 md:space-x-2">
-                                        @php
-                                            $transaksiData = [
-                                                'id'                 => $transaksi->id,
-                                                'tanggal_order'      => $transaksi->tanggal_order,
-                                                'id_pelanggan'       => $transaksi->id_pelanggan,
-                                                'deskripsi'          => $transaksi->deskripsi,
-                                                'subtotal'           => $transaksi->subtotal,
-                                                'potongan'           => $transaksi->potongan,
-                                                'total_harga'        => $transaksi->total_harga,
-                                                'jumlah_bayar'       => $transaksi->jumlah_bayar,
-                                                'sisa_bayar'         => $transaksi->sisa_bayar,
-                                                'status_pembayaran'  => $transaksi->status_pembayaran,
-                                                'items'              => $transaksi->items->map(fn($item) => [
-                                                    'id'           => $item->id,
-                                                    'layanan_id'   => $item->layanan_id,
-                                                    'unit_satuan'  => $item->unit_satuan,
-                                                    'qty'          => $item->qty,
-                                                    'harga_satuan' => $item->harga_satuan,
-                                                    'subtotal'     => $item->subtotal,
-                                                ])->toArray(),
-                                            ];
-                                        @endphp
+                                    <td class="p-3 md:p-4 align-middle">
+                                        <div class="flex justify-center items-center space-x-1 md:space-x-2">
+                                            @php
+                                                $transaksiData = [
+                                                    'id'                 => $transaksi->id,
+                                                    'tanggal_order'      => $transaksi->tanggal_order,
+                                                    'id_pelanggan'       => $transaksi->id_pelanggan,
+                                                    'deskripsi'          => $transaksi->deskripsi,
+                                                    'subtotal'           => $transaksi->subtotal,
+                                                    'potongan'           => $transaksi->potongan,
+                                                    'total_harga'        => $transaksi->total_harga,
+                                                    'jumlah_bayar'       => $transaksi->jumlah_bayar,
+                                                    'sisa_bayar'         => $transaksi->sisa_bayar,
+                                                    'status_pembayaran'  => $transaksi->status_pembayaran,
+                                                    'items'              => $transaksi->items->map(fn($item) => [
+                                                        'id'           => $item->id,
+                                                        'layanan_id'   => $item->layanan_id,
+                                                        'unit_satuan'  => $item->unit_satuan,
+                                                        'qty'          => $item->qty,
+                                                        'harga_satuan' => $item->harga_satuan,
+                                                        'subtotal'     => $item->subtotal,
+                                                    ])->toArray(),
+                                                ];
+                                            @endphp
 
-                                        <button @click="$dispatch('open-edit-modal', @js($transaksiData))"
-                                            class="bg-green-100 text-green-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-green-200 text-sm md:text-base transition">
-                                            Update
-                                        </button>
-
-                                        <button @click="openDeleteModal = true; deleteUrl = '{{ route('transaksi.destroy', $transaksi->id) }}';"
-                                            class="bg-red-100 text-red-700 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-red-200 text-sm md:text-base transition">
-                                            Delete
-                                        </button>
+                                            <button @click="$dispatch('open-edit-modal', @js($transaksiData))"
+                                                class="bg-yellow-100 text-yellow-800 font-bold py-1 px-3 md:py-2 md:px-6 rounded-md hover:bg-yellow-200 transition text-sm md:text-base">
+                                                Update
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty

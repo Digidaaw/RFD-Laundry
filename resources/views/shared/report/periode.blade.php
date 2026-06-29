@@ -41,23 +41,23 @@
                             <label for="end_date" class="block font-semibold text-gray-700 mb-2">Tanggal Selesai</label>
                             <input type="date" id="end_date" name="end_date" value="{{ $endDate->format('Y-m-d') }}" class="w-full border border-gray-300 rounded-lg px-4 py-2">
                         </div>
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md h-11">Tampilkan Laporan</button>
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md min-h-[44px]">Tampilkan Laporan</button>
                     </div>
                 </form>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between h-full">
                     <h3 class="text-lg font-semibold text-gray-500">Potensi Pendapatan</h3>
-                    <p class="text-3xl font-bold text-blue-600 mt-2">Rp {{ number_format($potensiPendapatan, 0, ',', '.') }}</p>
+                    <p class="text-lg md:text-xl lg:text-2xl font-bold text-blue-600 mt-2 whitespace-nowrap">Rp {{ number_format(max(0, $potensiPendapatan), 0, ',', '.') }}</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between h-full">
                     <h3 class="text-lg font-semibold text-gray-500">Pendapatan Diterima</h3>
-                    <p class="text-3xl font-bold text-green-600 mt-2">Rp {{ number_format($pendapatanLunas, 0, ',', '.') }}</p>
+                    <p class="text-lg md:text-xl lg:text-2xl font-bold text-green-600 mt-2 whitespace-nowrap">Rp {{ number_format(max(0, $pendapatanLunas), 0, ',', '.') }}</p>
                 </div>
-                <div class="bg-white p-6 rounded-xl shadow-md">
+                <div class="bg-white p-6 rounded-xl shadow-md flex flex-col justify-between h-full">
                     <h3 class="text-lg font-semibold text-gray-500">Jumlah Transaksi</h3>
-                    <p class="text-3xl font-bold text-gray-900 mt-2">{{ $totalTransaksi }}</p>
+                    <p class="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mt-2 whitespace-nowrap">{{ $totalTransaksi }}</p>
                 </div>
             </div>
 
@@ -94,10 +94,10 @@
                                 <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">{{ \Carbon\Carbon::parse($transaksi->tanggal_order)->format('d M Y') }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">{{ $transaksi->pelanggan->name ?? 'N/A' }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">{{ $transaksi->user->name ?? 'N/A' }}</td>
-                                <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
+                                <td class="p-3 text-sm md:p-4 md:text-base text-gray-600">Rp {{ number_format(max(0, $transaksi->total_harga), 0, ',', '.') }}</td>
                                 <td class="p-3 md:p-4">
-                                    <span class="px-3 py-1 text-xs md:text-sm rounded-full font-medium"
-                                          :class="{ 'bg-red-100 text-red-800': '{{ $transaksi->status_pembayaran }}' === 'DP', 'bg-green-100 text-green-800': '{{ $transaksi->status_pembayaran }}' === 'Lunas' }">
+                                    <span class="px-3 py-1 text-xs md:text-sm font-semibold"
+                                          :class="{ 'text-red-600': '{{ $transaksi->status_pembayaran }}' === 'DP', 'text-green-600': '{{ $transaksi->status_pembayaran }}' === 'Lunas' }">
                                         {{ $transaksi->status_pembayaran }}
                                     </span>
                                 </td>
