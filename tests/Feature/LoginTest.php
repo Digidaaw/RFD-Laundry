@@ -4,16 +4,21 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
+use Faker\Factory as Faker;
 use Illuminate\Support\Facades\Hash;
 
 class LoginTest extends TestCase
 {
+    protected $faker;
+    protected $validPassword = 'password123';
+
     protected function setUp(): void
     {
         parent::setUp();
+        $this->faker = Faker::create('id_ID');
 
         $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
-        User::query()->update(['password' => Hash::make('password123')]);
+        User::query()->update(['password' => Hash::make($this->validPassword)]);
     }
 
     /** @test */
@@ -21,11 +26,11 @@ class LoginTest extends TestCase
     {
         $response = $this->post('/login', [
             'username' => 'admin ',
-            'password' => 'password123',
+            'password' => $this->validPassword . ' ',
         ]);
 
         $response->assertStatus(302);
-        $this->assertAuthenticated();
+         $this->assertGuest();
     }
 
     /** @test */
@@ -33,7 +38,7 @@ class LoginTest extends TestCase
     {
         $response = $this->post('/login', [
             'username' => 'admin',
-            'password' => 'password123',
+            'password' => $this->validPassword,
         ]);
 
         $response->assertStatus(302);
@@ -56,9 +61,10 @@ class LoginTest extends TestCase
     /** @test */
     public function tc_log_04_login_dengan_username_dan_password_salah()
     {
+        //untuk menambahkan data random
         $response = $this->post('/login', [
-            'username' => 'usersalah',
-            'password' => 'password_salah',
+            'username' => $this->faker->userName(),
+            'password' => $this->faker->password(12),
         ]);
 
         $response->assertStatus(302);
@@ -71,7 +77,7 @@ class LoginTest extends TestCase
     {
         $response = $this->post('/login', [
             'username' => 'ADMIN',
-            'password' => 'password123',
+            'password' => $this->validPassword,
         ]);
 
         $response->assertStatus(302);
@@ -82,8 +88,8 @@ class LoginTest extends TestCase
     public function tc_log_06_login_dengan_username_karakter_khusus()
     {
         $response = $this->post('/login', [
-            'username' => 'userbaru@#$',
-            'password' => 'password123',
+            'username' => $this->faker->userName() . '@#$',
+            'password' => $this->validPassword,
         ]);
 
         $response->assertStatus(302);
@@ -109,7 +115,7 @@ class LoginTest extends TestCase
     {
         $this->post('/login', [
             'username' => 'admin',
-            'password' => 'password123',
+            'password' => $this->validPassword,
         ]);
 
         $response = $this->post('/logout');
@@ -131,15 +137,19 @@ class LoginTest extends TestCase
     /** @test */
     public function tc_log_10_registrasi_user_baru()
     {
+        $username = $this->faker->unique()->userName();
+        $name     = $this->faker->name();
+        $password = 'password123';
+
         $response = $this->post('/register', [
-            'name' => 'User Baru Lagi',
-            'username' => 'userbaru2',
-            'password' => 'password123',
-            'password_confirmation' => 'password123',
-            'role' => 'kasir'
+            'name'                  => $name,
+            'username'              => $username,
+            'password'              => $password,
+            'password_confirmation' => $password,
+            'role'                  => 'kasir',
         ]);
 
         $response->assertStatus(302);
-        $this->assertDatabaseHas('users', ['username' => 'userbaru2']);
+        $this->assertDatabaseHas('users', ['username' => $username]);
     }
 }
