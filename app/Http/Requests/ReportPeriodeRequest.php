@@ -15,7 +15,7 @@ class ReportPeriodeRequest extends FormRequest
     {
         return [
             'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'end_date' => 'nullable|date',
             'export' => 'nullable|in:pdf,excel',
         ];
     }
@@ -23,9 +23,8 @@ class ReportPeriodeRequest extends FormRequest
     public function messages()
     {
         return [
-            'start_date.date' => 'Tanggal mulai harus valid.',
-            'end_date.date' => 'Tanggal akhir harus valid.',
-            'end_date.after_or_equal' => 'Tanggal akhir harus sama atau setelah tanggal mulai.',
+            'start_date.date' => 'Tanggal mulai harus berupa tanggal yang valid.',
+            'end_date.date' => 'Tanggal akhir harus berupa tanggal yang valid.',
             'export.in' => 'Tipe export tidak valid.',
         ];
     }

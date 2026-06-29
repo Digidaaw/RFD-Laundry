@@ -15,10 +15,7 @@
             </div>
             <div class="flex items-center gap-8">
                 <div class="flex items-center gap-4">
-                    <div class="hidden lg:block">
-                        <p class="uppercase font-semibold text-sm text-gray-900">{{ Auth::user()->role ?? 'Panel' }}</p>
-                        <p class="text-xs text-gray-500">{{ Auth::user()->name ?? '' }}</p>
-                    </div>
+                    <p class="uppercase font-semibold text-sm text-gray-900">{{ Auth::user()->role ?? 'Panel' }}</p>
                 </div>
             </div>
         </header>

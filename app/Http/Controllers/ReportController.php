@@ -8,6 +8,7 @@ use App\Http\Requests\ReportPeriodeRequest;
 use App\Http\Requests\ReportPiutangRequest;
 use App\Models\Transaksi;
 use App\Models\Pelanggan;
+use App\Models\Layanan;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -22,11 +23,26 @@ class ReportController extends Controller
 
     public function laporanPeriode(ReportPeriodeRequest $request)
     {
-        $startDate = $request->input('start_date', Carbon::now()->startOfMonth());
-        $endDate = $request->input('end_date', Carbon::now()->endOfMonth());
+        $defaultStart = Carbon::now()->startOfMonth();
+        $defaultEnd   = Carbon::now()->endOfMonth();
 
-        $startDate = Carbon::parse($startDate)->startOfDay();
-        $endDate = Carbon::parse($endDate)->endOfDay();
+        $startInput = $request->input('start_date');
+        $endInput   = $request->input('end_date');
+
+        // Jika salah satu kosong → pakai default bulan ini
+        if (empty($startInput) || empty($endInput)) {
+            $startDate = $defaultStart->copy()->startOfDay();
+            $endDate   = $defaultEnd->copy()->endOfDay();
+        } else {
+            $startDate = Carbon::parse($startInput)->startOfDay();
+            $endDate   = Carbon::parse($endInput)->endOfDay();
+
+            // Jika end_date lebih kecil dari start_date → reset ke default
+            if ($endDate->lt($startDate)) {
+                $startDate = $defaultStart->copy()->startOfDay();
+                $endDate   = $defaultEnd->copy()->endOfDay();
+            }
+        }
 
         $transaksis = Transaksi::with(['pelanggan', 'user'])
             ->whereBetween('tanggal_order', [$startDate, $endDate])
@@ -65,7 +81,7 @@ class ReportController extends Controller
         $piutangs = $this->buildPiutangQuery($search)->latest()->get();
         $totalPiutang = $piutangs->sum('sisa_bayar');
         $pelanggans = Pelanggan::orderBy('name')->get();
-        $layanans = \App\Models\Layanan::with('units')->orderBy('name')->get();
+        $layanans = Layanan::with('units')->get();
 
         return view('shared.report.piutang', compact('piutangs', 'totalPiutang', 'pelanggans', 'layanans'));
     }
@@ -74,13 +90,13 @@ class ReportController extends Controller
     {
         $transaksis = $this->getPelangganTransaksis($pelanggan);
         $pelanggans = Pelanggan::orderBy('name')->get();
-        $layanans = \App\Models\Layanan::with('units')->orderBy('name')->get();
 
         $totalSubtotal = $transaksis->sum('subtotal');
         $totalPotongan = $transaksis->sum('potongan');
         $totalHarga = $transaksis->sum('total_harga');
         $totalSudahBayar = $transaksis->sum('jumlah_bayar');
         $totalSisaHutang = $transaksis->sum('sisa_bayar');
+        $layanans = Layanan::with('units')->get();
 
         return view('shared.report.pelanggan', compact(
             'pelanggan',

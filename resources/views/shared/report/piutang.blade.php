@@ -16,10 +16,7 @@
             </div>
             <div class="flex items-center gap-8">
                 <div class="flex items-center gap-4">
-                    <div class="hidden md:block">
-                        <p class="uppercase font-semibold text-sm text-gray-900">{{ Auth::user()->role ?? 'Panel' }}</p>
-                        <p class="text-xs text-gray-500">{{ Auth::user()->name ?? '' }}</p>
-                    </div>
+                    <p class="uppercase font-semibold text-sm text-gray-900">{{ Auth::user()->role ?? 'Panel' }}</p>
                 </div>
             </div>
         </header>
@@ -83,7 +80,7 @@
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->no_invoice }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base ...">{{ \Carbon\Carbon::parse($transaksi->tanggal_order)->format('d M Y') }}</td>
-                                <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->pelanggan?->name ?? 'N/A' }}</td>
+                                <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->pelanggan->name ?? 'N/A' }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base font-bold text-red-600">Rp {{ number_format($transaksi->sisa_bayar, 0, ',', '.') }}</td>
                                 <td class="p-3 md:p-4 text-center">
                                     @php 

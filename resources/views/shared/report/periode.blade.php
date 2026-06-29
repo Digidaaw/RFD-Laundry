@@ -16,10 +16,7 @@
             </div>
             <div class="flex items-center gap-8">
                 <div class="flex items-center gap-4">
-                    <div class="hidden md:block">
-                        <p class="uppercase font-semibold text-sm text-gray-900">{{ Auth::user()->role ?? 'Panel' }}</p>
-                        <p class="text-xs text-gray-500">{{ Auth::user()->name ?? '' }}</p>
-                    </div>
+                    <p class="uppercase font-semibold text-sm text-gray-900">{{ Auth::user()->role ?? 'Panel' }}</p>
                 </div>
             </div>
         </header>
@@ -43,11 +40,17 @@
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                         <div>
                             <label for="start_date" class="block font-semibold text-gray-700 mb-2">Tanggal Mulai</label>
-                            <input type="date" id="start_date" name="start_date" value="{{ $startDate->format('Y-m-d') }}" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                            <input type="date" id="start_date" name="start_date" value="{{ old('start_date', $startDate->format('Y-m-d')) }}" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                            @error('start_date')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         <div>
                             <label for="end_date" class="block font-semibold text-gray-700 mb-2">Tanggal Selesai</label>
-                            <input type="date" id="end_date" name="end_date" value="{{ $endDate->format('Y-m-d') }}" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                            <input type="date" id="end_date" name="end_date" value="{{ old('end_date', $endDate->format('Y-m-d')) }}" class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                            @error('end_date')
+                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
                         <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg shadow-md h-11">Tampilkan Laporan</button>
                     </div>
@@ -102,7 +105,7 @@
                             <tr class="border-b hover:bg-gray-50">
                                 <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->no_invoice }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base ...">{{ \Carbon\Carbon::parse($transaksi->tanggal_order)->format('d M Y') }}</td>
-                                <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->pelanggan?->name ?? 'N/A' }}</td>
+                                <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->pelanggan->name ?? 'N/A' }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base ...">{{ $transaksi->user->name ?? 'N/A' }}</td>
                                 <td class="p-3 text-sm md:p-4 md:text-base ...">Rp {{ number_format($transaksi->total_harga, 0, ',', '.') }}</td>
                                 <td class="p-3 md:p-4">
