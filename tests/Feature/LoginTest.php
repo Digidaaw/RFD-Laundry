@@ -16,6 +16,7 @@ class LoginTest extends TestCase
     {
         parent::setUp();
         $this->faker = Faker::create('id_ID');
+        $this->seed(\Database\Seeders\UserSeeder::class);
 
         $this->withoutMiddleware(\App\Http\Middleware\VerifyCsrfToken::class);
         User::query()->update(['password' => Hash::make($this->validPassword)]);
