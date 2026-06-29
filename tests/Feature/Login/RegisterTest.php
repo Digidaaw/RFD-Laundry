@@ -29,3 +29,4 @@ class RegisterTest extends TestCase
         ]);
     }
 }
+

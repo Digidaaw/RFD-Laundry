@@ -36,3 +36,5 @@ abstract class LayananFeatureTestCase extends TestCase
         return UploadedFile::fake()->image($name, 500, 500);
     }
 }
+
+

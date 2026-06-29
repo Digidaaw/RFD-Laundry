@@ -29,3 +29,4 @@ class LogoutTest extends TestCase
         $response->assertRedirect('/login');
     }
 }
+

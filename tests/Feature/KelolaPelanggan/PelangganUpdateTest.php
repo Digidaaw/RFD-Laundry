@@ -187,3 +187,5 @@ class PelangganUpdateTest extends TestCase
         ]);
     }
 }
+
+

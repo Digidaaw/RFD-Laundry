@@ -17,3 +17,4 @@ class DashboardAccessTest extends TestCase
         $response->assertRedirect(route('login'));
     }
 }
+

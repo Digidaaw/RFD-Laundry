@@ -230,3 +230,5 @@ class PelangganStoreTest extends TestCase
         $this->assertDatabaseCount('pelanggans', 1);
     }
 }
+
+

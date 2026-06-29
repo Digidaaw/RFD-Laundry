@@ -132,3 +132,5 @@ class ManageCashierTest extends TestCase
         $this->assertFalse(\Auth::check());
     }
 }
+
+

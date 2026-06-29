@@ -110,3 +110,5 @@ class PelangganSearchTest extends TestCase
         $response->assertDontSee('Faizah');
     }
 }
+
+
